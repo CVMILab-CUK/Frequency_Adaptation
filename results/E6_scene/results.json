@@ -1,0 +1,26 @@
+{
+  "provenance": {
+    "adapter": "/home/work/model/Frequency_Adaptation/ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+    "sketch_dir": "/home/work/data/sketches/scene",
+    "n_images": 500,
+    "steps": 50,
+    "cfg_scale": 7.5,
+    "seed": 2026,
+    "prompt": "a high-quality photo of a face",
+    "fid_reference": "results/E10b/reference",
+    "timestamp": "2026-09-09 16:07:34"
+  },
+  "SC_vs_input_sketch": {
+    "mean": 0.17135252058506012,
+    "std": 0.1396549940109253,
+    "sem": 0.006245561200115099,
+    "n": 500
+  },
+  "CLIP": {
+    "mean": 22.634233474731445,
+    "std": 1.8622080087661743,
+    "sem": 0.0832804739169138,
+    "n": 500
+  },
+  "FID_vs_FFHQ": 285.9137830310983
+}

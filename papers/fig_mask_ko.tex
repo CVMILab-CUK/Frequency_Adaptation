@@ -1,0 +1,15 @@
+% What the dial actually does, from radial_mask_numpy / high_pass_numpy in the
+% repository, so the picture and the method cannot diverge.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/mask}
+\caption{주파수 쪽에서 본 다이얼. 열은
+$r = 0,\,0.05,\,0.1,\,0.2,\,0.3,\,0.5,\,0.7,\,1.0$이다. \textbf{1행:} 방사형 마스크,
+검은 부분이 제거된다. \textbf{2행:} 마스킹 후 로그 크기 스펙트럼으로, 구멍이 바깥으로
+커진다. \textbf{3행:} 모델이 실제로 받는 조건. \textbf{4행:} 같은 데이터를 $\pm2\sigma$로
+표시해 남아 있는 내용을 드러낸 것. $r{\approx}0.2$ 위에서 조건은 평평한 회색으로 보이고
+표준편차도 $r{=}0$의 0.196에서 $r{=}1$의 0.041로 떨어지지만, 4행에는 얼굴 윤곽이 남아
+있고 모델은 $r{=}0.2$에서 SC \scMainTwoZero{}에 도달한다. 낮은 대비가 정보 없음을
+뜻하지 않으며, 이미지별 정규화가 모델에 그것을 학습하도록 강제한다.}
+\label{fig:mask}
+\end{figure*}

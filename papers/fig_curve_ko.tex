@@ -1,0 +1,47 @@
+% Operating curves. Both panels read curve.dat / scale.dat, which
+% scripts/paper_numbers.py writes out of results/, so a plotted point cannot
+% drift from the run that produced it. Drafted to match the text: hairline
+% axes, no boxes, no fills, marks a reader can count.
+\begin{figure}[t]
+\centering
+\pgfplotsset{
+  draft/.style={
+    width=\columnwidth, height=41mm,
+    axis lines=left, axis line style={line width=0.4pt},
+    tick align=outside, tick style={line width=0.4pt, black},
+    ymajorgrids, grid style={black!12, line width=0.3pt},
+    label style={font=\scriptsize}, tick label style={font=\scriptsize},
+    legend style={font=\scriptsize, draw=none, fill=none, cells={anchor=west},
+                  inner sep=1pt},
+    every axis plot/.append style={line width=0.7pt, mark size=1.7pt},
+  }}
+\begin{tikzpicture}
+\begin{axis}[draft, xlabel={차단 반경 $r$}, ylabel={},
+             xmin=-0.03, xmax=1.03, ymin=0, ymax=0.8,
+             legend pos=north east]
+  \addplot[mark=square*, black] table[x=r, y=sc] {curve.dat};
+  \addlegendentry{구조 순응도}
+  \addplot[mark=o, black, densely dashed] table[x=r, y=div] {curve.dat};
+  \addlegendentry{표본 다양성}
+\end{axis}
+\end{tikzpicture}
+
+\vspace{2mm}
+
+\begin{tikzpicture}
+\begin{axis}[draft, height=38mm,
+             xlabel={구조 순응도}, ylabel={FID},
+             xmin=-0.03, xmax=0.8, ymin=45, ymax=112,
+             legend pos=north east]
+  \addplot[mark=square*, black] table[x=sc, y=fid] {curve.dat};
+  \addlegendentry{차단 반경 $r$}
+  \addplot[mark=o, black, densely dashed] table[x=sc, y=fid] {scale.dat};
+  \addlegendentry{어댑터 세기}
+\end{axis}
+\end{tikzpicture}
+\caption{\textbf{위:} 차단 반경이 커질수록 구조 순응도는 내려가고 표본 다양성은
+올라간다. \textbf{아래:} 같은 실행들을 구조 순응도/FID 평면에 놓은 것. 조건의 대역폭을
+좁히면 FID가 거의 일정한 채로 축을 이동하고, 어댑터를 약하게 하면 같은 구조 순응도를
+이미지 품질로 지불한다. 두 패널 모두 평가 출력에서 직접 그렸다.}
+\label{fig:curve}
+\end{figure}

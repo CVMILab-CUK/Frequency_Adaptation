@@ -1,0 +1,33 @@
+% Injection-path decomposition. Bars are drawn from paths.dat; the dashed rule
+% marks the all-off control, so every bar is read against what the frozen
+% backbone alone achieves.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[draft, height=44mm,
+  ybar, bar width=7pt,
+  xlabel={}, ylabel={구조 순응도},
+  symbolic x coords={both,skip,attn,off},
+  xtick=data,
+  xticklabels={양쪽, skip만, attn만, 양쪽 끔},
+  x tick label style={font=\scriptsize},
+  ymin=0, ymax=0.78,
+  legend pos=north east,
+  enlarge x limits=0.16,
+  every axis plot/.append style={line width=0.4pt}]
+  \addplot[fill=black!72, draw=black] table[x=label, y=sc0] {paths.dat};
+  \addlegendentry{$r{=}0$}
+  \addplot[fill=black!22, draw=black] table[x=label, y=sc3] {paths.dat};
+  \addlegendentry{$r{=}0.3$}
+  \draw[densely dashed, black!55, line width=0.4pt]
+    (axis cs:both,\pathAllOffZero) -- (axis cs:off,\pathAllOffZero);
+  \node[font=\scriptsize, anchor=south east, inner sep=1pt, yshift=1pt]
+    at (axis cs:off,\pathAllOffZero) {냉동 백본 단독};
+\end{axis}
+\end{tikzpicture}
+\caption{두 주입 경로를 모두 켠 경우, 각각 단독, 그리고 둘 다 끈 경우. skip 잔차가
+구조 신호의 대부분을 나르고, 교차 어텐션 단독으로는 거의 회복하지 못하며, 둘 다 끄면
+냉동 백본으로 떨어진다(FID \pathFidAllOff{}, 양쪽 켰을 때는 \pathFidBoth{}).
+두 경로는 거의 가산적이다.}
+\label{fig:paths}
+\end{figure}

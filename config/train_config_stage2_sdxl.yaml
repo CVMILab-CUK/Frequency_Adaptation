@@ -1,0 +1,87 @@
+
+
+trainer:
+  #Trainer Main Settings
+  ckpt_dir: /workspace/logs/Frequency_Adaptation/ckpt_dir
+  log_dir: ./log_dirs
+  batch_size: 16
+  num_workers: 0
+  learning_rate: 1e-4
+  lr_warmup_steps: 0
+  lr_scheduler: constant
+  total_epoch: 200
+  val_interval: 1000
+  log_interval: 10
+  prompt_idx: 0
+  seed: 2026
+  ema_step: 10
+  snr_gamma: 5.0
+  max_grad_norm: 1.0
+
+  # Trainer 최적화부분
+  deep_speed:
+    train_batch_size: auto
+    train_micro_batch_size_per_gpu: auto
+    gradient_accumulation_steps: auto
+    gradient_clipping: auto
+
+    # 2. ZeRO Optimization (Stage 3 핵심)
+    zero_optimization:
+      stage: 2
+      
+      # [메모리 오프로딩] Stage 2는 파라미터가 GPU에 통째로 있으므로 
+      # Optimizer States만 CPU로 넘겨도 VRAM 확보에 큰 도움이 됩니다.
+      offload_optimizer:
+        device: "none"              # VRAM 부족 시 "cpu"로 변경 (성능 저하 주의)
+      
+      # [통신 최적화] PCIe 국도(PCIe)를 위한 차선 최적화
+      overlap_comm: true                # 연산과 통신(Gradient Reduction) 중첩
+      contiguous_gradients: true        # 버킷 통신 전 그래디언트를 메모리에 정렬
+      reduce_scatter: true              # 그래디언트 합치기 효율화
+      reduce_bucket_size: 2.0e+08       # Stage 2는 Stage 3보다 통신이 적으므로 200MB 권장, 그레디언트 합치기
+      allgather_bucket_size: 2.0e+08    # 200MB 설정, 파라미터 게더링
+      
+      # [고급 기능]
+      round_robin_gradients: true       # 여러 GPU 간 통신 부하 분산
+    # 3. 연산 정밀도 (bf16 - A6000 지원, loss scaling 불필요)
+    bf16:
+      enabled: true
+
+    # 4. 기타 유틸리티 설정
+    steps_per_print: 100                # 로그 출력 주기
+    wall_clock_breakdown: true          # 통신/연산 시간 상세 분석 (PCIe 병목 확인용)
+    dump_state: false                   # 디버깅용 상태 덤프
+
+datasets:
+  data_path: ./config/data/
+  img_path: /workspace/data/FFHQ/ffhq256-images-only/ffhq256/
+  img_size: 1024
+  frequency_rate: random
+  frequency_mode: high_pass
+  frequency_img : gray
+
+optimizer:
+    learning_rate: 1e-4
+    beta1: 0.9
+    beta2: 0.999  
+
+model:
+  name: SAModel
+  model_id: stabilityai/stable-diffusion-xl-base-1.0
+  report_to: tensorboard
+  mixed_precision: bf16
+  cfg_scale: 0.1
+  gradient_accumulation_steps: 4
+  out_seq: 2048
+  revision: null
+  variant: null
+  non_ema_revision: null
+  use_ema: True
+  off_load_ema: False
+  foreach_ema: True
+  
+  sa_adapter:
+    scale: 1.0
+    use_vae: true
+    kernel_size: 3
+    down_mode: conv

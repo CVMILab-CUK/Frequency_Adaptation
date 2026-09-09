@@ -1,0 +1,395 @@
+% Frequency Adaptation -- Eurographics 2027 submission draft.
+% Layout approximates CGF two-column. Before submitting, move the body into the
+% official egPublStyle-cgf submission template (EGauthorGuidelines-cgf-sub.tex)
+% from SRMv2; this file only exists so the draft compiles here.
+\documentclass[10pt,twocolumn,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[margin=2cm,columnsep=6mm]{geometry}
+\usepackage{graphicx,booktabs,amsmath,amssymb,xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parskip}{0pt}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{tikz}
+\usetikzlibrary{positioning,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\pgfplotsset{
+  draft/.style={
+    width=\columnwidth, height=41mm,
+    axis lines=left, axis line style={line width=0.4pt},
+    tick align=outside, tick style={line width=0.4pt, black},
+    ymajorgrids, grid style={black!12, line width=0.3pt},
+    label style={font=\scriptsize}, tick label style={font=\scriptsize},
+    legend style={font=\scriptsize, draw=none, fill=none, cells={anchor=west},
+                  inner sep=1pt},
+    every axis plot/.append style={line width=0.7pt, mark size=1.7pt},
+  }}
+\input{numbers}
+
+\title{\vspace{-1.5em}\bfseries A Frequency Dial for Structure-Conditioned Diffusion}
+\author{Anonymous submission}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+A structure-conditioned diffusion adapter is trained for one operating point.
+Canny edges, a depth map, a sketch: each fixes how tightly the output must
+follow the condition, and moving that trade-off means training again. We train
+a single adapter on conditions whose information content is randomised --- a
+high-pass filter whose cutoff $r$ is drawn per sample --- and read $r$ back at
+test time as a dial. On FFHQ-512, structure consistency runs from
+\scMainZeroFive{} at $r{=}0.05$ to \scMainSevenZero{} at $r{=}0.7$ while
+sample diversity rises from \divMainZeroFive{} to \divMainSevenZero{}, and FID
+stays between \fidMainThreeZero{} and \fidMainOneHundred{} across the whole
+range. Turning the adapter's strength down instead reaches the same structure
+consistency at a cost of up to \fidQuarterScale{} FID against \fidMainFiveZero{}
+for the frequency dial, so the two knobs are not interchangeable.
+
+Two findings came out of building it. The frozen SD VAE destroys a high-pass
+condition before any adapter can read it: only \vaeNativeThreeZero{} of the
+condition survives an encode--decode round trip at $r{=}0.3$ and
+\vaeNativeSevenZero{} at $r{=}0.7$. And placement dominates capacity ---
+residuals on the decoder skip connections carry \pathSkipOnlyZero{} of the
+structure signal against \pathAttnOnlyZero{} for cross-attention injection,
+while quadrupling adapter width buys far less. The adapter trains
+\ourParams{} parameters, \ourParamsRatio{}$\times$ fewer than ControlNet.
+\end{abstract}
+
+\section{Introduction}
+
+ControlNet~\cite{zhang2023adding} and its successors~\cite{mou2023adapter,zhao2023controlnet,qin2023unicontrol,li2024controlnet} solved conditional control and then froze it.
+An adapter trained on Canny edges follows Canny edges; one trained on depth
+follows depth. The strength of that following is a property of the trained
+weights, so an artist who wants the same sketch honoured more loosely has to
+pick a different checkpoint or accept whatever the one they have was trained to
+do.
+
+We change what the condition is rather than how hard the model listens to it.
+The condition is the image after a radial high-pass filter with normalised
+cutoff $r$. At $r{=}0$ the model receives the grayscale image and the task is
+colourisation. As $r$ grows the filter removes more of the spectrum, until at
+$r{=}1$ almost nothing is left: measured on FFHQ, a cutoff of $0.05$ already
+discards 97.5\,\% of the spectral energy. Training draws $r$ per sample, so one
+set of weights sees the whole range, and $r$ becomes an inference-time
+parameter.
+
+Our contributions are:
+
+\begin{itemize}\itemsep2pt
+\item A control dial. One adapter spans structure consistency
+      \scMainZeroFive{} to \scMainSevenZero{} with FID flat between
+      \fidMainThreeZero{} and \fidMainOneHundred{} (Sec.~\ref{sec:dial}).
+\item Evidence that the dial is not a rescaled version of adapter strength.
+      At matched structure consistency the strength knob costs
+      \fidQuarterScale{} FID where the frequency knob costs
+      \fidMainFiveZero{} (Sec.~\ref{sec:strength}).
+\item A measurement of how much of a high-pass condition survives the frozen
+      VAE, which explains why latent-space conditioning fails for sparse
+      structure (Sec.~\ref{sec:vae}).
+\item A controlled comparison of injection sites showing that placement
+      matters more than adapter capacity or receptive field
+      (Sec.~\ref{sec:where}).
+\end{itemize}
+
+\section{Related work}
+
+\paragraph{Conditional control.} Text-to-image diffusion
+\cite{ho2020denoising,song2020denoising,rombach2021high,nichol2021glide,saharia2022photorealistic}
+became spatially controllable with ControlNet~\cite{zhang2023adding}, which
+duplicates the encoder and injects residuals through zero convolutions.
+T2I-Adapter~\cite{mou2023adapter} does the same job with a small feature
+extractor, IP-Adapter~\cite{ye2023adapter} adds decoupled cross-attention for
+image prompts, and GLIGEN~\cite{li2023gligen} grounds generation on boxes.
+Uni-ControlNet~\cite{zhao2023controlnet} and UniControl~\cite{qin2023unicontrol}
+fold many condition types into one model, and
+ControlNet++~\cite{li2024controlnet} closes a consistency loop on the produced
+image. Each of these fixes the condition type and, with it, how tightly the
+output must follow: the operating point is a property of the trained weights.
+Our cutoff moves that point at inference on one set of weights.
+
+\paragraph{Efficient control on transformer backbones.} As backbones moved from
+UNets to diffusion transformers~\cite{peebles2022scalable,esser2024scaling},
+control moved from duplicated encoders to lightweight modules.
+ControlNeXt~\cite{peng2024controlnext} removes the parallel branch,
+OminiControl~\cite{tan2024ominicontrol} reuses the backbone itself as the
+condition processor, and EasyControl~\cite{zhang2025easycontrol} and
+NanoControl~\cite{liu2025nanocontrol} inject conditions through
+LoRA-style~\cite{hu2021lora} modules at a small fraction of the parameter cost.
+Recent work also examines where conditions should enter:
+Laytrol~\cite{huang2025laytrol} on preserving pretrained knowledge under layout
+control, PixelControl~\cite{lin2026pixelcontrol} on condition fidelity, and
+\citet{zhou2026rethinking} on removing redundant attention in multi-condition
+DiTs. Our injection-site comparison (Sec.~\ref{sec:where}) reaches a compatible
+conclusion on a UNet backbone: placement dominates capacity.
+
+\paragraph{Frequency in diffusion.} Frequency decomposition appears in diffusion
+mostly as an intervention on the model's own signals rather than on its
+condition. FreeU~\cite{si2023freeu} rebalances skip and backbone features
+spectrally at no training cost, FreSca~\cite{huang2025fresca} scales frequency
+bands of the noise prediction and, like us, uses an energy-based cutoff,
+DeCo~\cite{ma2025deco} decouples frequencies in pixel-space diffusion, and
+FeRA~\cite{yin2025fera} routes adaptation by frequency energy.
+FOCUS~\cite{tjio2025focus} conditions the reverse process on learned frequency
+priors for test-time adaptation. Closest to us in spirit,
+\citet{prasain2026beyond} condition on wavelet bands instead of edge maps for
+map-to-satellite synthesis. What none of these do is randomise the condition's
+bandwidth during training so that the band becomes a control at inference,
+which is the mechanism we study.
+
+\paragraph{Structure preservation.} StructDiff~\cite{he2026structdiff} targets
+structure-preserving spatially controllable generation, and sketch-conditioned
+pipelines have long used edge maps as the structural carrier. Our condition is
+a continuum rather than a fixed extractor, which is what makes a dial possible.
+
+\paragraph{Training and evaluation.} We train with classifier-free
+guidance~\cite{ho2022classifier} dropout and Min-SNR loss
+weighting~\cite{hang2023efficient}, and evaluate with FID~\cite{heusel2017gans}
+under the clean-FID protocol~\cite{parmar2021aliased},
+LPIPS~\cite{zhang2018unreasonable} and CLIP score~\cite{radford2021learning} on
+FFHQ~\cite{karras2018style} with BLIP~\cite{li2022blip} captions. SDXL and
+SD3~\cite{podell2023sdxl,esser2024scaling} are the natural next backbones.
+
+\section{Method}
+
+\paragraph{Condition.} Given an image $x$, we convert to grayscale, take the
+2D FFT, zero every frequency inside a disc of radius $r \cdot \min(H,W)/2$,
+invert, and min--max normalise to $[0,1]$. The normalisation is deliberate: it
+removes the absolute scale of the filter response, so the model has to infer
+structure density from spatial statistics. That is what lets a hand drawing,
+which has no $r$, be used at test time.
+
+\input{fig_mask}
+
+\paragraph{Condition encoder.} A strided convolutional stem reads the condition
+image directly at $512^2$ and reduces it $8\times$. We do not encode the
+condition with the frozen VAE; Sec.~\ref{sec:vae} shows why.
+
+\paragraph{Injection.} Encoder features enter the UNet in two places. Zero-initialised
+$1{\times}1$ heads produce one residual per decoder skip tensor and one for the
+mid block, added through the UNet's existing ControlNet interface. In parallel,
+each cross-attention site attends over a $3{\times}3$ window of the condition
+features, gated by a zero-initialised per-channel vector. Both paths start as
+exact no-ops: with them switched off the network reproduces stock
+Stable Diffusion~1.5~\cite{rombach2021high} bit for bit, which we assert before every training run.
+
+\input{fig_arch}
+
+\paragraph{Training.} SD1.5~\cite{rombach2021high} stays frozen. We train \ourParams{} parameters on
+\nTrain{} FFHQ-512~\cite{karras2018style} images with BLIP~\cite{li2022blip} captions, batch 32, bf16, 12 epochs, on one
+H200. $r$ is drawn uniformly from $[0,1]$ per sample.
+
+\section{Experiments}
+
+We evaluate on \nTest{} held-out images, 50 sampler steps, CFG 7.5, seed 2026.
+We report FID~\cite{heusel2017gans} with the clean-FID protocol~\cite{parmar2021aliased},
+LPIPS~\cite{zhang2018unreasonable} and CLIP score~\cite{radford2021learning}.
+Structure consistency (SC) re-extracts the condition from the generated image
+at the same cutoff and correlates it with the condition the model was given.
+Feeding the ground truth back gives exactly 1.000 at every $r$; an unrelated
+face gives 0.122 at $r{=}0$ and ${\approx}{-}0.02$ above it.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/dial}
+\caption{One seed, one caption, $r$ swept. Columns: reference, then
+$r = 0,\,0.05,\,0.1,\,0.3,\,0.5,\,0.7,\,1.0$. The background crowd thins out,
+the eyewear drifts from the reference frame, and the clothing colour detaches,
+while identity and pose survive. The reference is never shown to the model.}
+\label{fig:dial}
+\end{figure*}
+
+\subsection{The dial}
+\label{sec:dial}
+
+Table~\ref{tab:main} gives the operating curve. Structure consistency falls
+monotonically from $r{=}0.05$ and sample diversity rises monotonically, which
+is the trade-off the dial is supposed to expose. FID stays between
+\fidMainZero{} and \fidMainOneHundred{} across the entire sweep, so the range is
+usable end to end rather than degrading into noise.
+
+Figure~\ref{fig:dial} holds the seed and the caption fixed and varies only $r$.
+Figure~\ref{fig:curve} plots the curve and, below it, both dials in the same
+structure-consistency/FID plane.
+
+\input{fig_curve}
+
+\begin{table}[t]\centering\small
+\begin{tabular}{lrrrrr}
+\toprule
+$r$ & SC & Diversity & LPIPS & CLIP & FID \\
+\midrule
+0.00 & \scMainZero      & \divMainZero      & \lpipsMainZero      & \clipMainZero      & \fidMainZero \\
+0.05 & \scMainZeroFive  & \divMainZeroFive  & \lpipsMainZeroFive  & \clipMainZeroFive  & \fidMainZeroFive \\
+0.10 & \scMainOneZero   & \divMainOneZero   & \lpipsMainOneZero   & \clipMainOneZero   & \fidMainOneZero \\
+0.20 & \scMainTwoZero   & \divMainTwoZero   & \lpipsMainTwoZero   & \clipMainTwoZero   & \fidMainTwoZero \\
+0.30 & \scMainThreeZero & \divMainThreeZero & \lpipsMainThreeZero & \clipMainThreeZero & \fidMainThreeZero \\
+0.50 & \scMainFiveZero  & \divMainFiveZero  & \lpipsMainFiveZero  & \clipMainFiveZero  & \fidMainFiveZero \\
+0.70 & \scMainSevenZero & \divMainSevenZero & \lpipsMainSevenZero & \clipMainSevenZero & \fidMainSevenZero \\
+1.00 & \scMainOneHundred& \divMainOneHundred& \lpipsMainOneHundred& \clipMainOneHundred& \fidMainOneHundred \\
+\bottomrule
+\end{tabular}
+\caption{Operating curve, \nTest{}-image test split, 500 sampled.}
+\label{tab:main}
+\end{table}
+
+Across seeds 2026, 2027 and 2028 the curve is stable: SC at $r{=}0.05$ is
+\seedMeanZeroFive{}\,$\pm$\,\seedStdZeroFive{} and at $r{=}0.3$ it is
+\seedMeanThreeZero{}\,$\pm$\,\seedStdThreeZero{}.
+
+\subsection{Strength is not the same knob}
+\label{sec:strength}
+
+An obvious alternative is to train on one cutoff and scale the adapter's
+contribution at inference. We tested it on the same checkpoint, holding
+$r{=}0.1$ and scaling both injection paths.
+
+\begin{table}[h]\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Setting & SC & Diversity & FID \\
+\midrule
+scale 0.25          & \scQuarterScale & \divQuarterScale & \fidQuarterScale \\
+scale 0.50          & \scHalfScale    & \divHalfScale    & \fidHalfScale \\
+scale 0.75          & \scThreeQScale  & \divThreeQScale  & \fidThreeQScale \\
+\midrule
+$r{=}0.3$ (ours)    & \scMainThreeZero & \divMainThreeZero & \fidMainThreeZero \\
+$r{=}0.5$ (ours)    & \scMainFiveZero  & \divMainFiveZero  & \fidMainFiveZero \\
+\bottomrule
+\end{tabular}
+\caption{Strength dial against frequency dial. Reading across matched SC:
+scale 0.50 reaches \scHalfScale{} at FID \fidHalfScale{}, while $r{=}0.3$
+reaches \scMainThreeZero{} at FID \fidMainThreeZero{}.}
+\label{tab:strength}
+\end{table}
+
+Weakening the adapter degrades the image; narrowing the condition's bandwidth
+does not. The frequency parameterisation is what makes the trade-off traversable.
+
+\subsection{The VAE eats the condition}
+\label{sec:vae}
+
+\input{fig_vae}
+
+Encoding the condition with the frozen SD VAE, as an IP-Adapter-style~\cite{ye2023adapter} design
+would, loses most of it. Figure~\ref{fig:vae} plots it. Passing the condition through encode--decode and
+re-measuring leaves \vaeNativeOneZero{} at $r{=}0.1$, \vaeNativeThreeZero{} at
+$r{=}0.3$ and \vaeNativeSevenZero{} at $r{=}0.7$. An adapter reading that latent
+cannot recover information the autoencoder has already discarded. Building the
+condition at 256 and upsampling moves the structure to lower absolute frequency
+and preserves far more (\vaeUpThreeZero{} at $r{=}0.3$), which is a data-pipeline
+artefact worth knowing about when comparing against older setups.
+
+\subsection{Where to inject}
+\label{sec:where}
+
+\input{fig_paths}
+
+Starting from the same encoder and training schedule, we varied one field at a
+time (Table~\ref{tab:where}). Skip-connection residuals dominate. Figure~\ref{fig:paths} decomposes them. Ablating them
+away and keeping only cross-attention drops SC at $r{=}0$ from
+\pathBothZero{} to \pathAttnOnlyZero{}; keeping only the skip path retains
+\pathSkipOnlyZero{}. With both paths off the model collapses to
+\pathAllOffZero{} SC and FID \pathFidAllOff{}, which is the control that says
+the adapter is doing the work.
+
+Capacity helps much less: widening the projection to a 128-channel stem raises
+SC at $r{=}0.05$ from \scEaZeroFive{} to \scEcapZeroFive{}, and doubling again
+to 256 reaches only \scEcapbZeroFive{}. A $7{\times}7$ attention window is worse
+than $3{\times}3$ (\scEwinZeroFive{}).
+
+\begin{table}[h]\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Variant & SC $r{=}0.05$ & SC $r{=}0.1$ & FID $r{=}0.1$ \\
+\midrule
+VAE condition, attn only    & \scEbaseZeroFive & \scEbaseOneZero & \fidEbase \\
+\quad + zero-init gate      & \scEgateZeroFive & \scEgateOneZero & \fidEgate \\
+Conv condition encoder      & \scEaZeroFive    & \scEaOneZero    & \fidEa \\
+\quad + 128-ch stem         & \scEcapZeroFive  & \scEcapOneZero  & \fidEcap \\
+\quad + 256-ch stem         & \scEcapbZeroFive & \scEcapbOneZero & \fidEcapb \\
+\quad + $7{\times}7$ window & \scEwinZeroFive  & \scEwinOneZero  & \fidEwin \\
+\quad + skip residuals      & \scMainZeroFive  & \scMainOneZero  & \fidMainOneZero \\
+\bottomrule
+\end{tabular}
+\caption{One field changed per row against the row above it.}
+\label{tab:where}
+\end{table}
+
+\subsection{Against per-cutoff specialists}
+
+We trained four adapters at fixed $r$ and compared each against the single
+randomised-$r$ model at its own cutoff. The result is mixed: the specialist
+wins at $r{=}0.1$ (\specOneZero{} against \scMainOneZero{},
+$z{=}\specZOneZero{}$) and marginally at $r{=}0.7$ ($z{=}\specZSevenZero{}$),
+the single model wins at $r{=}0.3$ (\scMainThreeZero{} against \specThreeZero{},
+$z{=}\specZThreeZero{}$), and $r{=}0.5$ is a tie ($z{=}\specZFiveZero{}$).
+
+One model therefore does not dominate four. What it does instead is give a dial
+the specialists cannot: a model trained at $r{=}0.1$ has never seen $r{=}0.3$,
+so its curve is a single point.
+
+\subsection{Baselines}
+
+Against pretrained ControlNet~\cite{zhang2023adding} on its own condition, over the same test images
+and captions: ControlNet-Canny reaches Edge-F1 \baseCannyEdge{}, LPIPS
+\baseCannyLpips{}, FID \baseCannyFid{} with \baseParams{} trainable parameters;
+ControlNet-HED reaches \baseHedEdge{} / \baseHedLpips{} / \baseHedFid{}. At
+$r{=}0.1$ our adapter reaches Edge-F1 \edgeMainOneZero{}, LPIPS
+\lpipsMainOneZero{} and FID \fidMainOneZero{} with \ourParams{} parameters.
+The conditions differ --- Canny edges against a frequency band --- so this is a
+comparison of operating points, not a like-for-like control.
+
+\subsection{Hand-drawn sketches}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/sketch}
+\caption{Hand-drawn face sketches (odd columns) and what the model makes of
+them (even columns), zero-shot. The drawings carry no cutoff; the model has to
+read structure density off the drawing itself, which the per-image min--max
+normalisation of the condition is what permits.}
+\label{fig:sketch}
+\end{figure}
+
+
+Figure~\ref{fig:sketch} shows the transfer. On \sketchFaceN{} real face
+drawings the model was never trained on, structure
+consistency against the input drawing is \sketchFaceSC{} and CLIP score is
+\sketchFaceClip{}. FID is not reported: \sketchFaceN{} images is too few for a
+stable estimate, and our evaluator refuses rather than print one.
+
+\section{Limitations}
+
+The useful range is roughly $r \in [0, 0.3]$. Above it the condition retains
+little energy --- 0.0014 of the spectrum at $r{=}0.5$ --- and structure
+consistency becomes hard to interpret, since two nearly empty signals correlate
+near zero whatever the model does.
+
+Everything here is one domain (FFHQ faces) and one backbone (SD1.5). Current
+structure-control work has moved to DiT backbones~\cite{peebles2022scalable,esser2024scaling}, where
+LoRA-style~\cite{hu2021lora} adapters~\cite{tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}
+report control at a fraction of our parameter count; our efficiency numbers
+should be read against ControlNet, not against that line.
+
+The specialist comparison is honest but unflattering at $r{=}0.1$, and we have
+not run a user study.
+
+\section{Conclusion}
+
+Randomising the bandwidth of a structure condition during training turns the
+cutoff into an inference-time control, and that control is not reproducible by
+scaling the adapter down. Getting there required fixing where the condition
+enters the network and keeping it out of the frozen autoencoder; both of those
+findings transfer to other conditioning designs regardless of what the dial is
+used for.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\end{document}

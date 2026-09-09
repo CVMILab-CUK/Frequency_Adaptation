@@ -1,0 +1,98 @@
+
+
+trainer:
+  #Trainer Main Settings
+  ckpt_dir: /workspace/logs/Frequency_Adaptation/ckpt_dir
+  log_dir: /root/jeyoung/Frequency_Adaptation/log_dirs
+  batch_size: 8
+  num_workers: 4
+  learning_rate: 1e-4
+  learning_rate_warmpup: 0
+  total_epoch: 200
+  val_interval: 1
+  log_interval: 100
+  prompt_idx: 0
+  seed: 2026
+  ema_step: 10
+  snr_gamma: 5.0
+
+  # Trainer 최적화부분
+  deep_speed:
+    train_batch_size: auto
+    train_micro_batch_size_per_gpu: auto
+    gradient_accumulation_steps: auto
+    gradient_clipping: auto
+
+    # 2. ZeRO Optimization (Stage 3 핵심)
+    zero_optimization:
+      stage: 3
+      
+      # [메모리 최적화] GPU 메모리가 극도로 부족할 때만 "cpu"로 변경
+      offload_param:
+        device: "none"
+      offload_optimizer:
+        device: "none"
+
+      # [통신 최적화] PCIe 환경 병목 완화 (100MB 큐 설정)
+      overlap_comm: true                # 연산과 통신을 중첩시켜 PCIe 지연 감춤
+      contiguous_gradients: true        # 그래디언트를 메모리에 연속 배치하여 통신 효율 증대
+      reduce_bucket_size: 1.0e+08       # 한 번에 합칠 데이터 덩어리 (작게 설정하여 지연 감소)
+      allgather_bucket_size: 1.0e+08    # 한 번에 모을 데이터 덩어리 (작게 설정하여 지연 감소)
+
+      # [Stage 3 전용 고급 파라미터]
+      stage3_prefetch_bucket_size: 1.0e+08  # 다음에 쓸 파라미터를 미리 가져오는 크기
+      stage3_param_persistence_threshold: 1.0e+05 # 이 크기보다 작은 파라미터는 GPU에 계속 유지하여 통신 절약
+      stage3_max_live_parameters: 1.0e+09   # 한 번에 GPU에 활성화될 최대 파라미터 수
+      stage3_max_reuse_distance: 1.0e+09    # 파라미터 재사용 거리 최적화
+      
+      # [모델 저장] 훈련 종료 후/체크포인트 저장 시 조각난 가중치를 16bit로 모아서 저장 (필수)
+      stage3_gather_16bit_weights_on_model_save: true
+
+    # 3. 연산 정밀도 및 Loss Scaling (엄밀한 버전)
+    fp16:
+      enabled: true
+      auto_cast: true                   # FP16 연산 자동 적용
+      loss_scale: 0                     # Dynamic Loss Scaling 활성화 (0 = Auto)
+      initial_scale_power: 16           # 초기 스케일 (2^16). 너무 크면 시작부터 NaN 발생 가능
+      loss_scale_window: 1000           # 1000 step 동안 안정적이면 스케일 업
+      hysteresis: 2                     # Overflow 발생 시 스케일을 줄이는 속도 조절
+      min_loss_scale: 1                 # 스케일 하한선
+
+    # 4. 기타 유틸리티 설정
+    steps_per_print: 100                # 로그 출력 주기
+    wall_clock_breakdown: true          # 통신/연산 시간 상세 분석 (PCIe 병목 확인용)
+    dump_state: false                   # 디버깅용 상태 덤프
+
+datasets:
+  data_path: ./config/data/
+  img_path: /workspace/data/FFHQ/ffhq256-images-only/ffhq256/
+  img_size: 256
+  frequency_rate: random
+  frequency_mode: high_pass
+  frequency_img : gray
+
+optimizer:
+    learning_rate: 1e-4
+    beta1: 0.9
+    beta2: 0.999  
+
+model:
+  name: SAModel
+  model_id: stable-diffusion-v1-5/stable-diffusion-v1-5
+  report_to: tensorboard
+  mixed_precision: fp16
+  cfg_scale: 0.1
+  gradient_accumulation_steps: 4
+  out_seq: 768
+  revision: None
+  variant: None
+  non_ema_revision: None
+  use_ema: True
+  off_load_ema: False
+  foreach_ema: True
+  
+  sa_adapter:
+    scale: 1.0
+    use_vae: true
+    kernel_size: 3
+    down_mode: avg

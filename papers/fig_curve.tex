@@ -1,0 +1,38 @@
+% Operating curves. Both panels read curve.dat / scale.dat, which
+% scripts/paper_numbers.py writes out of results/, so a plotted point cannot
+% drift from the run that produced it. Drafted to match the text: hairline
+% axes, no boxes, no fills, marks a reader can count.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[draft, xlabel={cutoff $r$}, ylabel={},
+             xmin=-0.03, xmax=1.03, ymin=0, ymax=0.8,
+             legend pos=north east]
+  \addplot[mark=square*, black] table[x=r, y=sc] {curve.dat};
+  \addlegendentry{structure consistency}
+  \addplot[mark=o, black, densely dashed] table[x=r, y=div] {curve.dat};
+  \addlegendentry{sample diversity}
+\end{axis}
+\end{tikzpicture}
+
+\vspace{2mm}
+
+\begin{tikzpicture}
+\begin{axis}[draft, height=38mm,
+             xlabel={structure consistency}, ylabel={FID},
+             xmin=-0.03, xmax=0.8, ymin=45, ymax=112,
+             legend pos=north east]
+  \addplot[mark=square*, black] table[x=sc, y=fid] {curve.dat};
+  \addlegendentry{cutoff $r$}
+  \addplot[mark=o, black, densely dashed] table[x=sc, y=fid] {scale.dat};
+  \addlegendentry{adapter strength}
+\end{axis}
+\end{tikzpicture}
+\caption{\textbf{Top:} structure consistency falls and sample diversity rises
+as the cutoff grows. \textbf{Bottom:} the same runs in the structure-consistency
+/ FID plane. Narrowing the condition's bandwidth traverses the axis at nearly
+constant FID; weakening the adapter buys the same structure consistency by
+degrading the image. Both panels are plotted directly from the evaluation
+outputs.}
+\label{fig:curve}
+\end{figure}

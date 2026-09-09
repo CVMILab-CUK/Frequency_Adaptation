@@ -1,1 +1,44 @@
+# --- editors / python ---
 .vscode
+.idea
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+
+# --- agent + tooling state, not part of the project ---
+.omc/
+.claude/
+
+# --- training artefacts: large, regenerable, and machine-specific ---
+ckpt_dir/
+log/
+log_dirs/
+output/
+# results/: keep the JSON and the raw per-sample arrays are dropped; the
+# generated images are hundreds of MB and eval/run_eval.py regenerates them.
+results/**/*.png
+results/**/*.npz
+results/figures/
+
+# --- datasets and caches live outside the repo ---
+config/data/
+config/data_smoke/
+config/data_overfit/
+
+# --- LaTeX build products (the PDFs are committed, the intermediates are not) ---
+papers/*.aux
+papers/*.bbl
+papers/*.blg
+papers/*.log
+papers/*.out
+papers/*.toc
+
+# --- misc ---
+*.db
+*.sqlite3
+*.h5
+*.npy
+*.ckpt
+*.pth

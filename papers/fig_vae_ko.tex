@@ -1,0 +1,21 @@
+% How much of the condition survives the frozen VAE. Plotted from vae.dat,
+% written by scripts out of results/. Same drafting as the other plots.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[draft, height=42mm,
+  xlabel={차단 반경 $r$}, ylabel={조건 잔존율},
+  xmin=-0.03, xmax=1.03, ymin=0, ymax=1.05,
+  legend pos=north east]
+  \addplot[mark=square*, black] table[x=r, y=native] {vae.dat};
+  \addlegendentry{512에서 생성}
+  \addplot[mark=o, black, densely dashed] table[x=r, y=up256] {vae.dat};
+  \addlegendentry{256에서 생성 후 확대}
+\end{axis}
+\end{tikzpicture}
+\caption{오토인코더에 넣은 조건과, 인코딩--디코딩 왕복 후 다시 추출한 조건 사이의
+상관, 24장. $r{\approx}0.5$ 위에서는 조건이 사실상 사라지므로 VAE 잠재를 읽는 어댑터는
+이를 복구할 수 없다. 조건을 256에서 만들어 확대하면 구조가 더 낮은 절대 주파수에 놓여
+훨씬 많이 보존되며, 예전 파이프라인과 비교할 때 소스 해상도를 명시해야 하는 이유다.}
+\label{fig:vae}
+\end{figure}

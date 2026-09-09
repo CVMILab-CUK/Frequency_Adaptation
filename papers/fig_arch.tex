@@ -1,0 +1,85 @@
+% Architecture schematic. Drafted, not illustrated: one stroke weight for data
+% flow, a heavier one for trained parts, flat tint for the frozen backbone,
+% square corners, no shadows. The U places the skip tensors where the residuals
+% actually land.
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small, >=latex, line width=0.4pt,
+  blk/.style   ={draw, minimum height=6.5mm, minimum width=14mm, inner xsep=2pt, align=center},
+  frozen/.style={blk, fill=black!4, draw=black!50},
+  train/.style ={blk, line width=0.9pt},
+  lbl/.style   ={font=\scriptsize, inner sep=1.5pt},
+  flow/.style  ={->, line width=0.4pt},
+  inj/.style   ={->, line width=0.9pt},
+  skip/.style  ={densely dashed, line width=0.35pt},
+  sum/.style   ={draw, circle, inner sep=0pt, minimum size=3.2mm, line width=0.9pt},
+]
+
+% ================= condition construction =================
+\node[blk] (img)  at (0,0.9) {image $x$};
+\node[blk] (gray) at (2.1,0.9) {gray};
+\node[blk] (fft)  at (4.0,0.9) {FFT};
+\node[draw, circle, minimum size=7mm, inner sep=0pt] (mask) at (5.8,0.9) {};
+\fill[black!14] (mask.center) circle (1.7mm);
+\node[blk] (ifft) at (7.7,0.9) {IFFT};
+\node[blk] (norm) at (9.8,0.9) {min--max};
+\node[train] (enc) at (12.4,0.9) {conv encoder};
+\foreach \a/\b in {img/gray, gray/fft, fft/mask, mask/ifft, ifft/norm, norm/enc}
+  \draw[flow] (\a) -- (\b);
+\node[lbl, below=0.8mm of mask, align=center] {cut radius $r$};
+\node[lbl, below left=0.8mm and -6mm of enc, align=right] {reads the image,\\not a VAE latent};
+
+% ================= frozen UNet, drawn as a U =================
+\node[frozen] (e64) at (2.0,-0.9) {enc 64};
+\node[frozen] (e32) at (2.0,-2.1) {enc 32};
+\node[frozen] (e16) at (2.0,-3.3) {enc 16};
+\node[frozen] (mid) at (5.0,-4.3) {mid 8};
+\node[frozen] (d16) at (8.0,-3.3) {dec 16};
+\node[frozen] (d32) at (8.0,-2.1) {dec 32};
+\node[frozen] (d64) at (8.0,-0.9) {dec 64};
+\foreach \a/\b in {e64/e32, e32/e16} \draw[flow] (\a) -- (\b);
+\draw[flow] (e16) |- (mid);
+\draw[flow] (mid) -| (d16);
+\foreach \a/\b in {d16/d32, d32/d64} \draw[flow] (\a) -- (\b);
+\node[lbl, left=1mm of e64, align=right] {frozen\\SD1.5};
+
+% skip tensors, with the summing junction the residual lands on
+\foreach \lv/\y in {64/-0.9, 32/-2.1, 16/-3.3}{
+  \node[sum] (s\lv) at (5.0,\y) {\tiny$+$};
+  \draw[skip] (e\lv) -- (s\lv);
+  \draw[skip, ->] (s\lv) -- (d\lv);
+}
+\node[sum] (smid) at (6.5,-4.3) {\tiny$+$};
+
+% ================= injection path 1: skip residuals =================
+% one trunk down the right margin, tapped where nothing else runs
+\draw[line width=0.9pt] (enc.south) -- (12.4,-6.0);
+\draw[line width=0.9pt] (12.4,-0.15) -- (5.0,-0.15);
+\foreach \n in {s64,s32,s16}{ \draw[inj] (5.0,-0.15) -- (\n.north); }
+\draw[line width=0.9pt] (5.0,-0.15) -- (5.0,-3.3);
+\draw[inj] (12.4,-4.3) -- (smid.east);
+\node[lbl, right=1mm] at (12.5,-1.9) {\begin{minipage}{25mm}\raggedright
+  zero-init $1{\times}1$ head per skip tensor\\[1pt]
+  \emph{\pathSkipOnlyZero{} of the signal}\end{minipage}};
+
+% ================= injection path 2: window attention =================
+\node[train, minimum width=42mm] (attn) at (5.0,-6.0)
+  {$3{\times}3$ window attention, 16 cross-attn sites};
+\draw[inj] (12.4,-6.0) -- (attn.east);
+\draw[inj] (attn.north) -- (mid.south);
+\node[lbl, below=0.8mm of attn] {\emph{\pathAttnOnlyZero{} of the signal}};
+
+\node[frozen, minimum width=16mm] (clip) at (0.5,-6.0) {CLIP text};
+\draw[flow] (clip) -- (attn.west);
+
+\end{tikzpicture}
+\caption{Condition construction (top) and the two injection paths. A disc of
+radius $r$ is masked out of the spectrum; a trainable convolutional encoder
+reads the result at full resolution. Heavy strokes are trained
+(\ourParams{} parameters), tinted blocks are frozen, and $\oplus$ marks where a
+zero-initialised residual is added to a skip tensor. With both paths off the
+network reproduces stock SD1.5 exactly. The skip path carries most of the
+structure signal; Sec.~\ref{sec:where} measures the split.}
+\label{fig:arch}
+\end{figure*}

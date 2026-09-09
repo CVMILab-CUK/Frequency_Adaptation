@@ -1,0 +1,19 @@
+% What the dial actually does, from radial_mask_numpy / high_pass_numpy in the
+% repository, so the picture and the method cannot diverge.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/mask}
+\caption{The dial, from the frequency side. Columns are
+$r = 0,\,0.05,\,0.1,\,0.2,\,0.3,\,0.5,\,0.7,\,1.0$. \textbf{Row 1:} the radial
+mask; black is removed. \textbf{Row 2:} the log-magnitude spectrum after
+masking, with the hole growing outward. \textbf{Row 3:} the resulting
+condition, exactly as the model receives it. \textbf{Row 4:} the same data
+displayed at $\pm2\sigma$ so that the residual content is visible.
+Above $r{\approx}0.2$ the condition looks like flat grey --- its standard
+deviation falls from 0.196 at $r{=}0$ to 0.041 at $r{=}1$ --- yet the face
+outline survives in row 4, and the model still reaches
+SC \scMainTwoZero{} at $r{=}0.2$. Low contrast is not the same as no
+information, which is what the per-image normalisation forces the model to
+learn.}
+\label{fig:mask}
+\end{figure*}

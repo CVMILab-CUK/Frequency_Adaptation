@@ -1,0 +1,34 @@
+% Injection-path decomposition. Bars are drawn from paths.dat; the dashed rule
+% marks the all-off control, so every bar is read against what the frozen
+% backbone alone achieves.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[draft, height=44mm,
+  ybar, bar width=7pt,
+  xlabel={}, ylabel={structure consistency},
+  symbolic x coords={both,skip,attn,off},
+  xtick=data,
+  xticklabels={both paths, skip only, attn only, both off},
+  x tick label style={font=\scriptsize},
+  ymin=0, ymax=0.78,
+  legend pos=north east,
+  enlarge x limits=0.16,
+  every axis plot/.append style={line width=0.4pt}]
+  \addplot[fill=black!72, draw=black] table[x=label, y=sc0] {paths.dat};
+  \addlegendentry{$r{=}0$}
+  \addplot[fill=black!22, draw=black] table[x=label, y=sc3] {paths.dat};
+  \addlegendentry{$r{=}0.3$}
+  \draw[densely dashed, black!55, line width=0.4pt]
+    (axis cs:both,\pathAllOffZero) -- (axis cs:off,\pathAllOffZero);
+  \node[font=\scriptsize, anchor=south east, inner sep=1pt, yshift=1pt]
+    at (axis cs:off,\pathAllOffZero) {frozen backbone alone};
+\end{axis}
+\end{tikzpicture}
+\caption{Both injection paths on, then each alone, then neither. The skip
+residuals carry most of the structure signal; cross-attention alone recovers
+little of it, and with both off the model falls to the frozen backbone
+(FID \pathFidAllOff{} against \pathFidBoth{} with both paths on). The two paths
+are close to additive.}
+\label{fig:paths}
+\end{figure}

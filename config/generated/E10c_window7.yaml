@@ -1,0 +1,56 @@
+trainer:
+  ckpt_dir: /home/work/model/Frequency_Adaptation/ckpt_dir
+  log_dir: /home/work/model/Frequency_Adaptation/log_dirs
+  batch_size: 32
+  num_workers: 10
+  learning_rate: 0.0001
+  lr_warmup_steps: 500
+  lr_scheduler: cosine
+  total_epoch: 12
+  val_interval: 2000
+  log_interval: 50
+  seed: 2026
+  ema_step: 10
+  snr_gamma: 5.0
+  max_grad_norm: 1.0
+  use_deepspeed: false
+  gradient_checkpointing: false
+datasets:
+  data_path: ./config/data/
+  img_path: /home/work/data/ffhq512/images/
+  caption_path: /home/work/data/ffhq512/captions.jsonl
+  img_size: 512
+  frequency_rate: random
+  rate_range:
+  - 0.0
+  - 1.0
+  frequency_mode: high_pass
+  frequency_img: gray
+optimizer:
+  learning_rate: 0.0001
+  beta1: 0.9
+  beta2: 0.999
+model:
+  name: E10c_window7
+  model_id: stable-diffusion-v1-5/stable-diffusion-v1-5
+  report_to: tensorboard
+  mixed_precision: bf16
+  cfg_scale: 0.1
+  cond_dropout: 0.05
+  gradient_accumulation_steps: 1
+  revision: null
+  variant: null
+  non_ema_revision: null
+  use_ema: true
+  off_load_ema: false
+  foreach_ema: true
+  sa_adapter:
+    scale: 1.0
+    use_vae: true
+    kernel_size: 7
+    down_mode: conv
+    stem_channels: 0
+    zero_init_gate: true
+    cond_encoder: conv
+    cond_channels: 4
+    cond_base: 32

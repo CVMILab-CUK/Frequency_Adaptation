@@ -1,0 +1,40 @@
+{
+  "provenance": {
+    "baseline": "controlnet_canny",
+    "repo": "lllyasviel/sd-controlnet-canny",
+    "cond_regime": "native",
+    "controlnet_params": 361279120,
+    "n_images": 500,
+    "steps": 50,
+    "cfg_scale": 7.5,
+    "seed": 2026,
+    "resolution": 512,
+    "gpu": "NVIDIA H200",
+    "timestamp": "2026-09-07 18:25:40",
+    "note": "baselines run on their native condition"
+  },
+  "per_setting": {
+    "native": {
+      "SC": null,
+      "EdgeF1": {
+        "mean": 0.6854313114873983,
+        "std": 0.11532741006357898,
+        "sem": 0.005157598571423118,
+        "n": 500
+      },
+      "LPIPS": {
+        "mean": 0.5293833017349243,
+        "std": 0.0696127861738205,
+        "sem": 0.003113178439756402,
+        "n": 500
+      },
+      "CLIP": {
+        "mean": 30.33746910095215,
+        "std": 2.99763560295105,
+        "sem": 0.13405833959944233,
+        "n": 500
+      },
+      "FID": 71.91785939789628
+    }
+  }
+}

@@ -1,0 +1,23 @@
+% How much of the condition survives the frozen VAE. Plotted from vae.dat,
+% written by scripts out of results/. Same drafting as the other plots.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[draft, height=42mm,
+  xlabel={cutoff $r$}, ylabel={condition retained},
+  xmin=-0.03, xmax=1.03, ymin=0, ymax=1.05,
+  legend pos=north east]
+  \addplot[mark=square*, black] table[x=r, y=native] {vae.dat};
+  \addlegendentry{condition built at 512}
+  \addplot[mark=o, black, densely dashed] table[x=r, y=up256] {vae.dat};
+  \addlegendentry{built at 256, upsampled}
+\end{axis}
+\end{tikzpicture}
+\caption{Correlation between the condition fed to the autoencoder and the same
+condition re-extracted after an encode--decode round trip, 24 images. Above
+$r{\approx}0.5$ the condition is effectively gone, so an adapter reading the VAE
+latent cannot recover it. Building the condition at 256 and upsampling puts the
+structure at lower absolute frequency and preserves far more, which is why
+comparisons against older pipelines need the source resolution stated.}
+\label{fig:vae}
+\end{figure}

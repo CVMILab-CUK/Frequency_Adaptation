@@ -1,0 +1,268 @@
+{
+ "heusel2017gans": {
+  "id": "1706.08500",
+  "title": "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium",
+  "url": "https://arxiv.org/abs/1706.08500",
+  "year": "2017",
+  "first_author": "Martin Heusel"
+ },
+ "zhang2018unreasonable": {
+  "id": "1801.03924",
+  "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+  "url": "https://arxiv.org/abs/1801.03924",
+  "year": "2018",
+  "first_author": "Richard Zhang"
+ },
+ "karras2018style": {
+  "id": "1812.04948",
+  "title": "A Style-Based Generator Architecture for Generative Adversarial Networks",
+  "url": "https://arxiv.org/abs/1812.04948",
+  "year": "2018",
+  "first_author": "Tero Karras"
+ },
+ "ho2020denoising": {
+  "id": "2006.11239",
+  "title": "Denoising Diffusion Probabilistic Models",
+  "url": "https://arxiv.org/abs/2006.11239",
+  "year": "2020",
+  "first_author": "Jonathan Ho"
+ },
+ "song2020denoising": {
+  "id": "2010.02502",
+  "title": "Denoising Diffusion Implicit Models",
+  "url": "https://arxiv.org/abs/2010.02502",
+  "year": "2020",
+  "first_author": "Jiaming Song"
+ },
+ "radford2021learning": {
+  "id": "2103.00020",
+  "title": "Learning Transferable Visual Models From Natural Language Supervision",
+  "url": "https://arxiv.org/abs/2103.00020",
+  "year": "2021",
+  "first_author": "Alec Radford"
+ },
+ "parmar2021aliased": {
+  "id": "2104.11222",
+  "title": "On Aliased Resizing and Surprising Subtleties in GAN Evaluation",
+  "url": "https://arxiv.org/abs/2104.11222",
+  "year": "2021",
+  "first_author": "Gaurav Parmar"
+ },
+ "hu2021lora": {
+  "id": "2106.09685",
+  "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+  "url": "https://arxiv.org/abs/2106.09685",
+  "year": "2021",
+  "first_author": "Edward J. Hu"
+ },
+ "nichol2021glide": {
+  "id": "2112.10741",
+  "title": "GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models",
+  "url": "https://arxiv.org/abs/2112.10741",
+  "year": "2021",
+  "first_author": "Alex Nichol"
+ },
+ "rombach2021high": {
+  "id": "2112.10752",
+  "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+  "url": "https://arxiv.org/abs/2112.10752",
+  "year": "2021",
+  "first_author": "Robin Rombach"
+ },
+ "li2022blip": {
+  "id": "2201.12086",
+  "title": "BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation",
+  "url": "https://arxiv.org/abs/2201.12086",
+  "year": "2022",
+  "first_author": "Junnan Li"
+ },
+ "saharia2022photorealistic": {
+  "id": "2205.11487",
+  "title": "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+  "url": "https://arxiv.org/abs/2205.11487",
+  "year": "2022",
+  "first_author": "Chitwan Saharia"
+ },
+ "ho2022classifier": {
+  "id": "2207.12598",
+  "title": "Classifier-Free Diffusion Guidance",
+  "url": "https://arxiv.org/abs/2207.12598",
+  "year": "2022",
+  "first_author": "Jonathan Ho"
+ },
+ "peebles2022scalable": {
+  "id": "2212.09748",
+  "title": "Scalable Diffusion Models with Transformers",
+  "url": "https://arxiv.org/abs/2212.09748",
+  "year": "2022",
+  "first_author": "William Peebles"
+ },
+ "li2023gligen": {
+  "id": "2301.07093",
+  "title": "GLIGEN: Open-Set Grounded Text-to-Image Generation",
+  "url": "https://arxiv.org/abs/2301.07093",
+  "year": "2023",
+  "first_author": "Yuheng Li"
+ },
+ "zhang2023adding": {
+  "id": "2302.05543",
+  "title": "Adding Conditional Control to Text-to-Image Diffusion Models",
+  "url": "https://arxiv.org/abs/2302.05543",
+  "year": "2023",
+  "first_author": "Lvmin Zhang"
+ },
+ "mou2023adapter": {
+  "id": "2302.08453",
+  "title": "T2I-Adapter: Learning Adapters to Dig out More Controllable Ability for Text-to-Image Diffusion Models",
+  "url": "https://arxiv.org/abs/2302.08453",
+  "year": "2023",
+  "first_author": "Chong Mou"
+ },
+ "hang2023efficient": {
+  "id": "2303.09556",
+  "title": "Efficient Diffusion Training via Min-SNR Weighting Strategy",
+  "url": "https://arxiv.org/abs/2303.09556",
+  "year": "2023",
+  "first_author": "Tiankai Hang"
+ },
+ "qin2023unicontrol": {
+  "id": "2305.11147",
+  "title": "UniControl: A Unified Diffusion Model for Controllable Visual Generation In the Wild",
+  "url": "https://arxiv.org/abs/2305.11147",
+  "year": "2023",
+  "first_author": "Can Qin"
+ },
+ "zhao2023controlnet": {
+  "id": "2305.16322",
+  "title": "Uni-ControlNet: All-in-One Control to Text-to-Image Diffusion Models",
+  "url": "https://arxiv.org/abs/2305.16322",
+  "year": "2023",
+  "first_author": "Shihao Zhao"
+ },
+ "podell2023sdxl": {
+  "id": "2307.01952",
+  "title": "SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis",
+  "url": "https://arxiv.org/abs/2307.01952",
+  "year": "2023",
+  "first_author": "Dustin Podell"
+ },
+ "ye2023adapter": {
+  "id": "2308.06721",
+  "title": "IP-Adapter: Text Compatible Image Prompt Adapter for Text-to-Image Diffusion Models",
+  "url": "https://arxiv.org/abs/2308.06721",
+  "year": "2023",
+  "first_author": "Hu Ye"
+ },
+ "si2023freeu": {
+  "id": "2309.11497",
+  "title": "FreeU: Free Lunch in Diffusion U-Net",
+  "url": "https://arxiv.org/abs/2309.11497",
+  "year": "2023",
+  "first_author": "Chenyang Si"
+ },
+ "esser2024scaling": {
+  "id": "2403.03206",
+  "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+  "url": "https://arxiv.org/abs/2403.03206",
+  "year": "2024",
+  "first_author": "Patrick Esser"
+ },
+ "li2024controlnet": {
+  "id": "2404.07987",
+  "title": "ControlNet++: Improving Conditional Controls with Efficient Consistency Feedback",
+  "url": "https://arxiv.org/abs/2404.07987",
+  "year": "2024",
+  "first_author": "Ming Li"
+ },
+ "peng2024controlnext": {
+  "id": "2408.06070",
+  "title": "ControlNeXt: Powerful and Efficient Control for Image and Video Generation",
+  "url": "https://arxiv.org/abs/2408.06070",
+  "year": "2024",
+  "first_author": "Bohao Peng"
+ },
+ "tan2024ominicontrol": {
+  "id": "2411.15098",
+  "title": "OminiControl: Minimal and Universal Control for Diffusion Transformer",
+  "url": "https://arxiv.org/abs/2411.15098",
+  "year": "2024",
+  "first_author": "Zhenxiong Tan"
+ },
+ "zhang2025easycontrol": {
+  "id": "2503.07027",
+  "title": "EasyControl: Adding Efficient and Flexible Control for Diffusion Transformer",
+  "url": "https://arxiv.org/abs/2503.07027",
+  "year": "2025",
+  "first_author": "Yuxuan Zhang"
+ },
+ "huang2025fresca": {
+  "id": "2504.02154",
+  "title": "FreSca: Scaling in Frequency Space Enhances Diffusion Models",
+  "url": "https://arxiv.org/abs/2504.02154",
+  "year": "2025",
+  "first_author": "Chao Huang"
+ },
+ "liu2025nanocontrol": {
+  "id": "2508.10424",
+  "title": "NanoControl: A Lightweight Framework for Precise and Efficient Control in Diffusion Transformer",
+  "url": "https://arxiv.org/abs/2508.10424",
+  "year": "2025",
+  "first_author": "Shanyuan Liu"
+ },
+ "tjio2025focus": {
+  "id": "2508.14437",
+  "title": "FOCUS: Frequency-Optimized Conditioning of DiffUSion Models for mitigating catastrophic forgetting during Test-Time Adaptation",
+  "url": "https://arxiv.org/abs/2508.14437",
+  "year": "2025",
+  "first_author": "Gabriel Tjio"
+ },
+ "huang2025laytrol": {
+  "id": "2511.07934",
+  "title": "Laytrol: Preserving Pretrained Knowledge in Layout Control for Multimodal Diffusion Transformers",
+  "url": "https://arxiv.org/abs/2511.07934",
+  "year": "2025",
+  "first_author": "Sida Huang"
+ },
+ "yin2025fera": {
+  "id": "2511.17979",
+  "title": "FeRA: Frequency-Energy Constrained Routing for Effective Diffusion Adaptation Fine-Tuning",
+  "url": "https://arxiv.org/abs/2511.17979",
+  "year": "2025",
+  "first_author": "Bo Yin"
+ },
+ "ma2025deco": {
+  "id": "2511.19365",
+  "title": "DeCo: Frequency-Decoupled Pixel Diffusion for End-to-End Image Generation",
+  "url": "https://arxiv.org/abs/2511.19365",
+  "year": "2025",
+  "first_author": "Zehong Ma"
+ },
+ "zhou2026rethinking": {
+  "id": "2602.06850",
+  "title": "Rethinking Multi-Condition DiTs: Eliminating Redundant Attention via Position-Alignment and Keyword-Scoping",
+  "url": "https://arxiv.org/abs/2602.06850",
+  "year": "2026",
+  "first_author": "Chao Zhou"
+ },
+ "he2026structdiff": {
+  "id": "2604.12575",
+  "title": "StructDiff: A Structure-Preserving and Spatially Controllable Diffusion Model for Single-Image Generation",
+  "url": "https://arxiv.org/abs/2604.12575",
+  "year": "2026",
+  "first_author": "Yinxi He"
+ },
+ "prasain2026beyond": {
+  "id": "2608.00083",
+  "title": "Beyond Edge Maps: Wavelet-Domain Conditioning for Multi-Adapter Map-to-Satellite Diffusion",
+  "url": "https://arxiv.org/abs/2608.00083",
+  "year": "2026",
+  "first_author": "Arisha Prasain"
+ },
+ "lin2026pixelcontrol": {
+  "id": "2608.15705",
+  "title": "PixelControl: Fine-Grained Condition Fidelity in Text-to-Image Diffusion",
+  "url": "https://arxiv.org/abs/2608.15705",
+  "year": "2026",
+  "first_author": "Xin Lin"
+ }
+}

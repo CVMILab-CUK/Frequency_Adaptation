@@ -1,0 +1,83 @@
+% Architecture schematic. Drafted, not illustrated: one stroke weight for data
+% flow, a heavier one for trained parts, flat tint for the frozen backbone,
+% square corners, no shadows. The U places the skip tensors where the residuals
+% actually land.
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small, >=latex, line width=0.4pt,
+  blk/.style   ={draw, minimum height=6.5mm, minimum width=14mm, inner xsep=2pt, align=center},
+  frozen/.style={blk, fill=black!4, draw=black!50},
+  train/.style ={blk, line width=0.9pt},
+  lbl/.style   ={font=\scriptsize, inner sep=1.5pt},
+  flow/.style  ={->, line width=0.4pt},
+  inj/.style   ={->, line width=0.9pt},
+  skip/.style  ={densely dashed, line width=0.35pt},
+  sum/.style   ={draw, circle, inner sep=0pt, minimum size=3.2mm, line width=0.9pt},
+]
+
+% ================= condition construction =================
+\node[blk] (img)  at (0,0.9) {이미지 $x$};
+\node[blk] (gray) at (2.1,0.9) {회색조};
+\node[blk] (fft)  at (4.0,0.9) {FFT};
+\node[draw, circle, minimum size=7mm, inner sep=0pt] (mask) at (5.8,0.9) {};
+\fill[black!14] (mask.center) circle (1.7mm);
+\node[blk] (ifft) at (7.7,0.9) {IFFT};
+\node[blk] (norm) at (9.8,0.9) {최소--최대};
+\node[train] (enc) at (12.4,0.9) {합성곱 인코더};
+\foreach \a/\b in {img/gray, gray/fft, fft/mask, mask/ifft, ifft/norm, norm/enc}
+  \draw[flow] (\a) -- (\b);
+\node[lbl, below=0.8mm of mask, align=center] {차단 반경 $r$};
+\node[lbl, below left=0.8mm and -6mm of enc, align=right] {VAE 잠재가 아니라\\이미지를 직접 읽음};
+
+% ================= frozen UNet, drawn as a U =================
+\node[frozen] (e64) at (2.0,-0.9) {enc 64};
+\node[frozen] (e32) at (2.0,-2.1) {enc 32};
+\node[frozen] (e16) at (2.0,-3.3) {enc 16};
+\node[frozen] (mid) at (5.0,-4.3) {mid 8};
+\node[frozen] (d16) at (8.0,-3.3) {dec 16};
+\node[frozen] (d32) at (8.0,-2.1) {dec 32};
+\node[frozen] (d64) at (8.0,-0.9) {dec 64};
+\foreach \a/\b in {e64/e32, e32/e16} \draw[flow] (\a) -- (\b);
+\draw[flow] (e16) |- (mid);
+\draw[flow] (mid) -| (d16);
+\foreach \a/\b in {d16/d32, d32/d64} \draw[flow] (\a) -- (\b);
+\node[lbl, left=1mm of e64, align=right] {냉동\\SD1.5};
+
+% skip tensors, with the summing junction the residual lands on
+\foreach \lv/\y in {64/-0.9, 32/-2.1, 16/-3.3}{
+  \node[sum] (s\lv) at (5.0,\y) {\tiny$+$};
+  \draw[skip] (e\lv) -- (s\lv);
+  \draw[skip, ->] (s\lv) -- (d\lv);
+}
+\node[sum] (smid) at (6.5,-4.3) {\tiny$+$};
+
+% ================= injection path 1: skip residuals =================
+% one trunk down the right margin, tapped where nothing else runs
+\draw[line width=0.9pt] (enc.south) -- (12.4,-6.0);
+\draw[line width=0.9pt] (12.4,-0.15) -- (5.0,-0.15);
+\foreach \n in {s64,s32,s16}{ \draw[inj] (5.0,-0.15) -- (\n.north); }
+\draw[line width=0.9pt] (5.0,-0.15) -- (5.0,-3.3);
+\draw[inj] (12.4,-4.3) -- (smid.east);
+\node[lbl, right=1mm] at (12.5,-1.9) {\begin{minipage}{25mm}\raggedright
+  skip 텐서마다\\0초기화 $1{\times}1$ 헤드\\[1pt]
+  \emph{신호의 \pathSkipOnlyZero{}}\end{minipage}};
+
+% ================= injection path 2: window attention =================
+\node[train, minimum width=42mm] (attn) at (5.0,-6.0)
+  {$3{\times}3$ 창 어텐션, 교차 어텐션 16곳};
+\draw[inj] (12.4,-6.0) -- (attn.east);
+\draw[inj] (attn.north) -- (mid.south);
+\node[lbl, below=0.8mm of attn] {\emph{신호의 \pathAttnOnlyZero{}}};
+
+\node[frozen, minimum width=16mm] (clip) at (0.5,-6.0) {CLIP 텍스트};
+\draw[flow] (clip) -- (attn.west);
+
+\end{tikzpicture}
+\caption{조건 생성(위)과 두 주입 경로. 반경 $r$의 원판을 스펙트럼에서 제거하고,
+학습되는 합성곱 인코더가 그 결과를 전체 해상도로 읽는다. 굵은 선이 학습되는 부분이며
+(\ourParams{}개 파라미터), 음영 블록은 냉동이고, $\oplus$는 0으로 초기화된 잔차가 skip
+텐서에 더해지는 지점이다. 두 경로를 모두 끄면 네트워크가 원본 SD1.5를 정확히 재현한다.
+skip 경로가 구조 신호의 대부분을 나르며, \ref{sec:where}절이 그 분배를 측정한다.}
+\label{fig:arch}
+\end{figure*}

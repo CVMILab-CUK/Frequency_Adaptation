@@ -1,0 +1,40 @@
+{
+  "provenance": {
+    "baseline": "controlnet_hed",
+    "repo": "lllyasviel/sd-controlnet-hed",
+    "cond_regime": "native",
+    "controlnet_params": 361279120,
+    "n_images": 500,
+    "steps": 50,
+    "cfg_scale": 7.5,
+    "seed": 2026,
+    "resolution": 512,
+    "gpu": "NVIDIA H200",
+    "timestamp": "2026-09-07 18:31:34",
+    "note": "baselines run on their native condition"
+  },
+  "per_setting": {
+    "native": {
+      "SC": null,
+      "EdgeF1": {
+        "mean": 0.573307241098156,
+        "std": 0.130357610807512,
+        "sem": 0.005829769583001161,
+        "n": 500
+      },
+      "LPIPS": {
+        "mean": 0.6547877788543701,
+        "std": 0.07101088017225266,
+        "sem": 0.003175703104144978,
+        "n": 500
+      },
+      "CLIP": {
+        "mean": 29.16073226928711,
+        "std": 3.420295476913452,
+        "sem": 0.15296026379027083,
+        "n": 500
+      },
+      "FID": 118.98338119271011
+    }
+  }
+}
