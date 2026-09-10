@@ -1,85 +1,124 @@
-% Architecture schematic. Drafted, not illustrated: one stroke weight for data
-% flow, a heavier one for trained parts, flat tint for the frozen backbone,
-% square corners, no shadows. The U places the skip tensors where the residuals
-% actually land.
+% Two panels: the system, and one StandAlone-attention site opened up. Drafted
+% throughout -- one stroke weight for data flow, heavier for trained parts,
+% flat tint for frozen blocks, square corners. Every label matches a symbol in
+% models/attention_processor.py.
 \begin{figure*}[t]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
   font=\small, >=latex, line width=0.4pt,
-  blk/.style   ={draw, minimum height=6.5mm, minimum width=14mm, inner xsep=2pt, align=center},
+  blk/.style   ={draw, minimum height=6mm, minimum width=13mm, inner xsep=2pt, align=center},
   frozen/.style={blk, fill=black!4, draw=black!50},
   train/.style ={blk, line width=0.9pt},
   lbl/.style   ={font=\scriptsize, inner sep=1.5pt},
+  tiny/.style  ={font=\tiny, inner sep=1pt},
   flow/.style  ={->, line width=0.4pt},
-  inj/.style   ={->, line width=0.9pt},
+  inj/.style   ={->, line width=1.1pt},
+  minor/.style ={->, line width=0.55pt},
   skip/.style  ={densely dashed, line width=0.35pt},
   sum/.style   ={draw, circle, inner sep=0pt, minimum size=3.2mm, line width=0.9pt},
 ]
 
-% ================= condition construction =================
-\node[blk] (img)  at (0,0.9) {image $x$};
-\node[blk] (gray) at (2.1,0.9) {gray};
-\node[blk] (fft)  at (4.0,0.9) {FFT};
-\node[draw, circle, minimum size=7mm, inner sep=0pt] (mask) at (5.8,0.9) {};
-\fill[black!14] (mask.center) circle (1.7mm);
-\node[blk] (ifft) at (7.7,0.9) {IFFT};
-\node[blk] (norm) at (9.8,0.9) {min--max};
-\node[train] (enc) at (12.4,0.9) {conv encoder};
-\foreach \a/\b in {img/gray, gray/fft, fft/mask, mask/ifft, ifft/norm, norm/enc}
-  \draw[flow] (\a) -- (\b);
-\node[lbl, below=0.8mm of mask, align=center] {cut radius $r$};
-\node[lbl, below left=0.8mm and -6mm of enc, align=right] {reads the image,\\not a VAE latent};
+% ==================== (a) system ====================
+\node[lbl, anchor=west] at (-0.4,1.55) {\textbf{(a)} condition path and the two injection sites};
 
-% ================= frozen UNet, drawn as a U =================
-\node[frozen] (e64) at (2.0,-0.9) {enc 64};
-\node[frozen] (e32) at (2.0,-2.1) {enc 32};
-\node[frozen] (e16) at (2.0,-3.3) {enc 16};
-\node[frozen] (mid) at (5.0,-4.3) {mid 8};
-\node[frozen] (d16) at (8.0,-3.3) {dec 16};
-\node[frozen] (d32) at (8.0,-2.1) {dec 32};
-\node[frozen] (d64) at (8.0,-0.9) {dec 64};
-\foreach \a/\b in {e64/e32, e32/e16} \draw[flow] (\a) -- (\b);
-\draw[flow] (e16) |- (mid);
-\draw[flow] (mid) -| (d16);
-\foreach \a/\b in {d16/d32, d32/d64} \draw[flow] (\a) -- (\b);
+\node[blk] (img)  at (0.5,0.85) {image $x$};
+\node[blk] (gray) at (2.4,0.85) {gray};
+\node[blk] (fft)  at (4.0,0.85) {FFT};
+\node[draw, circle, minimum size=6.5mm, inner sep=0pt] (mask) at (5.5,0.85) {};
+\fill[black!16] (mask.center) circle (1.6mm);
+\node[blk] (ifft) at (7.1,0.85) {IFFT};
+\node[train] (enc) at (9.3,0.85) {conv encoder};
+\foreach \a/\b in {img/gray, gray/fft, fft/mask, mask/ifft, ifft/enc} \draw[flow] (\a)--(\b);
+\node[tiny, below=0.6mm of mask] {radius $r$};
+\node[lbl, below left=0.6mm and -4mm of enc, align=right] {no VAE};
+
+\node[frozen] (e64) at (1.5,-0.6) {enc 64};
+\node[frozen] (e32) at (1.5,-1.7) {enc 32};
+\node[frozen] (e16) at (1.5,-2.8) {enc 16};
+\node[frozen] (mid) at (4.1,-3.7) {mid 8};
+\node[frozen] (d16) at (6.7,-2.8) {dec 16};
+\node[frozen] (d32) at (6.7,-1.7) {dec 32};
+\node[frozen] (d64) at (6.7,-0.6) {dec 64};
+\foreach \a/\b in {e64/e32, e32/e16, d16/d32, d32/d64} \draw[flow] (\a)--(\b);
+\draw[flow] (e16) |- (mid);  \draw[flow] (mid) -| (d16);
 \node[lbl, left=1mm of e64, align=right] {frozen\\SD1.5};
 
-% skip tensors, with the summing junction the residual lands on
-\foreach \lv/\y in {64/-0.9, 32/-2.1, 16/-3.3}{
-  \node[sum] (s\lv) at (5.0,\y) {\tiny$+$};
-  \draw[skip] (e\lv) -- (s\lv);
-  \draw[skip, ->] (s\lv) -- (d\lv);
-}
-\node[sum] (smid) at (6.5,-4.3) {\tiny$+$};
+\foreach \lv/\y in {64/-0.6, 32/-1.7, 16/-2.8}{
+  \node[sum] (s\lv) at (4.1,\y) {\tiny$+$};
+  \draw[skip] (e\lv)--(s\lv); \draw[skip,->] (s\lv)--(d\lv);}
+\node[sum] (smid) at (5.4,-3.7) {\tiny$+$};
 
-% ================= injection path 1: skip residuals =================
-% one trunk down the right margin, tapped where nothing else runs
-\draw[line width=0.9pt] (enc.south) -- (12.4,-6.0);
-\draw[line width=0.9pt] (12.4,-0.15) -- (5.0,-0.15);
-\foreach \n in {s64,s32,s16}{ \draw[inj] (5.0,-0.15) -- (\n.north); }
-\draw[line width=0.9pt] (5.0,-0.15) -- (5.0,-3.3);
-\draw[inj] (12.4,-4.3) -- (smid.east);
-\node[lbl, right=1mm] at (12.5,-1.9) {\begin{minipage}{25mm}\raggedright
-  zero-init $1{\times}1$ head per skip tensor\\[1pt]
-  \emph{\pathSkipOnlyZero{} of the signal}\end{minipage}};
+% path 1: skip residuals -- the dominant one
+\draw[line width=1.1pt] (enc.south) -- (9.3,0.12) -- (4.1,0.12);
+\foreach \n in {s64,s32,s16} \draw[inj] (4.1,0.12) -- (\n.north);
+\draw[line width=1.1pt] (4.1,0.12) -- (4.1,-2.8);
+\draw[inj] (9.3,-3.7) -- (smid.east);
+\draw[line width=1.1pt] (9.3,0.12) -- (9.3,-5.15);
+\node[lbl, right=1mm, align=left] at (9.45,-1.0)
+  {\begin{minipage}{22mm}\raggedright zero-init $1{\times}1$ head\\per skip tensor\\[1pt]
+   \textbf{\pathSkipOnlyZero{}} of the signal\end{minipage}};
 
-% ================= injection path 2: window attention =================
-\node[train, minimum width=42mm] (attn) at (5.0,-6.0)
-  {$3{\times}3$ window attention, 16 cross-attn sites};
-\draw[inj] (12.4,-6.0) -- (attn.east);
-\draw[inj] (attn.north) -- (mid.south);
-\node[lbl, below=0.8mm of attn] {\emph{\pathAttnOnlyZero{} of the signal}};
+% path 2: SA at the cross-attention sites -- the minor one
+\node[train, minimum width=30mm] (sa) at (4.1,-5.15) {SA at 16 cross-attn sites};
+\draw[minor] (9.3,-5.15) -- (sa.east);
+\draw[minor] (sa.north) -- (mid.south);
+\node[lbl, below=0.6mm of sa] {\textbf{\pathAttnOnlyZero{}} of the signal \ (panel b)};
+\node[frozen, minimum width=15mm] (clip) at (0.9,-5.15) {CLIP text};
+\draw[flow] (clip) -- (sa.west);
 
-\node[frozen, minimum width=16mm] (clip) at (0.5,-6.0) {CLIP text};
-\draw[flow] (clip) -- (attn.west);
+% ==================== (b) one SA site ====================
+\begin{scope}[xshift=12.2cm, yshift=0cm]
+\node[lbl, anchor=west] at (-0.3,1.55) {\textbf{(b)} inside one site};
+\draw[black!25, line width=0.35pt] (-0.45,-5.6) rectangle (5.6,1.3);
 
-\end{tikzpicture}
-\caption{Condition construction (top) and the two injection paths. A disc of
-radius $r$ is masked out of the spectrum; a trainable convolutional encoder
-reads the result at full resolution. Heavy strokes are trained
-(\ourParams{} parameters), tinted blocks are frozen, and $\oplus$ marks where a
-zero-initialised residual is added to a skip tensor. With both paths off the
-network reproduces stock SD1.5 exactly. The skip path carries most of the
-structure signal; Sec.~\ref{sec:where} measures the split.}
+\node[blk, minimum width=17mm] (ip)  at (1.0,0.85) {condition};
+\node[frozen, minimum width=17mm] (lat) at (4.1,0.85) {UNet latent};
+
+\node[blk, minimum width=17mm] (dn)  at (1.0,-0.15) {$\downarrow$ to this res.};
+\draw[flow] (ip) -- (dn);
+\node[train, minimum width=24mm] (kv) at (1.0,-1.15) {$W_K,\,W_V$ ($1{\times}1$)};
+\draw[flow] (dn) -- (kv);
+\node[blk, minimum width=24mm] (uf) at (1.0,-2.15) {unfold $3{\times}3$};
+\draw[flow] (kv) -- (uf);
+\node[tiny, right=0.8mm of uf, align=left] {9 neighbours\\per position};
+
+\node[frozen, minimum width=13mm] (q) at (4.1,-1.15) {$W_Q$ (frozen)};
+\draw[flow] (lat) -- (q);
+\node[tiny, right=0.6mm of q] {$Q$};
+
+\node[blk, minimum width=30mm] (att) at (2.5,-3.1)
+  {\small softmax$\!\left(QK^{\!\top}\!/\sqrt{d}\right)V$};
+\draw[flow] (uf.south) |- ([yshift=3mm]att.north west) -- (att.north west);
+\draw[flow] (q.south) |- ([yshift=3mm]att.north east) -- (att.north east);
+\node[tiny, right=0.8mm of att] {over 9, not $L$};
+
+\node[frozen, minimum width=17mm] (o) at (2.5,-4.0) {$W_O$ (frozen)};
+\draw[flow] (att) -- (o);
+\node[train, minimum width=17mm] (g) at (2.5,-4.85) {zero-init gate};
+\draw[flow] (o) -- (g);
+\node[tiny, right=0.8mm of g, align=left] {per channel};
+
+\coordinate (outp) at (2.5,-5.35);
+\draw[line width=0.9pt] (g) -- (outp);
+\node[lbl, anchor=north, align=center] at (2.5,-5.4)
+  {added to the latent \emph{and} to the layer output};
+\end{scope}
+
+\end{tikzpicture}}
+\caption{\textbf{(a)} A disc of radius $r$ is masked out of the spectrum and a
+trainable convolutional encoder reads the result at full resolution, never
+through the VAE. Its features enter the frozen UNet twice: as zero-initialised
+residuals on every skip tensor ($\oplus$), and through StandAlone attention at
+the 16 cross-attention sites. Stroke weight follows the measured split ---
+the skip path carries \pathSkipOnlyZero{} of the structure signal against
+\pathAttnOnlyZero{} for attention (Sec.~\ref{sec:where}).
+\textbf{(b)} One StandAlone site. The query comes from the UNet's own latent
+through the frozen $W_Q$; keys and values come from the condition through
+trained $1{\times}1$ projections, unfolded so each position attends over its
+$3{\times}3$ neighbourhood rather than the whole map. The result passes the
+frozen output projection and a zero-initialised per-channel gate, then is added
+both into the latent --- so the text query below sees structure --- and to what
+the layer returns.}
 \label{fig:arch}
 \end{figure*}

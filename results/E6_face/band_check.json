@@ -1,0 +1,19 @@
+{
+ "note": "SC recomputed on the saved images with the top MASK_FRAC of each frame removed, to bound the contribution of the scanned filename annotation on the source drawings.",
+ "mask_frac": 0.2,
+ "rows_removed": 102,
+ "height": 512,
+ "SC_full_frame": {
+  "mean": 0.5484381914138794,
+  "std": 0.17228631675243378,
+  "sem": 0.027240858530945725,
+  "n": 40
+ },
+ "SC_band_removed": {
+  "mean": 0.5398254990577698,
+  "std": 0.18105140328407288,
+  "sem": 0.02862674039736798,
+  "n": 40
+ },
+ "delta": -0.00861269235610962
+}

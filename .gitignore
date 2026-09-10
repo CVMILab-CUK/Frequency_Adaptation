@@ -42,3 +42,6 @@ papers/*.toc
 *.npy
 *.ckpt
 *.pth
+
+# --- internal peer review, kept local ---
+ai_review/

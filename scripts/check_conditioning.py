@@ -112,20 +112,42 @@ n = len(tr.model.params)
 g = grad_coverage()
 print(f"[3] adapter tensors with non-zero gradient at init: {len(g)}/{n}")
 
-if gated and len(g) < n:
+# A zero-initialised component -- the attention gate, or the skip injector's
+# zero heads -- makes everything behind it gradient-free at init by design.
+# ControlNet's zero convolutions behave the same way. Assert the state after one
+# optimizer step instead, which is when training actually begins.
+_inj0 = getattr(tr.model, "skip_injector", None)
+zero_init_present = bool(gated) or _inj0 is not None
+if zero_init_present and len(g) < n:
     # Expected for a zero-init gate: with gate == 0 the projections behind it
     # see grad * gate == 0. ControlNet's zero convolutions behave the same way.
     # What matters is that one optimizer step lifts the gate off zero and the
     # whole adapter starts training -- so assert that, not the init state.
-    print(f"    zero-init gate: {len(g)} tensors moving are the gates themselves.")
+    print(f"    zero-init components present; {len(g)} tensors move at init.")
     opt = torch.optim.AdamW(tr.model.params, lr=1e-4)
     opt.step(); opt.zero_grad(set_to_none=True)
-    max_gate = max(float(pr.out_gate.abs().max()) for pr in gated)
+    max_gate = max((float(pr.out_gate.detach().abs().max()) for pr in gated), default=0.0)
     g = grad_coverage()
     print(f"    after one optimizer step: max|gate| = {max_gate:.2e}, "
           f"gradient reaches {len(g)}/{n}")
 
-ok &= (len(g) == n)
+_live = {id(q) for q in g}
+dead = [q for q in tr.model.params if id(q) not in _live]
+k1 = any(isinstance(pr, SAProcessor) and pr.kernel_size == 1
+         for pr in procs.values())
+if k1 and dead:
+    # With a 1x1 window there is one neighbour, softmax over it is identically
+    # 1.0, and the key projection is mathematically unreachable. That is what
+    # this ablation is: attention removed, leaving the value projection alone.
+    n_k = sum(1 for q in dead
+              if any(q is w for pr in procs.values() if isinstance(pr, SAProcessor)
+                     for w in pr.to_k_sketch.parameters()))
+    print(f"    kernel_size=1: {n_k} key-projection tensors are unreachable by "
+          f"construction (softmax over one element is 1.0); this ablation "
+          f"removes the attention, leaving the value projection.")
+    ok &= (len(g) + n_k >= n)
+else:
+    ok &= (len(g) == n)
 
 # resolution probe: hook the Attention modules, never touch processor signatures
 seen = {}

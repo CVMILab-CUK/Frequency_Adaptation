@@ -59,7 +59,7 @@ for tag, path in [("Both","E10b"),("SkipOnly","E10b_adapter_off"),
                   ("AttnOnly","E10b_skip_off"),("AllOff","E10b_all_off")]:
     d = load(path)
     if not d: continue
-    for c in ["0.0","0.3"]:
+    for c in ["0.0","0.1","0.3"]:
         if c in d["per_cutoff"]:
             mac(f"path{tag}{key[c]}", d["per_cutoff"][c]["SC"]["mean"])
     if "0.0" in d["per_cutoff"] and d["per_cutoff"]["0.0"].get("FID"):
@@ -110,11 +110,68 @@ for tag, path in [("Face","E6_face"),("Scene","E6_scene")]:
     if d.get("FID_vs_FFHQ") is not None:
         mac(f"sketch{tag}Fid", d["FID_vs_FFHQ"], "{:.2f}")
 
+# the scanned filename annotation on the forensic drawings: how much of the
+# face SC is agreement on that band rather than on the face (scripts/sketch_band_check.py)
+_bcf = os.path.join(R, "E6_face", "band_check.json")
+_bc = json.load(open(_bcf)) if os.path.exists(_bcf) else None
+if _bc:
+    mac("bandFrac",  int(round(_bc["mask_frac"] * 100)))
+    mac("bandRows",  _bc["rows_removed"])
+    mac("bandSCcut", _bc["SC_band_removed"]["mean"])
+    mac("bandDelta", _bc["delta"], "{:+.4f}")
+    mac("bandSem",   abs(_bc["delta"]) / _bc["SC_full_frame"]["sem"], "{:.2f}")
+
 # model sizes
 m = json.load(open("ckpt_dir/E10b_skip_inject/run_manifest.json"))
 mac("ourParams", f"{m['trainable_params']:,}")
 mac("ourParamsRatio", f"{361279120/m['trainable_params']:.0f}")
 mac("nTrain", f"{m['n_train']:,}"); mac("nTest", f"{m['n_test']:,}")
+mac("nValid", f"{m['n_valid']:,}")
+
+# --- seed-level statistics and the corrected tests (review D-05) ------------
+# The paper previously printed single-seed z values with no test named. These
+# are recomputed across the three seeds and carry a stated test.
+import math
+SEEDS = ["E10b", "E13_seed2027", "E13_seed2028"]
+def seed_vals(c):
+    return [load(p)["per_cutoff"][c]["SC"]["mean"] for p in SEEDS if load(p)]
+
+for c in CUTS:
+    v = seed_vals(c)
+    if len(v) > 1:
+        m = sum(v) / len(v)
+        sd = (sum((x - m) ** 2 for x in v) / (len(v) - 1)) ** 0.5
+        mac(f"sMean{key[c]}", m); mac(f"sSd{key[c]}", sd)
+
+# r=0 -> r=0.05 is a rise; state it with the paired within-checkpoint SE
+a, b = pc["0.0"]["SC"], pc["0.05"]["SC"]
+se = (a["sem"] ** 2 + b["sem"] ** 2) ** 0.5
+mac("riseDelta", b["mean"] - a["mean"]); mac("riseZ", (b["mean"] - a["mean"]) / se, "{:.2f}")
+
+# r=0.5 vs r=0.7 across seeds: paired t, df=2
+d5, d7 = seed_vals("0.5"), seed_vals("0.7")
+if len(d5) == len(d7) > 1:
+    dd = [x - y for x, y in zip(d5, d7)]
+    m = sum(dd) / len(dd)
+    sd = (sum((x - m) ** 2 for x in dd) / (len(dd) - 1)) ** 0.5
+    mac("tailT", m / (sd / math.sqrt(len(dd))), "{:.3f}")
+    mac("tailCrit", "4.303")
+
+# specialists, re-expressed against the three-seed spread of the single model
+for r in ["0.1", "0.3", "0.5", "0.7"]:
+    d = load(f"E2_r{r}")
+    if not d: continue
+    sp = d["per_cutoff"][r]["SC"]["mean"]
+    v = seed_vals(r)
+    m = sum(v) / len(v)
+    sd = (sum((x - m) ** 2 for x in v) / (len(v) - 1)) ** 0.5
+    mac(f"specD{key[r]}", sp - m, "{:+.4f}")
+    mac(f"specR{key[r]}", (sp - m) / sd, "{:+.2f}")
+
+# Diversity is nearly LPIPS shifted by a constant -- state the constant
+diffs = [pc[c]["LPIPS"]["mean"] - pc[c]["Diversity"]["mean"] for c in CUTS]
+md = sum(diffs) / len(diffs)
+mac("divGap", md); mac("divGapSd", (sum((x - md) ** 2 for x in diffs) / (len(diffs) - 1)) ** 0.5)
 
 os.makedirs("papers", exist_ok=True)
 with open("papers/numbers.tex","w") as f:

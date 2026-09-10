@@ -28,8 +28,13 @@ from eval.metrics import (LPIPSMetric, CLIPScore, structure_consistency,
                           edge_f1, fid_from_dirs)
 
 BASELINES = {
-    "controlnet_canny": ("lllyasviel/sd-controlnet-canny", "canny"),
-    "controlnet_hed":   ("lllyasviel/sd-controlnet-hed", "canny"),  # HED detector optional
+    # name: (repo, condition the checkpoint expects, adapter family)
+    "controlnet_canny": ("lllyasviel/sd-controlnet-canny", "canny", "controlnet"),
+    "controlnet_hed":   ("lllyasviel/sd-controlnet-hed", "canny", "controlnet"),  # HED detector optional
+    # T2I-Adapter is the size-matched comparison: a small side network rather
+    # than a duplicated encoder, which is the design our adapter belongs to.
+    "t2iadapter_canny": ("TencentARC/t2iadapter_canny_sd15v2", "canny", "t2iadapter"),
+    "t2iadapter_sketch":("TencentARC/t2iadapter_sketch_sd15v2", "canny", "t2iadapter"),
 }
 
 
@@ -57,7 +62,8 @@ def main():
     p.add_argument("--seed", type=int, default=2026)
     a = p.parse_args()
 
-    from diffusers import StableDiffusionControlNetPipeline, ControlNetModel
+    from diffusers import (StableDiffusionControlNetPipeline, ControlNetModel,
+                           StableDiffusionAdapterPipeline, T2IAdapter)
     cfg = OmegaConf.load(a.config)
     device = "cuda"
     res = int(cfg.datasets.img_size)
@@ -65,14 +71,20 @@ def main():
     out_root = os.path.join(a.out, tag)
     os.makedirs(out_root, exist_ok=True)
 
-    repo, _ = BASELINES[a.baseline]
-    cn = ControlNetModel.from_pretrained(repo, torch_dtype=torch.float16)
-    pipe = StableDiffusionControlNetPipeline.from_pretrained(
-        cfg.model.model_id, controlnet=cn, torch_dtype=torch.float16,
-        safety_checker=None, requires_safety_checker=False).to(device)
+    repo, _, family = BASELINES[a.baseline]
+    if family == "controlnet":
+        side = ControlNetModel.from_pretrained(repo, torch_dtype=torch.float16)
+        pipe = StableDiffusionControlNetPipeline.from_pretrained(
+            cfg.model.model_id, controlnet=side, torch_dtype=torch.float16,
+            safety_checker=None, requires_safety_checker=False).to(device)
+    else:
+        side = T2IAdapter.from_pretrained(repo, torch_dtype=torch.float16)
+        pipe = StableDiffusionAdapterPipeline.from_pretrained(
+            cfg.model.model_id, adapter=side, torch_dtype=torch.float16,
+            safety_checker=None, requires_safety_checker=False).to(device)
     pipe.set_progress_bar_config(disable=True)
-    n_params = sum(q.numel() for q in cn.parameters())
-    print(f"[base] {a.baseline}: {n_params:,} ControlNet params", flush=True)
+    n_params = sum(q.numel() for q in side.parameters())
+    print(f"[base] {a.baseline}: {n_params:,} side-network params ({family})", flush=True)
 
     from trainer.base_trainer import BaseTrainer
     bt = BaseTrainer(".", ".", batch_size=a.batch, num_workers=4)
@@ -99,6 +111,7 @@ def main():
 
     results = {"provenance": {
         "baseline": a.baseline, "repo": repo, "cond_regime": a.cond,
+        "family": family, "side_params": int(n_params),
         "controlnet_params": int(n_params), "n_images": n, "steps": a.steps,
         "cfg_scale": a.cfg, "seed": a.seed, "resolution": res,
         "gpu": torch.cuda.get_device_name(0),

@@ -46,6 +46,10 @@ def parse_args():
                    help="override the adapter's injection scale. 0.0 turns the "
                         "adapter off entirely, which is the control that says "
                         "whether a weak result means the adapter is inert or harmful.")
+    p.add_argument("--generic_caption", type=str, default=None,
+                   help="replace every per-image caption with this one string, so the "
+                        "condition's contribution is separated from a caption that was "
+                        "derived from the reference image.")
     p.add_argument("--skip_scale", type=float, default=None,
                    help="override the skip injector's scale independently, so the two "
                         "injection paths can be ablated apart. Defaults to --adapter_scale.")
@@ -121,7 +125,8 @@ def main():
     for i in idxs:
         d = tr.test_dataset[i]
         gt_unit = ((d["gt"] + 1.0) / 2.0).clamp(0, 1)
-        gts.append(gt_unit); caps.append(d["caption"])
+        gts.append(gt_unit)
+        caps.append(a.generic_caption if a.generic_caption else d["caption"])
         p = os.path.join(ref_dir, f"{i:05d}.png")
         if not os.path.exists(p):
             save_png(gt_unit, p)
@@ -137,6 +142,7 @@ def main():
             "k_div": a.k_div, "n_div": a.n_div, "resolution": res,
             "adapter_scale": a.adapter_scale,
             "skip_scale": a.skip_scale,
+            "generic_caption": a.generic_caption,
             "gpu": torch.cuda.get_device_name(0),
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         },

@@ -1,0 +1,65 @@
+% Frequency Adaptation -- Computer Graphics Forum submission.
+%
+% This is the official egPublStyle-cgf submission template (egpubl.cls,
+% \JournalSubmission) wrapped around the same fa_body.inc that fa_en.tex
+% compiles, so the draft and the submission can never disagree on the text.
+% Style files live in egstyle/ and are the unmodified December 2024 package
+% from https://www.eg.org/wp/eurographics-publications/guidelines/
+
+\documentclass{egpubl}
+\JournalSubmission    % submission to Computer Graphics Forum
+
+% !! *please* don't change anything above
+% !! unless you REALLY know what you are doing
+% ------------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage{dfadobe}
+
+\usepackage{cite}
+\BibtexOrBiblatex
+
+\electronicVersion
+\PrintedOrElectronic
+\ifpdf \usepackage[pdftex]{graphicx} \pdfcompresslevel=9
+\else \usepackage[dvips]{graphicx} \fi
+
+\usepackage{egweblnk}
+% end of prologue
+
+% ---- what this paper adds on top of the template ------------------------
+\usepackage{booktabs,amsmath,amssymb,xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\pgfplotsset{
+  draft/.style={
+    width=\columnwidth, height=41mm,
+    axis lines=left, axis line style={line width=0.4pt},
+    tick align=outside, tick style={line width=0.4pt, black},
+    ymajorgrids, grid style={black!12, line width=0.3pt},
+    label style={font=\scriptsize}, tick label style={font=\scriptsize},
+    legend style={font=\scriptsize, draw=none, fill=none, cells={anchor=west},
+                  inner sep=1pt},
+    every axis plot/.append style={line width=0.7pt, mark size=1.7pt},
+  }}
+\setcounter{secnumdepth}{2}
+\input{numbers}
+
+% ACM CCS 2012 categories, printed inside the abstract.
+\newcommand{\CCSblock}{\input{ccs_eg.inc}}
+
+\title[A Frequency Dial for Structure-Conditioned Diffusion]%
+      {A Frequency Dial for Structure-Conditioned Diffusion}
+
+% anonymous submission: the submission ID replaces the author block
+\author[SUBMISSION ID]{SUBMISSION ID}
+
+\begin{document}
+\maketitle
+\input{fa_body.inc}
+
+\bibliographystyle{eg-alpha-doi}
+\bibliography{refs}
+
+\end{document}
