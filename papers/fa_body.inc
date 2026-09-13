@@ -15,8 +15,7 @@ $r \in [0, 0.3]$, above which the condition retains too little energy for
 structure consistency to be interpretable. Turning the adapter's strength down is not the same knob. At matched structure
 consistency --- scale 0.50 reaches \scHalfScale{} and the cutoff $r{=}0.3$
 reaches \scMainThreeZero{} --- the strength setting costs FID \fidHalfScale{}
-where the cutoff costs \fidMainThreeZero{}, so the cutoff dominates on both
-axes at once.
+where the cutoff costs \fidMainThreeZero{}, so the cutoff dominates on both axes at once. Once an artist filters a hand drawing at $r$, the dial works on drawings too.
 
 Two findings came out of building it. The frozen SD VAE destroys a high-pass
 condition before any adapter can read it: only \vaeNativeThreeZero{} of the
@@ -26,7 +25,7 @@ placement matters more than width --- skip-only retains SC \pathSkipOnlyZero{}
 against \pathAttnOnlyZero{} for attention-only, with both paths at
 \pathBothZero{} --- while quadrupling the adapter's width inside the
 attention-only design buys far less. The adapter trains
-\ourParams{} parameters, \ourParamsRatio{}$\times$ fewer than ControlNet.
+\ourParams{} parameters, small next to ControlNet but not next to recent lightweight control modules; we make no efficiency claim.
 \CCSblock
 \end{abstract}
 
@@ -77,8 +76,15 @@ extractor, IP-Adapter~\cite{ye2023adapter} adds decoupled cross-attention for
 image prompts, and GLIGEN~\cite{li2023gligen} grounds generation on boxes.
 Uni-ControlNet~\cite{zhao2023controlnet} and UniControl~\cite{qin2023unicontrol}
 fold many condition types into one model, and
-ControlNet++~\cite{li2024controlnet} closes a consistency loop on the produced
-image. Each of these fixes the condition type and, with it, how tightly the
+ControlNet++~\cite{li2024controlnet} closes a consistency loop on the produced image.
+A second line shrinks the control branch on the same UNet:
+ControlNet-XS~\cite{zavadski2023controlnet} couples a much smaller control
+network to encoder and decoder in both directions, CtrLoRA~\cite{xu2024ctrlora}
+adapts a shared base ControlNet to each new condition with LoRA, and
+Simple-ControlNet~\cite{feng2025simplifying} feeds the condition through a
+single-scale projection at the top of the UNet with LoRA on self-attention, in
+under 3M parameters, exposing a scale on that projection at inference. Our
+adapter is not smaller than these. Each of these fixes the condition type and, with it, how tightly the
 output must follow: the operating point is a property of the trained weights.
 Our cutoff moves that point at inference on one set of weights.
 
@@ -153,7 +159,10 @@ condition with the frozen VAE; Sec.~\ref{sec:vae} shows why.
 $1{\times}1$ heads produce one residual per decoder skip tensor and one for the
 mid block, added through the UNet's existing ControlNet interface. In parallel,
 each cross-attention site attends over a $3{\times}3$ window of the condition
-features, gated by a zero-initialised per-channel vector. Both paths start as
+features, gated by a zero-initialised per-channel vector. The window is not
+what carries the effect: at $1{\times}1$ the softmax runs over a single position,
+the site reduces to a gated value projection, and structure consistency is no
+lower (Sec.~\ref{sec:where}). Both paths start as
 exact no-ops: with them switched off the network reproduces stock
 Stable Diffusion~1.5~\cite{rombach2021high} bit for bit, which we assert before every training run.
 
@@ -213,11 +222,17 @@ ViT-B/32~\cite{radford2021learning} against each image's own caption.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/dial}
-\caption{One seed, one caption, $r$ swept. Columns: reference, then
-$r = 0,\,0.05,\,0.1,\,0.3,\,0.5,\,0.7,\,1.0$. The background crowd thins out,
-the eyewear drifts from the reference frame, and the clothing colour detaches,
-while identity and pose survive. The reference is never shown to the model.}
+\begin{tikzpicture}
+\node[inner sep=0, anchor=south west] (d) at (0,0) {\includegraphics[width=\textwidth]{figures/dial}};
+\foreach \lab [count=\i from 0] in {reference, $r{=}0$, $r{=}0.05$, $r{=}0.1$, $r{=}0.2$, $r{=}0.3$, $r{=}0.5$, $r{=}0.7$, $r{=}1$}
+  \node[font=\scriptsize, anchor=south, inner sep=1.5pt]
+    at ($(d.north west)!{(\i*390+192)/3504}!(d.north east)$) {\lab};
+\end{tikzpicture}
+\caption{One seed and one caption per row; only $r$ changes. The rows are the
+first three test images in generation order. As $r$ rises, background detail
+thins and clothing and colour drift from the reference while the face layout
+holds; at $r{=}1$ the pose of the second row changes as well. The reference is
+never shown to the model.}
 \label{fig:dial}
 \end{figure*}
 
@@ -237,6 +252,13 @@ critical \tailCrit{}). FID stays between \fidMainZero{} and
 \fidMainOneHundred{} across the entire sweep.
 
 Figure~\ref{fig:dial} holds the seed and the caption fixed and varies only $r$.
+Because the caption is derived from the reference, it could be carrying part of
+the structure. We repeated the sweep with one generic caption, ``a photo of a
+person'', for every image. Structure consistency barely moves ---
+\genSCZero{}, \genSCOneZero{} and \genSCThreeZero{} at $r{=}0$, $0.1$ and $0.3$,
+against \scMainZero{}, \scMainOneZero{} and \scMainThreeZero{} with captions ---
+while FID rises to \genFidZero{}--\genFidThreeZero{}, as it should once the
+caption stops describing the image. The structure comes from the condition.
 Figure~\ref{fig:curve} plots the curve and, below it, both dials in the same
 structure-consistency/FID plane.
 
@@ -274,33 +296,48 @@ Across seeds 2026, 2027 and 2028 the curve is stable: SC at $r{=}0.05$ is
 
 \subsection{Strength is not the same knob}
 \label{sec:strength}
-
-An obvious alternative is to train on one cutoff and scale the adapter's
-contribution at inference. We tested it on the same checkpoint, holding
-$r{=}0.1$ and scaling both injection paths.
+An obvious alternative is to train on one cutoff and turn the adapter's
+contribution down at inference, the knob lightweight control modules
+expose~\cite{feng2025simplifying}. We ran it on the adapter trained at fixed
+$r{=}0.1$ (Sec.~\ref{sec:spec}), scaling both injection paths, and, as a second
+check, scaled the randomised-$r$ model at the same cutoff.
 
 \begin{table}[t]\centering\small
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrr}
 \toprule
 Setting & SC & Diversity & FID \\
 \midrule
-scale 0.25          & \scQuarterScale & \divQuarterScale & \fidQuarterScale \\
-scale 0.50          & \scHalfScale    & \divHalfScale    & \fidHalfScale \\
-scale 0.75          & \scThreeQScale  & \divThreeQScale  & \fidThreeQScale \\
-scale 1.00          & \scMainOneZero  & \divMainOneZero  & \fidMainOneZero \\
+\multicolumn{4}{l}{\itshape fixed-$r{=}0.1$ adapter, scaled} \\
+scale 0.25 & \sscSCQuarter & \sscDivQuarter & \sscFidQuarter \\
+scale 0.50 & \sscSCHalf    & \sscDivHalf    & \sscFidHalf \\
+scale 0.75 & \sscSCThreeQ  & \sscDivThreeQ  & \sscFidThreeQ \\
+scale 1.00 & \sscSCOne     & \sscDivOne     & \sscFidOne \\
 \midrule
-$r{=}0.3$ (ours)    & \scMainThreeZero & \divMainThreeZero & \fidMainThreeZero \\
-$r{=}0.5$ (ours)    & \scMainFiveZero  & \divMainFiveZero  & \fidMainFiveZero \\
+\multicolumn{4}{l}{\itshape randomised-$r$ adapter at $r{=}0.1$, scaled} \\
+scale 0.25 & \scQuarterScale & \divQuarterScale & \fidQuarterScale \\
+scale 0.50 & \scHalfScale    & \divHalfScale    & \fidHalfScale \\
+scale 0.75 & \scThreeQScale  & \divThreeQScale  & \fidThreeQScale \\
+\midrule
+\multicolumn{4}{l}{\itshape randomised-$r$ adapter, cutoff moved} \\
+$r{=}0.2$ & \scMainTwoZero   & \divMainTwoZero   & \fidMainTwoZero \\
+$r{=}0.3$ & \scMainThreeZero & \divMainThreeZero & \fidMainThreeZero \\
 \bottomrule
 \end{tabular}
-\caption{Strength dial against frequency dial. Reading across matched SC:
-scale 0.50 reaches \scHalfScale{} at FID \fidHalfScale{}, while $r{=}0.3$
-reaches \scMainThreeZero{} at FID \fidMainThreeZero{}.}
+\caption{Strength against cutoff. The fixed-$r$ adapter at scale 0.50 reaches
+SC \sscSCHalf{} at FID \sscFidHalf{}; moving the cutoff brackets that value with
+$r{=}0.2$ (\scMainTwoZero{}, FID \fidMainTwoZero{}) and $r{=}0.3$
+(\scMainThreeZero{}, FID \fidMainThreeZero{}), both at lower FID. Scaling the
+randomised model behaves the same way.}
 \label{tab:strength}
 \end{table}
 
-Weakening the adapter degrades the image; narrowing the condition's bandwidth
-does not. The frequency parameterisation is what makes the trade-off traversable.
+Both scaled curves leave the image distribution as they go. At scale 0.25 the
+fixed-$r$ adapter reaches FID \sscFidQuarter{} and diversity \sscDivQuarter{},
+beyond anything the cutoff produces over its whole sweep, where FID stays within
+\fidMainZero{}--\fidMainOneHundred{} and diversity peaks at
+\divMainOneHundred{}. Turning the adapter down removes structure by degrading
+the sample; narrowing the condition's band removes it while image quality holds.
 
 \subsection{The VAE eats the condition}
 \label{sec:vae}
@@ -343,6 +380,58 @@ than $3{\times}3$ (\scEwinZeroFive{}). All of these vary capacity with the skip
 path absent, so they bound how far capacity carries \emph{that} design rather
 than settling capacity against placement in general.
 
+Table~\ref{tab:abl} repeats the one-field ablations on the working design with
+both paths on. Each is a single seed, so we read it against the main model's
+three-seed spread of about 0.01 in SC. Capacity helps here too, modestly: a
+256-channel stem lifts SC at $r{=}0.05$ from \scMainZeroFive{} to
+\ablStemskipZeroFive{} and lowers FID at $r{=}0.1$ from \fidMainOneZero{} to
+\ablFidStemskipOneZero{}, small next to adding the skip path
+(\pathAttnOnlyZero{} to \pathBothZero{} at $r{=}0$). The attention window does
+not help: $1{\times}1$ matches $3{\times}3$ within the seed spread or exceeds it
+at every cutoff listed, and $5{\times}5$ is lower at all of them, so what the
+attention sites contribute is where the condition enters, not a neighbourhood.
+The zero-initialised gate is worth keeping; without it SC is lower from $r{=}0$
+to $0.3$ and FID at $r{=}0.1$ is higher. The largest single change is how $r$
+is drawn. A log-uniform sampler lifts SC at $r{=}0$ to \ablLogZero{} and lowers
+FID there to \ablFidLogZero{}, but gives up the upper range (\ablLogFiveZero{}
+at $r{=}0.5$ against \scMainFiveZero{}): it moves the dial's resolution toward
+small $r$ rather than improving it everywhere. The results above use the uniform
+sampler.
+
+\begin{table}[t]\centering\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{lrrrrr}
+\toprule
+One field changed & \multicolumn{4}{c}{SC} & FID \\
+\cmidrule(lr){2-5}
+ & $r{=}0$ & $0.05$ & $0.3$ & $0.5$ & $r{=}0.1$ \\
+\midrule
+main model & \scMainZero & \scMainZeroFive & \scMainThreeZero & \scMainFiveZero & \fidMainOneZero \\
+\quad seed sd (3 seeds) & \sSdZero & \sSdZeroFive & \sSdThreeZero & \sSdFiveZero & -- \\
+\midrule
+window $1{\times}1$        & \ablKoneZero & \ablKoneZeroFive & \ablKoneThreeZero & \ablKoneFiveZero & \ablFidKoneOneZero \\
+window $5{\times}5$        & \ablKfiveZero & \ablKfiveZeroFive & \ablKfiveThreeZero & \ablKfiveFiveZero & \ablFidKfiveOneZero \\
+no gate                    & \ablNogateZero & \ablNogateZeroFive & \ablNogateThreeZero & \ablNogateFiveZero & \ablFidNogateOneZero \\
+avg-pool downsampling      & \ablDavgZero & \ablDavgZeroFive & \ablDavgThreeZero & \ablDavgFiveZero & \ablFidDavgOneZero \\
+stem 64                    & \ablStemsfZero & \ablStemsfZeroFive & \ablStemsfThreeZero & \ablStemsfFiveZero & \ablFidStemsfOneZero \\
+stem 256                   & \ablStemskipZero & \ablStemskipZeroFive & \ablStemskipThreeZero & \ablStemskipFiveZero & \ablFidStemskipOneZero \\
+colour condition           & \ablColorZero & \ablColorZeroFive & \ablColorThreeZero & \ablColorFiveZero & \ablFidColorOneZero \\
+no condition dropout       & \ablDropZero & \ablDropZeroFive & \ablDropThreeZero & \ablDropFiveZero & \ablFidDropOneZero \\
+$r=u^2$                    & \ablSqrtZero & \ablSqrtZeroFive & \ablSqrtThreeZero & \ablSqrtFiveZero & \ablFidSqrtOneZero \\
+$r$ log-uniform            & \ablLogZero & \ablLogZeroFive & \ablLogThreeZero & \ablLogFiveZero & \ablFidLogOneZero \\
+\bottomrule
+\end{tabular}
+\caption{One-field ablations on the working model, skip and attention paths both on,
+one training seed each; the second row is the main model's spread over three
+seeds. The main model uses a $3{\times}3$ window, a zero-initialised gate,
+learned $2{\times}2$ strided downsampling of the condition features at each
+attention site, no stem, a grayscale condition, condition dropout 0.05, and $r$
+uniform on $[0,1]$. Drawing $r=u^2$ with $u$ uniform concentrates training at
+small $r$; the log-uniform sampler on $[10^{-3},1]$ does so more strongly.}
+\label{tab:abl}
+\end{table}
+
+
 \begin{table}[t]\centering\footnotesize
 \setlength{\tabcolsep}{2pt}
 \begin{tabular}{llrrr}
@@ -367,14 +456,12 @@ rows use a $3{\times}3$ window and a zero-initialised gate unless stated. The
 main model is the last row and carries no stem, i.e.\ the minimal $1{\times}1$
 projection. The first three rows sit at or below the no-adapter control, so at
 that level a weak design and a run that failed to learn are not
-distinguishable. Capacity is varied only in the attention-only regime; no row
-varies stem width with skips present, so the table supports a statement about
-these two injection designs rather than a general ordering of placement over
-capacity.}
+distinguishable. Stem width with the skip path present is varied in Table~\ref{tab:abl}.}
 \label{tab:where}
 \end{table}
 
 \subsection{Against per-cutoff specialists}
+\label{sec:spec}
 
 We trained four adapters at fixed $r$ and compared each against the single
 randomised-$r$ model at its own cutoff. Because the single model was trained
@@ -406,7 +493,12 @@ band), and our adapter was trained on \nTrain{} FFHQ images while ControlNet is
 zero-shot here and FID is measured against FFHQ statistics. On text alignment we
 do not win anywhere: our best CLIP over the whole sweep is
 \clipMainOneHundred{}, below ControlNet-Canny's \baseCannyClip{}
-(ControlNet-HED reaches \baseHedClip{}). Training ControlNet on our condition
+(ControlNet-HED reaches \baseHedClip{}). T2I-Adapter-Canny~\cite{mou2023adapter},
+a \baseTParams{}-parameter side network and so closer to our design than a copied
+encoder, reaches Edge-F1 \baseTEdge{}, LPIPS \baseTLpips{}, FID \baseTFid{} and
+CLIP \baseTClip{} under the same protocol. We leave out its sketch checkpoint,
+which expects a PiDiNet sketch we did not compute; fed Canny edges it would
+measure that mismatch rather than the method. Training ControlNet on our condition
 and data would be the matched control; we have not run it.
 
 \subsection{Hand-drawn sketches}
@@ -434,8 +526,18 @@ stable estimate, and our evaluator refuses rather than print one. We also ran
 \sketchSceneN{} general-scene drawings, far outside the training domain, where
 structure consistency falls to \sketchSceneSC{} and FID against FFHQ is
 \sketchSceneFid{}: the model follows the drawing but does not produce a face.
-That is the expected failure for a face model and we report it rather than omit
-it.
+That is the expected failure for a face model and we report it rather than omit it.
+
+A drawing arrives without a cutoff, but the artist can give it one: filter the
+drawing at $r$ and hand the model the result, the operation every training
+condition went through. On \sdialN{} face drawings, structure consistency
+against the original drawing falls from \sdialZero{} at $r{=}0$ to
+\sdialOneZero{} at $r{=}0.1$, \sdialThreeZero{} at $r{=}0.3$ and
+\sdialOneHundred{} at $r{=}1$, so the dial carries over to drawings; $r{=}0.5$ and
+$r{=}0.7$ lie within a standard error (\sdialSemFiveZero{}) of each other.
+Against the filtered drawing it was actually given, the score at $r{=}0.1$ is
+\sdialFOneZero{}, well below the \scMainOneZero{} a filtered photograph yields;
+we have not isolated why.
 
 \section{Limitations}
 
@@ -444,13 +546,19 @@ little energy --- 0.0014 of the spectrum at $r{=}0.5$ --- and structure
 consistency becomes hard to interpret, since two nearly empty signals correlate
 near zero whatever the model does.
 
-Everything here is one domain (FFHQ faces) and one backbone (SD1.5). Current
-structure-control work has moved to DiT backbones~\cite{peebles2022scalable,esser2024scaling}, where
-LoRA-style~\cite{hu2021lora} adapters~\cite{tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}
-report control at a fraction of our parameter count; our efficiency numbers
-should be read against ControlNet, not against that line.
+Everything here is one domain (FFHQ faces) and one backbone (SD1.5), and the
+three results travel differently. The dial is a property of the condition and
+need not depend on the backbone, but we have not tested another. The skip-path
+injection does not transfer as it stands: MMDiT backbones~\cite{esser2024scaling}
+have no UNet skip connections, and control there enters through shared tokens
+or LoRA~\cite{hu2021lora} modules~\cite{tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}.
+The VAE measurement was made on the four-channel SD autoencoder only. Our adapter
+is also not small by current standards: Simple-ControlNet~\cite{feng2025simplifying}
+reports under 3M parameters on SD1.5, ControlNet-XS~\cite{zavadski2023controlnet}
+ships much smaller control networks than ControlNet, and the DiT modules above
+use a fraction of our count.
 
-The specialist comparison is honest but unflattering at $r{=}0.1$, and we have
+The one-field ablations of Table~\ref{tab:abl} are single-seed. The specialist comparison is honest but unflattering at $r{=}0.1$, and we have
 not run a user study.
 
 \section{Conclusion}

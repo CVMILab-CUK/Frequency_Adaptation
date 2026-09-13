@@ -160,6 +160,13 @@
   "year": "2023",
   "first_author": "Chenyang Si"
  },
+ "zavadski2023controlnet": {
+  "id": "2312.06573",
+  "title": "ControlNet-XS: Rethinking the Control of Text-to-Image Diffusion Models as Feedback-Control Systems",
+  "url": "https://arxiv.org/abs/2312.06573",
+  "year": "2023",
+  "first_author": "Denis Zavadski"
+ },
  "esser2024scaling": {
   "id": "2403.03206",
   "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
@@ -180,6 +187,13 @@
   "url": "https://arxiv.org/abs/2408.06070",
   "year": "2024",
   "first_author": "Bohao Peng"
+ },
+ "xu2024ctrlora": {
+  "id": "2410.09400",
+  "title": "CtrLoRA: An Extensible and Efficient Framework for Controllable Image Generation",
+  "url": "https://arxiv.org/abs/2410.09400",
+  "year": "2024",
+  "first_author": "Yifeng Xu"
  },
  "tan2024ominicontrol": {
   "id": "2411.15098",
@@ -264,5 +278,12 @@
   "url": "https://arxiv.org/abs/2608.15705",
   "year": "2026",
   "first_author": "Xin Lin"
+ },
+ "feng2025simplifying": {
+  "id": "10.1609/aaai.v39i3.32309",
+  "title": "Simplifying Control Mechanism in Text-to-Image Diffusion Models",
+  "url": "https://doi.org/10.1609/aaai.v39i3.32309",
+  "year": "2025",
+  "first_author": "Zhida Feng"
  }
 }

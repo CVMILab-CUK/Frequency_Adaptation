@@ -8,7 +8,10 @@
 \backcite {zhao2023controlnet}{{1}{2}{section*.1}}
 \backcite {qin2023unicontrol}{{1}{2}{section*.1}}
 \backcite {li2024controlnet}{{1}{2}{section*.1}}
-\backcite {peebles2022scalable,esser2024scaling}{{1}{2}{section*.2}}
+\backcite {zavadski2023controlnet}{{1}{2}{section*.1}}
+\backcite {xu2024ctrlora}{{1}{2}{section*.1}}
+\backcite {feng2025simplifying}{{1}{2}{section*.1}}
+\backcite {peebles2022scalable,esser2024scaling}{{2}{2}{section*.2}}
 \backcite {peng2024controlnext}{{2}{2}{section*.2}}
 \backcite {tan2024ominicontrol}{{2}{2}{section*.2}}
 \backcite {zhang2025easycontrol}{{2}{2}{section*.2}}
@@ -41,8 +44,12 @@
 \backcite {hang2023efficient}{{2}{3}{section*.9}}
 \backcite {heusel2017gans,parmar2021aliased}{{3}{4.1}{section*.13}}
 \backcite {radford2021learning}{{3}{4.1}{section*.13}}
+\backcite {feng2025simplifying}{{3}{4.3}{subsection.4.3}}
 \backcite {ye2023adapter}{{4}{4.4}{figure.5}}
 \backcite {zhang2023adding}{{6}{4.7}{subsection.4.7}}
-\backcite {peebles2022scalable,esser2024scaling}{{6}{5}{section.5}}
-\backcite {hu2021lora}{{6}{5}{section.5}}
-\backcite {tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}{{6}{5}{section.5}}
+\backcite {mou2023adapter}{{6}{4.7}{subsection.4.7}}
+\backcite {esser2024scaling}{{7}{5}{section.5}}
+\backcite {hu2021lora}{{7}{5}{section.5}}
+\backcite {tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}{{7}{5}{section.5}}
+\backcite {feng2025simplifying}{{7}{5}{section.5}}
+\backcite {zavadski2023controlnet}{{7}{5}{section.5}}

@@ -121,6 +121,63 @@ if _bc:
     mac("bandDelta", _bc["delta"], "{:+.4f}")
     mac("bandSem",   abs(_bc["delta"]) / _bc["SC_full_frame"]["sem"], "{:.2f}")
 
+# --- E14/E15: one-field ablations rebuilt on the working model (single seed) -
+ABL = [("Kone","E14a_k1"),("Kfive","E14a_k5"),("Stemsf","E14b_stem64"),
+       ("Davg","E14c_down_avg"),("Color","E14e_color"),("Sqrt","E14f_sqrt"),
+       ("Log","E14f_log"),("Drop","E14g_conddrop0"),("Nogate","E14h_nogate"),
+       ("Stemskip","E15_stem256_skip")]
+for tag, path in ABL:
+    d = load(path)
+    if not d: continue
+    for c in ["0.0","0.05","0.1","0.3","0.5"]:
+        v = d["per_cutoff"].get(c)
+        if not v: continue
+        mac(f"abl{tag}{key[c]}", v["SC"]["mean"])
+        if v.get("FID") is not None:
+            mac(f"ablFid{tag}{key[c]}", v["FID"], "{:.2f}")
+
+# --- D-06: strength scaling on the fixed-cutoff specialist (E16) -------------
+for s_, nm in [("0.25","Quarter"),("0.5","Half"),("0.75","ThreeQ"),("1.0","One")]:
+    d = load(f"E16_spec_scale{s_}")
+    if not d: continue
+    v = d["per_cutoff"]["0.1"]
+    mac(f"sscSC{nm}", v["SC"]["mean"]); mac(f"sscDiv{nm}", v["Diversity"]["mean"])
+    if v.get("FID") is not None: mac(f"sscFid{nm}", v["FID"], "{:.2f}")
+
+# --- D-16: one generic caption for every image (E16) -------------------------
+d = load("E16_generic_caption")
+if d:
+    for c in ["0.0","0.1","0.3"]:
+        v = d["per_cutoff"].get(c)
+        if not v: continue
+        mac(f"genSC{key[c]}", v["SC"]["mean"])
+        mac(f"genClip{key[c]}", v["CLIP"]["mean"], "{:.2f}")
+        if v.get("FID") is not None: mac(f"genFid{key[c]}", v["FID"], "{:.2f}")
+
+# --- D-17: the dial on hand drawings, filtered by the artist at r (E17) -------
+_sd = os.path.join(R, "E17_sketch_dial", "results.json")
+if os.path.exists(_sd):
+    d = json.load(open(_sd))
+    for c in CUTS:
+        v = d["per_cutoff"].get(c)
+        if not v: continue
+        mac(f"sdial{key[c]}", v["SC_vs_drawing"]["mean"])
+        mac(f"sdialSem{key[c]}", v["SC_vs_drawing"]["sem"])
+        mac(f"sdialF{key[c]}", v["SC_vs_filtered"]["mean"])
+    mac("sdialN", d["provenance"]["n_images"])
+
+# --- D-07: T2I-Adapter, the size-matched side-network baseline (E17b) --------
+# Only the canny checkpoint is reported: it received its native condition. The
+# sketch checkpoint expects a PiDiNet sketch and was given Canny edges, so its
+# numbers measure a condition mismatch, not the method.
+_t = os.path.join(R, "baselines", "t2iadapter_canny_native", "results.json")
+if os.path.exists(_t):
+    d = json.load(open(_t)); v = d["per_setting"]["native"]
+    mac("baseTEdge", v["EdgeF1"]["mean"]); mac("baseTLpips", v["LPIPS"]["mean"])
+    mac("baseTClip", v["CLIP"]["mean"], "{:.2f}")
+    if v.get("FID") is not None: mac("baseTFid", v["FID"], "{:.2f}")
+    mac("baseTParams", f"{d['provenance']['side_params']:,}")
+
 # model sizes
 m = json.load(open("ckpt_dir/E10b_skip_inject/run_manifest.json"))
 mac("ourParams", f"{m['trainable_params']:,}")

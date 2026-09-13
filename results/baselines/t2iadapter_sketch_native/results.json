@@ -1,0 +1,42 @@
+{
+  "provenance": {
+    "baseline": "t2iadapter_sketch",
+    "repo": "TencentARC/t2iadapter_sketch_sd15v2",
+    "cond_regime": "native",
+    "family": "t2iadapter",
+    "side_params": 77000640,
+    "controlnet_params": 77000640,
+    "n_images": 500,
+    "steps": 50,
+    "cfg_scale": 7.5,
+    "seed": 2026,
+    "resolution": 512,
+    "gpu": "NVIDIA H200",
+    "timestamp": "2026-09-13 21:23:50",
+    "note": "baselines run on their native condition"
+  },
+  "per_setting": {
+    "native": {
+      "SC": null,
+      "EdgeF1": {
+        "mean": 0.6001476880583253,
+        "std": 0.10281848135116087,
+        "sem": 0.004598182272889802,
+        "n": 500
+      },
+      "LPIPS": {
+        "mean": 0.6475232839584351,
+        "std": 0.056813258677721024,
+        "sem": 0.0025407661685332805,
+        "n": 500
+      },
+      "CLIP": {
+        "mean": 27.8839054107666,
+        "std": 3.368987798690796,
+        "sem": 0.15066571466479992,
+        "n": 500
+      },
+      "FID": 157.7374603384706
+    }
+  }
+}

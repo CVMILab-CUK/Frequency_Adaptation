@@ -37,6 +37,9 @@
 \author{익명 제출}
 \date{}
 
+\renewcommand{\figurename}{그림}
+\renewcommand{\tablename}{표}
+
 \begin{document}
 \maketitle
 
@@ -53,16 +56,14 @@ $r{=}0.3$의 \scMainThreeZero{}까지 내려가고 표본 다양성은 \divMainZ
 $r \in [0, 0.3]$에서만 주장한다. 그 위에서는 조건에 남는 에너지가 적어 구조 순응도를
 해석할 수 없다. 어댑터 세기는 같은 손잡이가 아니다. 구조 순응도를 맞추면 --- 세기 0.50이
 \scHalfScale{}, 차단 반경 $r{=}0.3$이 \scMainThreeZero{} --- 세기 설정은 FID
-\fidHalfScale{}을 쓰고 차단 반경은 \fidMainThreeZero{}를 쓴다. 차단 반경이 두 축에서
-동시에 우위다.
+\fidHalfScale{}을 쓰고 차단 반경은 \fidMainThreeZero{}를 쓴다. 차단 반경이 두 축에서 동시에 우위다. 작가가 손그림을 $r$로 걸러 넣으면 다이얼은 손그림에서도 작동한다.
 
 구현 과정에서 두 가지를 발견했다. 동결 SD VAE는 어댑터가 읽기 전에 고주파 조건을
 파괴한다. 인코딩--디코딩 왕복 후 남는 조건은 $r{=}0.3$에서 \vaeNativeThreeZero{},
 $r{=}0.7$에서 \vaeNativeSevenZero{}에 불과하다. 그리고 이 두 주입 설계 사이에서는 위치가 폭보다
 중요하다. skip 단독이 SC \pathSkipOnlyZero{}를 유지하는 반면 어텐션 단독은
 \pathAttnOnlyZero{}이고 양쪽 다 켜면 \pathBothZero{}다. 어텐션 단독 설계 안에서
-어댑터 폭을 네 배로 늘려도 그보다 훨씬 적게 얻는다. 학습 파라미터는 \ourParams{}개로 ControlNet의
-\ourParamsRatio{}분의 1이다.
+어댑터 폭을 네 배로 늘려도 그보다 훨씬 적게 얻는다. 학습 파라미터는 \ourParams{}개다. ControlNet보다는 작지만 최근의 경량 제어 모듈보다 작지는 않으며, 효율을 기여로 주장하지 않는다.
 \end{abstract}
 
 \section{서론}
@@ -105,6 +106,11 @@ ControlNet~\cite{zhang2023adding}으로 공간 제어가 가능해졌다. 인코
 접지한다. Uni-ControlNet~\cite{zhao2023controlnet}과
 UniControl~\cite{qin2023unicontrol}은 여러 조건 유형을 한 모델에 담고,
 ControlNet++~\cite{li2024controlnet}는 생성된 이미지에서 일관성 루프를 닫는다.
+같은 UNet에서 제어 분기를 줄이는 흐름도 있다. ControlNet-XS~\cite{zavadski2023controlnet}는
+훨씬 작은 제어 네트워크를 인코더·디코더와 양방향으로 연결하고, CtrLoRA~\cite{xu2024ctrlora}는
+공유된 기반 ControlNet을 조건마다 LoRA로 적응시키며, Simple-ControlNet~\cite{feng2025simplifying}은
+UNet 최상단의 단일 스케일 투영과 self-attention의 LoRA만으로 300만 미만의 파라미터에서 조건을
+넣고 추론 시 그 투영의 스케일을 조절하게 한다. 우리 어댑터는 이들보다 작지 않다.
 이들 모두 조건 유형을 고정하고, 그와 함께 출력이 얼마나 따를지도 고정한다.
 동작점이 학습된 가중치의 성질이 되는 것이다. 우리의 차단 반경은 가중치 하나에서
 추론 시 그 점을 옮긴다.
@@ -166,6 +172,8 @@ $8\times$ 줄인다. 조건을 동결 VAE로 인코딩하지 않는다. 이유�
 $1{\times}1$ 헤드가 디코더 스킵 텐서마다 잔차 하나와 중간 블록용 잔차 하나를
 만들어 UNet의 기존 ControlNet 인터페이스로 더한다. 동시에 각 교차 어텐션 지점이
 조건 특징의 $3{\times}3$ 창을 참조하며, 0으로 초기화된 채널별 게이트를 거친다.
+효과를 내는 것은 창이 아니다. $1{\times}1$에서는 softmax가 한 위치에 대해서만 계산되어 이 지점이
+게이트 달린 값 투영으로 줄어드는데, 구조 순응도는 낮아지지 않는다(\ref{sec:where}절).
 두 경로 모두 초기에는 정확한 무연산이다. 둘을 끄면 네트워크가 원본
 Stable Diffusion~1.5~\cite{rombach2021high}를 비트 단위로 재현하며, 모든 학습 전에 이를 검사한다.
 
@@ -213,11 +221,15 @@ ViT-B/32~\cite{radford2021learning} CLIP 점수다.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/dial}
-\caption{시드와 캡션을 고정하고 $r$만 바꾼 결과. 왼쪽부터 참조 이미지,
-$r = 0,\,0.05,\,0.1,\,0.3,\,0.5,\,0.7,\,1.0$. 배경의 인파가 옅어지고 안경테가
-참조에서 멀어지며 옷 색이 분리되는 반면 신원과 자세는 남는다. 참조 이미지는
-모델에 주어지지 않는다.}
+\begin{tikzpicture}
+\node[inner sep=0, anchor=south west] (d) at (0,0) {\includegraphics[width=\textwidth]{figures/dial}};
+\foreach \lab [count=\i from 0] in {참조, $r{=}0$, $r{=}0.05$, $r{=}0.1$, $r{=}0.2$, $r{=}0.3$, $r{=}0.5$, $r{=}0.7$, $r{=}1$}
+  \node[font=\scriptsize, anchor=south, inner sep=1.5pt]
+    at ($(d.north west)!{(\i*390+192)/3504}!(d.north east)$) {\lab};
+\end{tikzpicture}
+\caption{행마다 시드와 캡션을 하나로 고정하고 $r$만 바꿨다. 행은 테스트 이미지의 처음 세 장을
+생성 순서대로 실은 것이다. $r$이 커질수록 배경의 세부가 옅어지고 옷과 색이 참조에서 멀어지지만
+얼굴 배치는 유지된다. $r{=}1$에서는 둘째 행의 자세도 바뀐다. 참조 이미지는 모델에 주어지지 않는다.}
 \label{fig:dial}
 \end{figure*}
 
@@ -235,6 +247,12 @@ $r = 0,\,0.05,\,0.1,\,0.3,\,0.5,\,0.7,\,1.0$. 배경의 인파가 옅어지고 �
 유지되고 잡음으로 무너지지 않는다.
 
 그림~\ref{fig:dial}은 시드와 캡션을 고정하고 $r$만 바꾼 것이다.
+캡션이 참조에서 유도되므로 구조의 일부를 캡션이 나르고 있을 수 있다. 그래서 모든 이미지에
+일반 캡션 하나(``a photo of a person'')를 주고 스윕을 반복했다. 구조 순응도는 거의 움직이지
+않는다. $r{=}0$, $0.1$, $0.3$에서 \genSCZero{}, \genSCOneZero{}, \genSCThreeZero{}로, 캡션이
+있을 때의 \scMainZero{}, \scMainOneZero{}, \scMainThreeZero{}와 같은 수준이다. 반면 FID는
+\genFidZero{}--\genFidThreeZero{}로 오르는데, 캡션이 이미지를 설명하지 않게 되었으니 당연하다.
+구조는 조건에서 온다.
 그림~\ref{fig:curve}는 곡선과, 그 아래에 두 다이얼을 같은
 구조 순응도/FID 평면에 함께 놓은 것이다.
 
@@ -271,32 +289,44 @@ FID는 칸마다 추정값이 하나뿐이고 분산이 없으므로 행 간 비
 
 \subsection{세기는 같은 손잡이가 아니다}
 \label{sec:strength}
-
-당연한 대안은 하나의 차단 반경으로 학습하고 추론 시 어댑터 기여를 스케일하는
-것이다. 같은 체크포인트에서 $r{=}0.1$을 고정하고 두 주입 경로를 함께 스케일해
-시험했다.
+당연한 대안은 하나의 차단 반경으로 학습하고 추론 시 어댑터 기여를 줄이는 것으로, 경량 제어
+모듈이 제공하는 손잡이이기도 하다~\cite{feng2025simplifying}. 고정 $r{=}0.1$로 학습한
+어댑터(\ref{sec:spec}절)에서 두 주입 경로를 함께 스케일해 이를 그대로 수행했고, 확인용으로
+무작위-$r$ 모델도 같은 차단 반경에서 스케일했다.
 
 \begin{table}[t]\centering\small
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrr}
 \toprule
 설정 & SC & 다양성 & FID \\
 \midrule
-세기 0.25          & \scQuarterScale & \divQuarterScale & \fidQuarterScale \\
-세기 0.50          & \scHalfScale    & \divHalfScale    & \fidHalfScale \\
-세기 0.75          & \scThreeQScale  & \divThreeQScale  & \fidThreeQScale \\
+\multicolumn{4}{l}{\bfseries 고정 $r{=}0.1$ 어댑터, 스케일} \\
+세기 0.25 & \sscSCQuarter & \sscDivQuarter & \sscFidQuarter \\
+세기 0.50 & \sscSCHalf    & \sscDivHalf    & \sscFidHalf \\
+세기 0.75 & \sscSCThreeQ  & \sscDivThreeQ  & \sscFidThreeQ \\
+세기 1.00 & \sscSCOne     & \sscDivOne     & \sscFidOne \\
 \midrule
-$r{=}0.3$ (우리)    & \scMainThreeZero & \divMainThreeZero & \fidMainThreeZero \\
-$r{=}0.5$ (우리)    & \scMainFiveZero  & \divMainFiveZero  & \fidMainFiveZero \\
+\multicolumn{4}{l}{\bfseries 무작위-$r$ 어댑터, $r{=}0.1$에서 스케일} \\
+세기 0.25 & \scQuarterScale & \divQuarterScale & \fidQuarterScale \\
+세기 0.50 & \scHalfScale    & \divHalfScale    & \fidHalfScale \\
+세기 0.75 & \scThreeQScale  & \divThreeQScale  & \fidThreeQScale \\
+\midrule
+\multicolumn{4}{l}{\bfseries 무작위-$r$ 어댑터, 차단 반경 이동} \\
+$r{=}0.2$ & \scMainTwoZero   & \divMainTwoZero   & \fidMainTwoZero \\
+$r{=}0.3$ & \scMainThreeZero & \divMainThreeZero & \fidMainThreeZero \\
 \bottomrule
 \end{tabular}
-\caption{세기 다이얼과 주파수 다이얼. 같은 SC에서 읽으면 세기 0.50은
-\scHalfScale{}을 FID \fidHalfScale{}에 도달하고, $r{=}0.3$은
-\scMainThreeZero{}을 FID \fidMainThreeZero{}에 도달한다.}
+\caption{세기와 차단 반경. 고정-$r$ 어댑터는 세기 0.50에서 SC \sscSCHalf{}, FID
+\sscFidHalf{}에 이른다. 차단 반경을 옮기면 $r{=}0.2$(\scMainTwoZero{}, FID
+\fidMainTwoZero{})와 $r{=}0.3$(\scMainThreeZero{}, FID \fidMainThreeZero{})이 그 값을 사이에
+두며, 둘 다 FID가 낮다. 무작위 모델을 스케일해도 같은 양상이다.}
 \label{tab:strength}
 \end{table}
 
-어댑터를 약하게 하면 이미지가 나빠지고, 조건의 대역폭을 좁히면 그렇지 않다.
-주파수 파라미터화가 이 균형을 이동 가능하게 만든다.
+두 스케일 곡선 모두 줄일수록 이미지 분포를 벗어난다. 세기 0.25에서 고정-$r$ 어댑터는 FID
+\sscFidQuarter{}, 다양성 \sscDivQuarter{}에 이르는데, 차단 반경은 전 구간에서 FID가
+\fidMainZero{}--\fidMainOneHundred{}에 머물고 다양성은 최대 \divMainOneHundred{}다. 어댑터를
+줄이면 표본을 망가뜨려 구조를 없애고, 조건의 대역을 좁히면 화질을 유지한 채 구조를 없앤다.
 
 \subsection{VAE가 조건을 먹는다}
 \label{sec:vae}
@@ -331,8 +361,52 @@ FID \pathFidAllOff{}로 무너지는데, 이것이 어댑터가 일을 하고 �
 
 용량은 훨씬 덜 기여한다. 투영을 128채널 스템으로 넓히면 $r{=}0.05$의 SC가
 \scEaZeroFive{}에서 \scEcapZeroFive{}로 오르고, 다시 256으로 두 배 늘려도
-\scEcapbZeroFive{}에 그친다. $7{\times}7$ 어텐션 창은 $3{\times}3$보다 나쁘다
-(\scEwinZeroFive{}).
+\scEcapbZeroFive{}에 그친다. $7{\times}7$ 어텐션 창은 $3{\times}3$보다 나쁘다 (\scEwinZeroFive{}). 이 행들은 모두 skip 경로 없이 용량을 바꾼 것이다.
+
+표~\ref{tab:abl}은 작동하는 설계에서 두 경로를 모두 켠 채 한 필드씩 바꾼 어블레이션이다. 각각
+시드 하나이므로 주 모델의 시드 3개 퍼짐(SC 약 0.01)에 비추어 읽는다. 여기서도 용량은 조금 돕는다.
+256채널 스템은 $r{=}0.05$의 SC를 \scMainZeroFive{}에서 \ablStemskipZeroFive{}로 올리고
+$r{=}0.1$의 FID를 \fidMainOneZero{}에서 \ablFidStemskipOneZero{}로 낮추지만, skip 경로를 더할
+때($r{=}0$에서 \pathAttnOnlyZero{} → \pathBothZero{})에 비하면 작다. 어텐션 창은 돕지 않는다.
+$1{\times}1$은 표의 모든 차단 반경에서 $3{\times}3$과 시드 퍼짐 안에서 같거나 더 높고,
+$5{\times}5$는 모두 낮다. 어텐션 지점이 기여하는 것은 이웃이 아니라 조건이 들어가는 위치다.
+0초기화 게이트는 유지할 가치가 있다. 없애면 $r{=}0$부터 $0.3$까지 SC가 낮고 $r{=}0.1$의 FID가
+높다. 가장 큰 단일 변화는 $r$을 뽑는 방식이다. 로그-균등 샘플러는 $r{=}0$의 SC를
+\ablLogZero{}로 올리고 FID를 \ablFidLogZero{}로 낮추지만 윗구간을 내준다($r{=}0.5$에서
+\ablLogFiveZero{} 대 \scMainFiveZero{}). 다이얼을 전 구간에서 개선한다기보다 해상도를 작은 $r$
+쪽으로 옮기는 것이다. 위의 결과는 모두 균등 샘플러로 얻었다.
+
+\begin{table}[t]\centering\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{lrrrrr}
+\toprule
+바꾼 필드 & \multicolumn{4}{c}{SC} & FID \\
+\cmidrule(lr){2-5}
+ & $r{=}0$ & $0.05$ & $0.3$ & $0.5$ & $r{=}0.1$ \\
+\midrule
+주 모델 & \scMainZero & \scMainZeroFive & \scMainThreeZero & \scMainFiveZero & \fidMainOneZero \\
+\quad 시드 sd (3개) & \sSdZero & \sSdZeroFive & \sSdThreeZero & \sSdFiveZero & -- \\
+\midrule
+창 $1{\times}1$             & \ablKoneZero & \ablKoneZeroFive & \ablKoneThreeZero & \ablKoneFiveZero & \ablFidKoneOneZero \\
+창 $5{\times}5$             & \ablKfiveZero & \ablKfiveZeroFive & \ablKfiveThreeZero & \ablKfiveFiveZero & \ablFidKfiveOneZero \\
+게이트 없음                     & \ablNogateZero & \ablNogateZeroFive & \ablNogateThreeZero & \ablNogateFiveZero & \ablFidNogateOneZero \\
+평균 풀링 축소                   & \ablDavgZero & \ablDavgZeroFive & \ablDavgThreeZero & \ablDavgFiveZero & \ablFidDavgOneZero \\
+스템 64                      & \ablStemsfZero & \ablStemsfZeroFive & \ablStemsfThreeZero & \ablStemsfFiveZero & \ablFidStemsfOneZero \\
+스템 256                     & \ablStemskipZero & \ablStemskipZeroFive & \ablStemskipThreeZero & \ablStemskipFiveZero & \ablFidStemskipOneZero \\
+컬러 조건                      & \ablColorZero & \ablColorZeroFive & \ablColorThreeZero & \ablColorFiveZero & \ablFidColorOneZero \\
+조건 드롭아웃 없음                 & \ablDropZero & \ablDropZeroFive & \ablDropThreeZero & \ablDropFiveZero & \ablFidDropOneZero \\
+$r=u^2$                    & \ablSqrtZero & \ablSqrtZeroFive & \ablSqrtThreeZero & \ablSqrtFiveZero & \ablFidSqrtOneZero \\
+$r$ 로그-균등                  & \ablLogZero & \ablLogZeroFive & \ablLogThreeZero & \ablLogFiveZero & \ablFidLogOneZero \\
+\bottomrule
+\end{tabular}
+\caption{작동하는 모델에서 한 필드씩 바꾼 어블레이션. skip과 어텐션 경로를 모두 켰고 각각 학습 시드
+하나다. 둘째 행은 주 모델의 시드 3개에 대한 퍼짐이다. 주 모델은 $3{\times}3$ 창, 0초기화 게이트,
+어텐션 지점마다 조건 특징을 학습형 $2{\times}2$ 스트라이드로 축소, 스템 없음, 회색조 조건, 조건
+드롭아웃 0.05, $[0,1]$ 균등 $r$을 쓴다. $u$를 균등하게 뽑아 $r=u^2$로 두면 작은 $r$에 학습이
+몰리고, $[10^{-3},1]$ 로그-균등 샘플러는 더 강하게 몰린다.}
+\label{tab:abl}
+\end{table}
+
 
 \begin{table}[t]\centering\footnotesize
 \setlength{\tabcolsep}{2pt}
@@ -356,13 +430,12 @@ conv     & attn + skip         & \scMainZeroFive  & \scMainOneZero  & \fidMainOn
 정확히 한 필드가 다르며, 명시하지 않는 한 모두 $3{\times}3$ 창과 0초기화 게이트를 쓴다.
 메인 모델은 마지막 행이고 스템이 없다(최소 $1{\times}1$ 투영). 위 세 행은 어댑터 없음
 대조군과 같거나 그 아래이므로, 그 수준에서는 설계가 나쁜 것과 학습이 되지 않은 것을
-구별할 수 없다. 용량은 어텐션 단독 체제에서만 변화시켰고 skip이 켜진 상태에서 스템 폭을
-바꾼 행이 없다. 따라서 이 표는 두 주입 설계에 대한 진술을 지지하며, 위치가 용량보다
-낫다는 일반적 순서를 지지하지 않는다.}
+구별할 수 없다. skip 경로를 켠 상태의 스템 폭 변화는 표~\ref{tab:abl}에 있다.}
 \label{tab:where}
 \end{table}
 
 \subsection{차단 반경별 특화 모델과의 비교}
+\label{sec:spec}
 
 고정 $r$로 어댑터 네 개를 학습해 각자의 차단 반경에서 무작위-$r$ 모델 하나와
 비교했다. 하나의 모델은 세 번 학습했으므로, 각 격차를 실행 내 표준오차가 아니라 시드 3개의
@@ -388,7 +461,11 @@ Edge-F1 \edgeMainOneZero{}, LPIPS \lpipsMainOneZero{}, FID \fidMainOneZero{}를
 엣지 대 주파수 대역), 우리 어댑터는 FFHQ \nTrain{}장으로 학습한 반면 ControlNet은 여기서
 제로샷이며 FID도 FFHQ 통계 대비다. 텍스트 정합에서는 어디서도 이기지 못한다. 전 구간 최고
 CLIP이 \clipMainOneHundred{}로 ControlNet-Canny의 \baseCannyClip{}에 못 미친다
-(ControlNet-HED는 \baseHedClip{}). 우리 조건과 데이터로 ControlNet을 학습시킨 것이 대응
+(ControlNet-HED는 \baseHedClip{}). 복제 인코더가 아니라 \baseTParams{}개 파라미터의 곁가지
+네트워크라 우리 설계에 더 가까운 T2I-Adapter-Canny~\cite{mou2023adapter}는 같은 프로토콜에서
+Edge-F1 \baseTEdge{}, LPIPS \baseTLpips{}, FID \baseTFid{}, CLIP \baseTClip{}이다. 스케치
+체크포인트는 제외했다. PiDiNet 스케치를 입력으로 기대하는데 우리는 그것을 계산하지 않았고,
+Canny 엣지를 넣으면 방법이 아니라 그 불일치를 재게 된다. 우리 조건과 데이터로 ControlNet을 학습시킨 것이 대응
 통제이며, 그것은 수행하지 않았다.
 
 \subsection{손으로 그린 스케치}
@@ -414,19 +491,30 @@ CLIP이 \clipMainOneHundred{}로 ControlNet-Canny의 \baseCannyClip{}에 못 미
 \sketchSceneSC{}로 떨어지고 FFHQ 대비 FID는 \sketchSceneFid{}다. 모델이 그림은 따르지만
 얼굴을 만들지 못한다. 얼굴 모델에서 예상되는 실패이며 생략하지 않고 보고한다.
 
+그림에는 차단 반경이 없지만 작가가 줄 수 있다. 그림을 $r$로 걸러 모델에 넣으면 되고, 이는
+모든 학습 조건이 거친 연산과 같다. 얼굴 그림 \sdialN{}장에서 원래 그림에 대한 구조 순응도는
+$r{=}0$의 \sdialZero{}에서 $r{=}0.1$의 \sdialOneZero{}, $r{=}0.3$의 \sdialThreeZero{},
+$r{=}1$의 \sdialOneHundred{}로 떨어진다. 다이얼이 그림에서도 작동한다. $r{=}0.5$와 $r{=}0.7$은
+서로 표준오차(\sdialSemFiveZero{}) 안에 있다. 실제로 받은 거른 그림에 대한 점수는 $r{=}0.1$에서
+\sdialFOneZero{}로, 거른 사진이 내는 \scMainOneZero{}보다 크게 낮다. 그 이유는 분리하지 않았다.
+
 \section{한계}
 
 쓸 만한 구간은 대략 $r \in [0, 0.3]$이다. 그 위에서는 조건에 남는 에너지가 적어
 --- $r{=}0.5$에서 스펙트럼의 0.0014 --- 구조 순응도를 해석하기 어려워진다. 거의
 비어 있는 두 신호는 모델이 무엇을 하든 상관이 0에 가깝기 때문이다.
 
-여기 있는 모든 것은 한 도메인(FFHQ 얼굴)과 한 백본(SD1.5)이다. 현재의 구조 제어 연구는
-DiT 백본~\cite{peebles2022scalable,esser2024scaling}으로 옮겨갔고, 거기서
-LoRA~\cite{hu2021lora} 계열 어댑터~\cite{tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}는
-우리보다 훨씬 적은 파라미터로 제어를 보고한다. 우리 효율 수치는 ControlNet 대비로 읽어야 하며 그
-연구선과 비교할 것이 아니다.
+여기 있는 모든 것은 한 도메인(FFHQ 얼굴)과 한 백본(SD1.5)이며, 세 결과는 옮겨가는 방식이
+다르다. 다이얼은 조건의 성질이라 백본에 의존할 이유가 없지만 다른 백본에서 시험하지 않았다.
+skip 경로 주입은 그대로는 옮겨가지 않는다. MMDiT 백본~\cite{esser2024scaling}에는 UNet식 skip
+연결이 없고, 거기서 제어는 공유 토큰이나 LoRA~\cite{hu2021lora}
+모듈~\cite{tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}로 들어간다. VAE 측정은
+4채널 SD 오토인코더에서만 했다. 우리 어댑터는 요즘 기준으로 작지도 않다.
+Simple-ControlNet~\cite{feng2025simplifying}은 SD1.5에서 300만 미만,
+ControlNet-XS~\cite{zavadski2023controlnet}는 ControlNet보다 훨씬 작은 제어 네트워크를 보고하고,
+위의 DiT 모듈들은 우리의 몇 분의 일을 쓴다.
 
-특화 모델 비교는 정직하지만 $r{=}0.1$에서 불리하고, 사용자 연구는 수행하지 않았다.
+표~\ref{tab:abl}의 어블레이션은 단일 시드다. 특화 모델 비교는 정직하지만 $r{=}0.1$에서 불리하고, 사용자 연구는 수행하지 않았다.
 
 \section{결론}
 

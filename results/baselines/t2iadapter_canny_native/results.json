@@ -1,0 +1,42 @@
+{
+  "provenance": {
+    "baseline": "t2iadapter_canny",
+    "repo": "TencentARC/t2iadapter_canny_sd15v2",
+    "cond_regime": "native",
+    "family": "t2iadapter",
+    "side_params": 77000640,
+    "controlnet_params": 77000640,
+    "n_images": 500,
+    "steps": 50,
+    "cfg_scale": 7.5,
+    "seed": 2026,
+    "resolution": 512,
+    "gpu": "NVIDIA H200",
+    "timestamp": "2026-09-13 21:19:09",
+    "note": "baselines run on their native condition"
+  },
+  "per_setting": {
+    "native": {
+      "SC": null,
+      "EdgeF1": {
+        "mean": 0.5844760740071763,
+        "std": 0.12767011941488118,
+        "sem": 0.0057095813141437995,
+        "n": 500
+      },
+      "LPIPS": {
+        "mean": 0.5689997673034668,
+        "std": 0.07217148691415787,
+        "sem": 0.00322760701554587,
+        "n": 500
+      },
+      "CLIP": {
+        "mean": 30.581647872924805,
+        "std": 3.052907943725586,
+        "sem": 0.13653019382439024,
+        "n": 500
+      },
+      "FID": 86.65657451469701
+    }
+  }
+}

@@ -134,9 +134,17 @@ def main():
                 cond_unit = make_condition_torch(gt_b, cut,
                     frequency_img=cfg.datasets.frequency_img, mode=cfg.datasets.frequency_mode)
             g = torch.Generator(device="cpu").manual_seed(a.seed + s)
-            imgs = pipe(cap_b, image=cond_unit.to(torch.float16),
+            # T2I-Adapter canny/sketch checkpoints read one grayscale channel
+            # (pixel-unshuffle 8x -> 64 channels); ControlNet reads three.
+            cond_in = cond_unit[:, :1] if family == "t2iadapter" else cond_unit
+            imgs = pipe(cap_b, image=cond_in.to(torch.float16),
                         num_inference_steps=a.steps, guidance_scale=a.cfg,
-                        generator=g, output_type="pt").images.float().clamp(0, 1)
+                        generator=g, output_type="pt").images
+            # StableDiffusionAdapterPipeline in diffusers 0.32 ignores
+            # output_type="pt" and returns an (N, H, W, C) numpy array in [0, 1].
+            if isinstance(imgs, np.ndarray):
+                imgs = torch.from_numpy(imgs).permute(0, 3, 1, 2)
+            imgs = imgs.to(device).float().clamp(0, 1)
             if cut is not None:
                 SC.append(structure_consistency(imgs, cond_unit, cut))
             EF.append(edge_f1(imgs, gt_b)); LP.append(lp.distance(imgs, gt_b))

@@ -1,0 +1,21 @@
+[
+ {
+  "key": "feng2025simplifying",
+  "authors": [
+   "Zhida Feng",
+   "Li Chen",
+   "Yuenan Sun",
+   "Jiaxiang Liu",
+   "Shikun Feng"
+  ],
+  "title": "Simplifying Control Mechanism in Text-to-Image Diffusion Models",
+  "booktitle": "Proceedings of the AAAI Conference on Artificial Intelligence",
+  "volume": "39",
+  "number": "3",
+  "pages": "3013--3021",
+  "year": "2025",
+  "doi": "10.1609/aaai.v39i3.32309",
+  "url": "https://doi.org/10.1609/aaai.v39i3.32309",
+  "verified_against": "Crossref metadata for the DOI; doi.org resolves (HTTP 200); the proceedings PDF from ojs.aaai.org/index.php/AAAI/article/view/32309 carries the same title and five authors"
+ }
+]
