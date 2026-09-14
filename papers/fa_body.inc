@@ -479,6 +479,74 @@ One model therefore does not dominate four. What it does instead is give a dial
 the specialists cannot: a model trained at $r{=}0.1$ has never seen $r{=}0.3$,
 so its curve is a single point.
 
+\subsection{The skip path alone}
+\label{sec:skiponly}
+
+Section~\ref{sec:where} ablates the two injection paths on a model trained with
+both. That confounds placement with capacity: the cross-attention branch is
+still present and trained, just switched off at test time. We therefore trained
+the skip path from scratch, with the attention branch removed entirely.
+
+It reaches SC \skipOnlyOneZero{} at $r{=}0.1$ against \scMainOneZero{} for both
+paths and \pathAttnOnlyOneZero{} for cross-attention alone, at FID
+\skipOnlyFidOneZero{} against \fidMainOneZero{}. A single path trained on its
+own therefore recovers most, but not all, of the combined model: the paths are
+complementary rather than redundant, and placement still dominates at matched
+capacity. The full curve is in Table~\ref{tab:skiponly}.
+
+\begin{table}[t]\centering\footnotesize
+\begin{tabular}{lrrr}
+\toprule
+$r$ & skip only & both paths & attention only \\
+\midrule
+0.05 & \skipOnlyZeroFive  & \scMainZeroFive  & --- \\
+0.10 & \skipOnlyOneZero   & \scMainOneZero   & \pathAttnOnlyOneZero \\
+0.20 & \skipOnlyTwoZero   & \scMainTwoZero   & --- \\
+0.30 & \skipOnlyThreeZero & \scMainThreeZero & \pathAttnOnlyThreeZero \\
+0.50 & \skipOnlyFiveZero  & \scMainFiveZero  & --- \\
+0.70 & \skipOnlySevenZero & \scMainSevenZero & --- \\
+\bottomrule
+\end{tabular}
+\caption{Structure consistency for a model trained with the skip path only,
+against the working model and against its cross-attention branch measured in
+isolation. The last column comes from switching a path off at test time, so it
+is not a trained-from-scratch comparison.}
+\label{tab:skiponly}
+\end{table}
+
+\subsection{Reading the dial with a fixed instrument}
+\label{sec:fixedinst}
+
+Structure consistency re-extracts the condition at the same cutoff the model was
+given, so the measuring instrument moves with the thing it measures. A falling
+curve could in principle come from the instrument rather than the model. We
+therefore re-scored the same generations with the cutoff held at $r_m{=}0.1$
+throughout.
+
+The curve still falls: \fixInstZeroFive{} at $r{=}0.05$, \fixInstOneZero{} at
+$r{=}0.1$ and \fixInstThreeZero{} at $r{=}0.3$. Holding the instrument fixed
+compresses the range, as it must, but does not remove the decline, so the dial
+is a property of the generations and not of the metric.
+
+\subsection{Outside the training domain}
+\label{sec:ood}
+
+Everything above is FFHQ. To test whether the dial is specific to faces we ran
+the same sweep on photographs from outside the training distribution, scoring
+against the input drawing with the identical script, prompt and cutoffs.
+
+Structure consistency falls from \oodOodZeroFive{} at $r{=}0.05$ to
+\oodOodThreeZero{} at $r{=}0.3$, a decline of \oodDrop{} against \oodDropIn{}
+in domain --- a ratio of \oodDropRatio{}. The dial therefore carries out of
+domain, and if anything responds more sharply there, which is what one would
+expect when the model has less of a prior to fall back on. With the adapter off
+the same images score \oodOffOneZero{}, so the residual structure is coming
+from the condition and not from the backbone.
+
+Image quality does not transfer: FID rises from \oodIndFidOneZero{} in domain
+to \oodOodFidOneZero{} out of it. The control survives the domain shift; the
+generative quality does not, and we make no claim otherwise.
+
 \subsection{Baselines}
 
 Against pretrained ControlNet~\cite{zhang2023adding} on its own condition, over the same test images
@@ -569,3 +637,5 @@ scaling the adapter down. Getting there required fixing where the condition
 enters the network and keeping it out of the frozen autoencoder; both were measured on the
 SD1.5 autoencoder and UNet, and we expect them to carry to conditioning designs
 built on that family. We have not tested others.
+
+\input{fa_appendix.inc}

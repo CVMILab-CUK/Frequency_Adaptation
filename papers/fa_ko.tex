@@ -450,6 +450,47 @@ $r{=}0.7$을 특화 모델의 근소한 승리로 적었으나, 시드 간에는
 따라서 모델 하나가 넷을 압도하지는 않는다. 대신 특화 모델이 줄 수 없는 것을 준다.
 $r{=}0.1$로 학습한 모델은 $r{=}0.3$을 본 적이 없으므로 그 곡선은 점 하나다.
 
+\subsection{skip 경로 단독}
+\label{sec:skiponly}
+
+\ref{sec:where}절은 두 경로를 모두 학습한 모델에서 주입 경로를 제거해 본 것이다.
+그러면 위치와 용량이 섞인다. 교차 어텐션 분기가 여전히 존재하고 학습돼 있으며 추론 시
+꺼졌을 뿐이기 때문이다. 그래서 어텐션 분기를 아예 제거하고 skip 경로만 처음부터
+학습시켰다.
+
+$r{=}0.1$에서 SC \skipOnlyOneZero{}에 도달한다. 두 경로를 쓴 \scMainOneZero{},
+교차 어텐션 단독의 \pathAttnOnlyOneZero{}와 비교되며, FID는 \skipOnlyFidOneZero{}로
+\fidMainOneZero{} 대비 값이다. 단독 학습한 한 경로가 결합 모델의 대부분을 회복하지만
+전부는 아니다. 두 경로는 중복이 아니라 상호 보완적이고, 용량을 맞춰도 위치가 여전히
+지배적이다.
+
+\subsection{고정된 기기로 다이얼 읽기}
+\label{sec:fixedinst}
+
+구조 순응도는 모델이 받은 것과 같은 차단 반경에서 조건을 다시 추출하므로, 측정 기기가
+측정 대상과 함께 움직인다. 곡선이 내려가는 것이 모델이 아니라 기기 때문일 수도 있다.
+그래서 같은 생성물을 차단 반경 $r_m{=}0.1$로 고정해 다시 채점했다.
+
+곡선은 여전히 내려간다. $r{=}0.05$에서 \fixInstZeroFive{}, $r{=}0.1$에서
+\fixInstOneZero{}, $r{=}0.3$에서 \fixInstThreeZero{}다. 기기를 고정하면 범위가
+압축되지만 하락 자체는 사라지지 않으므로, 다이얼은 지표가 아니라 생성물의 성질이다.
+
+\subsection{학습 도메인 밖}
+\label{sec:ood}
+
+지금까지는 전부 FFHQ다. 다이얼이 얼굴에만 국한되는지 보기 위해 학습 분포 밖의 사진에
+같은 스윕을 돌렸고, 동일한 스크립트와 프롬프트, 차단 반경으로 입력 그림 대비 채점했다.
+
+구조 순응도는 $r{=}0.05$의 \oodOodZeroFive{}에서 $r{=}0.3$의 \oodOodThreeZero{}로
+떨어지며, 낙폭 \oodDrop{}은 도메인 내 \oodDropIn{}의 \oodDropRatio{}배다. 다이얼은
+도메인 밖으로 이어지고, 오히려 더 가파르게 반응한다. 모델이 기댈 사전 지식이 적을 때
+예상되는 바다. 어댑터를 끄면 같은 이미지가 \oodOffOneZero{}를 기록하므로, 남은 구조는
+백본이 아니라 조건에서 온다.
+
+화질은 전이되지 않는다. FID가 도메인 내 \oodIndFidOneZero{}에서 밖에서는
+\oodOodFidOneZero{}로 오른다. 제어는 도메인 변화를 견디지만 생성 품질은 그렇지 않으며,
+우리는 그 이상을 주장하지 않는다.
+
 \subsection{베이스라인}
 
 같은 테스트 이미지와 캡션에서 사전학습 ControlNet~\cite{zhang2023adding}을 자기 조건으로 돌린 결과다.
@@ -523,6 +564,93 @@ ControlNet-XS~\cite{zavadski2023controlnet}는 ControlNet보다 훨씬 작은 �
 네트워크에 들어가는 위치를 고치고 조건을 동결 오토인코더 밖에 두어야 했다. 두 발견은 SD1.5의
 오토인코더와 UNet에서 측정한 것이며, 같은 계열 위의 조건화 설계에는 옮겨가리라 본다.
 다른 계열은 시험하지 않았다.
+
+\appendix
+\section{차단 반경별 전체 결과}
+
+본문은 각 실험을 그 논지를 뒷받침하는 차단 반경에서 보고한다. 여기 표들은 측정된 모든
+차단 반경을 담았으며, 논문의 나머지와 같은 \texttt{results.json} 파일에서 생성된다.
+
+\begin{table}[h]\centering\footnotesize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{lrrrrr}
+\toprule
+변형 & $r{=}0$ & 0.05 & 0.1 & 0.3 & 0.5 \\
+\midrule
+작동 모델            & \scMainZero      & \scMainZeroFive      & \scMainOneZero      & \scMainThreeZero      & \scMainFiveZero \\
+$1{\times}1$ 창      & \ablKoneZero     & \ablKoneZeroFive     & \ablKoneOneZero     & \ablKoneThreeZero     & \ablKoneFiveZero \\
+$5{\times}5$ 창      & \ablKfiveZero    & \ablKfiveZeroFive    & \ablKfiveOneZero    & \ablKfiveThreeZero    & \ablKfiveFiveZero \\
+64채널 스템          & \ablStemsfZero   & \ablStemsfZeroFive   & \ablStemsfOneZero   & \ablStemsfThreeZero   & \ablStemsfFiveZero \\
+256채널 스템         & \ablStemskipZero & \ablStemskipZeroFive & \ablStemskipOneZero & \ablStemskipThreeZero & \ablStemskipFiveZero \\
+평균 다운샘플        & \ablDavgZero     & \ablDavgZeroFive     & \ablDavgOneZero     & \ablDavgThreeZero     & \ablDavgFiveZero \\
+컬러 조건            & \ablColorZero    & \ablColorZeroFive    & \ablColorOneZero    & \ablColorThreeZero    & \ablColorFiveZero \\
+log 샘플러           & \ablLogZero      & \ablLogZeroFive      & \ablLogOneZero      & \ablLogThreeZero      & \ablLogFiveZero \\
+sqrt 샘플러          & \ablSqrtZero     & \ablSqrtZeroFive     & \ablSqrtOneZero     & \ablSqrtThreeZero     & \ablSqrtFiveZero \\
+조건 dropout 없음    & \ablDropZero     & \ablDropZeroFive     & \ablDropOneZero     & \ablDropThreeZero     & \ablDropFiveZero \\
+0초기화 게이트 없음  & \ablNogateZero   & \ablNogateZeroFive   & \ablNogateOneZero   & \ablNogateThreeZero   & \ablNogateFiveZero \\
+\bottomrule
+\end{tabular}
+\caption{모든 단일 필드 어블레이션의 구조 순응도, 측정된 모든 차단 반경. 각 행은 작동
+모델에서 한 필드만 바꾼 것이다.}
+\label{tab:ablfullko}
+\end{table}
+
+\begin{table}[h]\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+$r$ & SC & FID & LPIPS & CLIP & Edge-F1 & 다양성 \\
+\midrule
+0.00 & \scMainZero       & \fidMainZero       & \lpipsMainZero       & \clipMainZero       & \edgeMainZero       & \divMainZero \\
+0.05 & \scMainZeroFive   & \fidMainZeroFive   & \lpipsMainZeroFive   & \clipMainZeroFive   & \edgeMainZeroFive   & \divMainZeroFive \\
+0.10 & \scMainOneZero    & \fidMainOneZero    & \lpipsMainOneZero    & \clipMainOneZero    & \edgeMainOneZero    & \divMainOneZero \\
+0.20 & \scMainTwoZero    & \fidMainTwoZero    & \lpipsMainTwoZero    & \clipMainTwoZero    & \edgeMainTwoZero    & \divMainTwoZero \\
+0.30 & \scMainThreeZero  & \fidMainThreeZero  & \lpipsMainThreeZero  & \clipMainThreeZero  & \edgeMainThreeZero  & \divMainThreeZero \\
+0.50 & \scMainFiveZero   & \fidMainFiveZero   & \lpipsMainFiveZero   & \clipMainFiveZero   & \edgeMainFiveZero   & \divMainFiveZero \\
+0.70 & \scMainSevenZero  & \fidMainSevenZero  & \lpipsMainSevenZero  & \clipMainSevenZero  & \edgeMainSevenZero  & \divMainSevenZero \\
+1.00 & \scMainOneHundred & \fidMainOneHundred & \lpipsMainOneHundred & \clipMainOneHundred & \edgeMainOneHundred & \divMainOneHundred \\
+\bottomrule
+\end{tabular}
+\caption{작동 모델의 모든 지표, 모든 차단 반경.}
+\label{tab:allmetricsko}
+\end{table}
+
+\begin{table}[h]\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+$r$ & skip 단독 & skip 단독 FID & 시드 평균 & 시드 표준편차 \\
+\midrule
+0.00 & \skipOnlyZero      & \skipOnlyFidZero      & ---                & --- \\
+0.05 & \skipOnlyZeroFive  & \skipOnlyFidZeroFive  & \seedMeanZeroFive  & \seedStdZeroFive \\
+0.10 & \skipOnlyOneZero   & \skipOnlyFidOneZero   & \seedMeanOneZero   & \seedStdOneZero \\
+0.20 & \skipOnlyTwoZero   & \skipOnlyFidTwoZero   & \seedMeanTwoZero   & \seedStdTwoZero \\
+0.30 & \skipOnlyThreeZero & \skipOnlyFidThreeZero & \seedMeanThreeZero & \seedStdThreeZero \\
+0.50 & \skipOnlyFiveZero  & \skipOnlyFidFiveZero  & \seedMeanFiveZero  & \seedStdFiveZero \\
+0.70 & \skipOnlySevenZero & \skipOnlyFidSevenZero & \seedMeanSevenZero & \seedStdSevenZero \\
+\bottomrule
+\end{tabular}
+\caption{왼쪽: skip 경로만 학습한 모델(\ref{sec:skiponly}절). 오른쪽: 작동 모델의
+시드 2026, 2027, 2028에 대한 구조 순응도 평균과 표준편차.}
+\label{tab:skipseedko}
+\end{table}
+
+\begin{table}[h]\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+$r$ & 도메인 밖 SC & 밖 FID & 도메인 내 SC & 내 FID \\
+\midrule
+0.05 & \oodOodZeroFive  & \oodOodFidZeroFive  & \oodIndZeroFive  & \oodIndFidZeroFive \\
+0.10 & \oodOodOneZero   & \oodOodFidOneZero   & \oodIndOneZero   & \oodIndFidOneZero \\
+0.20 & \oodOodTwoZero   & \oodOodFidTwoZero   & \oodIndTwoZero   & \oodIndFidTwoZero \\
+0.30 & \oodOodThreeZero & \oodOodFidThreeZero & \oodIndThreeZero & \oodIndFidThreeZero \\
+\bottomrule
+\end{tabular}
+\caption{도메인 밖 사진과 도메인 내 비교. 같은 스크립트와 프롬프트로 입력 그림 대비
+채점했다(\ref{sec:ood}절).}
+\label{tab:oodfullko}
+\end{table}
 
 \bibliographystyle{plainnat}
 \bibliography{refs}
