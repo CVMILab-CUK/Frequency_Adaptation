@@ -1,0 +1,41 @@
+{
+  "provenance": {
+    "adapter": "/home/work/model/Frequency_Adaptation/ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+    "sketch_dir": "/home/work/data/scene_photos512",
+    "n_images": 500,
+    "steps": 50,
+    "cfg_scale": 7.5,
+    "seed": 2026,
+    "prompt": "a high-quality photo",
+    "cutoffs": [
+      0.1
+    ],
+    "adapter_scale": 0.0,
+    "skip_scale": 0.0,
+    "definition": "the artist high-pass filters their own drawing at cutoff r; that filtered drawing is the condition",
+    "timestamp": "2026-09-14 01:26:24"
+  },
+  "per_cutoff": {
+    "0.1": {
+      "SC_vs_filtered": {
+        "mean": 0.0010125102708116174,
+        "std": 0.010173351503908634,
+        "sem": 0.00045496611043478844,
+        "n": 500
+      },
+      "SC_vs_drawing": {
+        "mean": 0.014532266184687614,
+        "std": 0.13738667964935303,
+        "sem": 0.0061441190979788065,
+        "n": 500
+      },
+      "CLIP": {
+        "mean": 23.273141860961914,
+        "std": 1.679245948791504,
+        "sem": 0.07509816184877867,
+        "n": 500
+      },
+      "FID": 174.81801657039261
+    }
+  }
+}

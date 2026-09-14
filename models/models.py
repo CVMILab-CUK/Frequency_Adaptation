@@ -125,7 +125,14 @@ class Model(nn.Module):
         # design); 'conv' trains a small stem on the raw condition image, which
         # the VAE was measured to destroy at high cutoffs.
         self.cond_encoder_kind = str(getattr(sa_plugin, "cond_encoder", "vae"))
-        if self.cond_encoder_kind == "conv":
+        # attn_inject: false trains the skip path alone (ralplan E18). The
+        # cross-attention sites then keep the stock processor and nothing reads
+        # an adapter latent, so no condition encoder is built either.
+        self.attn_inject = bool(getattr(sa_plugin, "attn_inject", True))
+        if not self.attn_inject:
+            self.cond_encoder = None
+            self.cond_channels = self.vae.config.latent_channels
+        elif self.cond_encoder_kind == "conv":
             self.cond_encoder = ConditionEncoder(
                 in_channels=3,
                 out_channels=int(getattr(sa_plugin, "cond_channels", 4)),
@@ -223,7 +230,7 @@ class Model(nn.Module):
                 block_id = int(name[len("down_blocks.")])
                 hidden_size = boc[block_id]
                 n_down = block_id
-            if cross_attention_dim is None:
+            if cross_attention_dim is None or not self.attn_inject:
                 attn_procs[name] = AttnProcessor()
             else:
                 # layer_name = name.split(".processor")[0]
@@ -267,14 +274,21 @@ class Model(nn.Module):
         return path
 
     def load_adapter(self, path):
-        sd = self._split_and_load_encoder(load_file(path))
+        raw = load_file(path)
+        n_side = sum(1 for k in raw if k.startswith(("skip_injector.", "cond_encoder.")))
+        sd = self._split_and_load_encoder(raw)
         missing, unexpected = self.unet.load_state_dict(sd, strict=False)
         loaded = [k for k in sd if self.ADAPTER_KEY in k]
-        if not loaded:
+        if self.attn_inject and not loaded:
+            # A skip-only checkpoint loaded into a two-path model would leave
+            # every attention site at its zero-initialised gate and still run.
+            raise RuntimeError(f"{path} has no attention-processor tensors but the config enables the attention path")
+        if not loaded and not n_side:
             raise RuntimeError(f"{path} contains no adapter tensors")
         if unexpected:
             raise RuntimeError(f"unexpected keys when loading adapter: {unexpected[:5]}")
-        print(f"loaded {len(loaded)} adapter tensors from {path}")
+        print(f"loaded {len(loaded)} attention-processor tensors and {n_side} "
+              f"encoder/injector tensors from {path}")
         return self
 
     def _split_and_load_encoder(self, sd):

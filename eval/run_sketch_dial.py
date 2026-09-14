@@ -39,6 +39,9 @@ ap.add_argument("--cfg", type=float, default=7.5)
 ap.add_argument("--batch", type=int, default=8)
 ap.add_argument("--seed", type=int, default=2026)
 ap.add_argument("--prompt", default="a high-quality photo of a face")
+# Descriptive control only: both injection paths scaled (0 = the frozen backbone).
+ap.add_argument("--adapter_scale", type=float, default=None)
+ap.add_argument("--skip_scale", type=float, default=None)
 a = ap.parse_args()
 
 cfg = OmegaConf.load(a.config)
@@ -53,6 +56,14 @@ tr.model.load_adapter(a.adapter)
 tr.model.unet.to(dtype=tr.weight_dtype)
 tr.model.unet.eval(); tr.model.vae.eval(); tr.model.text_encoder.eval()
 pipe = tr.build_pipeline()
+if a.adapter_scale is not None:
+    from models.attention_processor import StandAloneAttnProcessor as _SA
+    for _pr in tr.model.unet.attn_processors.values():
+        if isinstance(_pr, _SA):
+            _pr.scale = float(a.adapter_scale)
+_ss = a.skip_scale if a.skip_scale is not None else a.adapter_scale
+if _ss is not None and getattr(tr.model, "skip_injector", None) is not None:
+    tr.model.skip_injector.scale = float(_ss)
 clip_m = CLIPScore(0)
 
 files = sorted(f for f in os.listdir(a.sketch_dir)
@@ -79,6 +90,7 @@ results = {"provenance": {
     "adapter": os.path.abspath(a.adapter), "sketch_dir": a.sketch_dir,
     "n_images": len(files), "steps": a.steps, "cfg_scale": a.cfg,
     "seed": a.seed, "prompt": a.prompt, "cutoffs": cuts,
+    "adapter_scale": a.adapter_scale, "skip_scale": a.skip_scale,
     "definition": "the artist high-pass filters their own drawing at cutoff r; "
                   "that filtered drawing is the condition",
     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}, "per_cutoff": {}}

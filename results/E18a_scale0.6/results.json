@@ -1,0 +1,55 @@
+{
+  "provenance": {
+    "adapter": "/home/work/model/Frequency_Adaptation/ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+    "config": "/home/work/model/Frequency_Adaptation/config/generated/E10b_skip_inject.yaml",
+    "git_commit": "10da1bf1b67f029efd08db7c4a6c924493dc81d4",
+    "n_images": 500,
+    "steps": 50,
+    "cfg_scale": 7.5,
+    "seed": 2026,
+    "k_div": 4,
+    "n_div": 50,
+    "resolution": 512,
+    "adapter_scale": 0.6,
+    "skip_scale": 0.6,
+    "generic_caption": null,
+    "gpu": "NVIDIA H200",
+    "timestamp": "2026-09-13 22:46:51"
+  },
+  "per_cutoff": {
+    "0.1": {
+      "SC": {
+        "mean": 0.3373202085494995,
+        "std": 0.10406402498483658,
+        "sem": 0.004653884677566622,
+        "n": 500
+      },
+      "EdgeF1": {
+        "mean": 0.48992397544464505,
+        "std": 0.15413373448614087,
+        "sem": 0.006893070158738292,
+        "n": 500
+      },
+      "LPIPS": {
+        "mean": 0.5240880250930786,
+        "std": 0.08501671254634857,
+        "sem": 0.003802062969543893,
+        "n": 500
+      },
+      "CLIP": {
+        "mean": 31.019771575927734,
+        "std": 2.956477403640747,
+        "sem": 0.13221768896965588,
+        "n": 500
+      },
+      "Diversity": {
+        "mean": 0.5063590288162232,
+        "std": 0.07613015378717905,
+        "sem": 0.010766429599137805,
+        "n": 50
+      },
+      "FID": 66.38520641042311,
+      "seconds": 564.5
+    }
+  }
+}

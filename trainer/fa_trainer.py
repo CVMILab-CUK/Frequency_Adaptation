@@ -114,6 +114,8 @@ class Trainer(BaseTrainer):
         With `cond_encoder: conv` this is a trainable stem and therefore must
         stay inside the autograd graph; the VAE path is frozen and does not.
         """
+        if not getattr(self.model, "attn_inject", True):
+            return None          # skip-only: nothing reads an adapter latent
         x = filtered_img.to(dtype=self.weight_dtype)
         if self.model.cond_encoder is not None:
             return self.model.cond_encoder(x)
@@ -223,7 +225,7 @@ class Trainer(BaseTrainer):
                     # Independent dropout on the *structure* stream, so the model
                     # can be guided on the condition at inference time too.
                     cond_drop_p = float(getattr(c.model, "cond_dropout", 0.0))
-                    if cond_drop_p > 0.0:
+                    if cond_drop_p > 0.0 and cond is not None:
                         cdrop = (torch.rand(bsz, device=cond.device) < cond_drop_p).view(bsz, 1, 1, 1)
                         cond = torch.where(cdrop, torch.zeros_like(cond), cond)
 
@@ -239,7 +241,7 @@ class Trainer(BaseTrainer):
                     model_pred = self.model.unet(
                         noisy_latents, timesteps, encoder_hidden_states,
                         return_dict=False,
-                        cross_attention_kwargs={"ip_hidden_states": cond},
+                        cross_attention_kwargs=({"ip_hidden_states": cond} if cond is not None else None),
                         **extra,
                     )[0]
 

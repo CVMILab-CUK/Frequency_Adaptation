@@ -78,6 +78,18 @@ def retrieve_timesteps(
 
 
 
+
+def _adapter_kwargs(unet, adapter_condition, cond_encoder=None):
+    """The adapter latent goes to the attention processors only if one is
+    installed; a skip-only model keeps stock processors, which would warn about
+    and drop the kwarg on every denoising step. A trained condition encoder with
+    no attention processor to read it means the pipeline is miswired: refuse."""
+    from .attention_processor import StandAloneAttnProcessor
+    has_sa = any(isinstance(p, StandAloneAttnProcessor) for p in unet.attn_processors.values())
+    if not has_sa and cond_encoder is not None:
+        raise RuntimeError("condition encoder present but no StandAlone attention processor is installed")
+    return {"ip_hidden_states": adapter_condition} if has_sa else None
+
 class ModelWrapper:
     def __init__(self, model, alphas_cumprod):
         self.model = model
@@ -327,7 +339,7 @@ class SAAdapterPipeline(DiffusionPipeline, StableDiffusionMixin):
                     latent_model_input,
                     t,
                     encoder_hidden_states=prompt_embeds,
-                    cross_attention_kwargs={"ip_hidden_states": adapter_condition},
+                    cross_attention_kwargs=_adapter_kwargs(self.unet, adapter_condition, getattr(self, "cond_encoder", None)),
                     return_dict=False,
                     **skip_extra,
                 )[0]
@@ -545,7 +557,7 @@ class SDXL_SAAdapterPipeline(DiffusionPipeline, StableDiffusionMixin):
                 latent_model_input,
                 t,
                 encoder_hidden_states=prompt_embeds,
-                cross_attention_kwargs={"ip_hidden_states": adapter_condition}, 
+                cross_attention_kwargs=_adapter_kwargs(self.unet, adapter_condition, getattr(self, "cond_encoder", None)), 
                 added_cond_kwargs=added_cond_kwargs,
                 return_dict=False,
             )[0]

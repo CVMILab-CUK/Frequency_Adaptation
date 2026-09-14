@@ -35,8 +35,16 @@ ok = True
 procs = unet.attn_processors
 sa = [k for k, v in procs.items() if isinstance(v, SAProcessor)]
 cross = [k for k in procs if not k.endswith("attn1.processor")]
-print(f"[1] SAProcessor at {len(sa)}/{len(cross)} cross-attention sites")
-ok &= (len(sa) == len(cross) and len(sa) > 0)
+ATTN = bool(getattr(tr.model, "attn_inject", True))
+if ATTN:
+    print(f"[1] SAProcessor at {len(sa)}/{len(cross)} cross-attention sites")
+    ok &= (len(sa) == len(cross) and len(sa) > 0)
+else:
+    # skip-only (E18): stock processors everywhere, the injector carries the condition
+    _has_inj = getattr(tr.model, "skip_injector", None) is not None
+    print(f"[1] skip-only: SAProcessor at {len(sa)}/{len(cross)} sites (expected 0), "
+          f"skip injector present: {_has_inj}, condition encoder: {tr.model.cond_encoder is not None}")
+    ok &= (len(sa) == 0 and _has_inj and tr.model.cond_encoder is None)
 
 B = 2
 lat = torch.randn(B, 4, 64, 64, device=0)
@@ -63,7 +71,7 @@ else:
 def fwd(cond, img=None):
     extra = tr.skip_residuals(img if img is not None else _imgA) or {}
     return unet(lat, t, ehs, return_dict=False,
-                cross_attention_kwargs={"ip_hidden_states": cond}, **extra)[0]
+                cross_attention_kwargs=({"ip_hidden_states": cond} if ATTN else None), **extra)[0]
 
 with torch.no_grad():
     oA = fwd(cA.detach(), _imgA)
@@ -96,6 +104,32 @@ if gated and d_ab <= 1e-4 * scale:
     with torch.no_grad():
         for pr in gated:
             pr.out_gate.zero_()
+
+# The skip injector's heads are zero-initialised too (ControlNet's zero
+# convolutions), so a skip-only model is an exact no-op at init as well. Open
+# the heads slightly, re-test, and restore them bit for bit.
+_inj2 = getattr(tr.model, "skip_injector", None)
+if _inj2 is not None and d_ab <= 1e-4 * scale:
+    _heads = list(_inj2.heads) + [_inj2.mid_head]
+    _saved = [(h.weight.detach().clone(), h.bias.detach().clone()) for h in _heads]
+    # Random heads of unit scale. Measured on E18 (fp32, deterministic: a repeated
+    # pass differs by exactly 0): two noise images give residuals that differ by
+    # only ~2% of their norm, so at head std 1e-3 / 1e-2 the A-vs-B output gap is
+    # 6.3e-5 / 6.8e-5, under the 1e-4*scale bar, while at std 1 it is 1.4e-3, and
+    # a direct +10 residual moves the output by 0.40. A disconnected path would
+    # give exactly 0 at any head scale, so the larger probe loses no power.
+    _g = torch.Generator(device="cpu").manual_seed(0)
+    with torch.no_grad():
+        for h in _heads:
+            h.weight.copy_(torch.randn(h.weight.shape, generator=_g).to(h.weight))
+        oA3, oB3 = fwd(cA.detach(), _imgA), fwd(cB.detach(), _imgB)
+        oZ3 = fwd(torch.zeros_like(cA), torch.zeros_like(_imgA))
+        for h, (w, b) in zip(_heads, _saved):
+            h.weight.copy_(w); h.bias.copy_(b)
+    d_ab = (oA3 - oB3).abs().mean().item()
+    d_az = (oA3 - oZ3).abs().mean().item()
+    print(f"    zero-init skip heads detected -- no-op at init is correct; re-tested with "
+          f"heads~N(0,1): |out(A)-out(B)| = {d_ab:.6f} ({100*d_ab/scale:.2f}% of scale)")
 
 live = d_ab > 1e-4 * scale and d_az > 1e-4 * scale
 print(f"    condition changes the output: {'YES' if live else 'NO -- ADAPTER DISCONNECTED'}")
@@ -165,8 +199,11 @@ with torch.no_grad():
 for h in handles:
     h.remove()
 pairs = sorted(set(seen.values()))
-print(f"[4] (latent hw, condition hw fed in) at {len(seen)} sites: {pairs}")
-ok &= (len(seen) == len(sa))
+if ATTN:
+    print(f"[4] (latent hw, condition hw fed in) at {len(seen)} sites: {pairs}")
+    ok &= (len(seen) == len(sa))
+else:
+    print("[4] skip-only: no attention adapter, resolution probe not applicable")
 
 # [5] The invariant that would have caught the residual double-count on day one:
 # an adapter is an *additive* modification, so switching it off must reproduce
@@ -227,7 +264,7 @@ try:
     with torch.autocast("cuda", dtype=tr.weight_dtype):
         _extra = tr.skip_residuals(_img) or {}
         _pred = tr.model.unet(_noisy, _t, _ehs, return_dict=False,
-                              cross_attention_kwargs={"ip_hidden_states": _cond},
+                              cross_attention_kwargs=({"ip_hidden_states": _cond} if _cond is not None else None),
                               **_extra)[0]
     _loss = torch.nn.functional.mse_loss(_pred.float(), _noise.float())
     _loss.backward()
