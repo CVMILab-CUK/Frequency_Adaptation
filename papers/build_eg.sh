@@ -5,9 +5,11 @@
 set -e
 cd "$(dirname "$0")"
 export TEXINPUTS=".:./egstyle//:" BSTINPUTS=".:./egstyle//:" BIBINPUTS=".:./egstyle//:"
-(cd .. && python scripts/paper_numbers.py)
+if [ -f ../scripts/paper_numbers.py ]; then (cd .. && python scripts/paper_numbers.py); else echo "WARN: scripts/paper_numbers.py not found; using existing numbers.tex" >&2; fi
 pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
 bibtex fa_eg >/dev/null
 pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
+pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
+# a third pass settles float numbers once the appendix moves after the references
 pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
 echo "fa_eg.pdf  ($(grep -aci undefined fa_eg.log) undefined, $(grep -aci overfull fa_eg.log) overfull)"

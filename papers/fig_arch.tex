@@ -57,13 +57,13 @@
 \draw[line width=1.1pt] (9.3,0.12) -- (9.3,-5.15);
 \node[lbl, right=1mm, align=left] at (9.45,-1.0)
   {\begin{minipage}{22mm}\raggedright zero-init $1{\times}1$ head\\per skip tensor\\[1pt]
-   \textbf{\pathSkipOnlyZero{}} of the signal\end{minipage}};
+   SC \textbf{\pathSkipOnlyZero{}} alone\end{minipage}};
 
 % path 2: SA at the cross-attention sites -- the minor one
 \node[train, minimum width=30mm] (sa) at (4.1,-5.15) {SA at 16 cross-attn sites};
 \draw[minor] (9.3,-5.15) -- (sa.east);
 \draw[minor] (sa.north) -- (mid.south);
-\node[lbl, below=0.6mm of sa] {\textbf{\pathAttnOnlyZero{}} of the signal \ (panel b)};
+\node[lbl, below=0.6mm of sa] {SC \textbf{\pathAttnOnlyZero{}} alone \ (panel b)};
 \node[frozen, minimum width=15mm] (clip) at (0.9,-5.15) {CLIP text};
 \draw[flow] (clip) -- (sa.west);
 
@@ -110,13 +110,14 @@
 trainable convolutional encoder reads the result at full resolution, never
 through the VAE. Its features enter the frozen UNet twice: as zero-initialised
 residuals on every skip tensor ($\oplus$), and through StandAlone attention at
-the 16 cross-attention sites. Stroke weight follows the measured split ---
-the skip path carries \pathSkipOnlyZero{} of the structure signal against
-\pathAttnOnlyZero{} for attention (Sec.~\ref{sec:where}).
+the 16 cross-attention sites. Stroke weight follows the measured split: at $r{=}0$, SC is
+\pathSkipOnlyZero{} with only the skip path active and \pathAttnOnlyZero{} with
+only attention (Sec.~\ref{sec:where}).
 \textbf{(b)} One StandAlone site. The query comes from the UNet's own latent
 through the frozen $W_Q$; keys and values come from the condition through
 trained $1{\times}1$ projections, unfolded so each position attends over its
-$3{\times}3$ neighbourhood rather than the whole map. The result passes the
+$3{\times}3$ neighbourhood rather than the whole map; a $1{\times}1$ window
+performs at least as well (Table~\ref{tab:abl}). The result passes the
 frozen output projection and a zero-initialised per-channel gate, then is added
 both into the latent --- so the text query below sees structure --- and to what
 the layer returns.}

@@ -285,5 +285,96 @@
   "url": "https://doi.org/10.1609/aaai.v39i3.32309",
   "year": "2025",
   "first_author": "Zhida Feng"
+ },
+ "farbman2008edge": {
+  "id": "10.1145/1360612.1360666",
+  "title": "Edge-Preserving Decompositions for Multi-Scale Tone and Detail Manipulation",
+  "url": "https://doi.org/10.1145/1360612.1360666",
+  "year": "2008",
+  "first_author": "Zeev Farbman"
+ },
+ "paris2011local": {
+  "id": "10.1145/2010324.1964963",
+  "title": "Local Laplacian Filters: Edge-Aware Image Processing with a Laplacian Pyramid",
+  "url": "https://doi.org/10.1145/2010324.1964963",
+  "year": "2011",
+  "first_author": "Sylvain Paris"
+ },
+ "oliva2006hybrid": {
+  "id": "10.1145/1179352.1141919",
+  "title": "Hybrid Images",
+  "url": "https://doi.org/10.1145/1179352.1141919",
+  "year": "2006",
+  "first_author": "Aude Oliva"
+ },
+ "chen2020deepfacedrawing": {
+  "id": "10.1145/3386569.3392386",
+  "title": "DeepFaceDrawing: Deep Generation of Face Images from Sketches",
+  "url": "https://doi.org/10.1145/3386569.3392386",
+  "year": "2020",
+  "first_author": "Shu-Yu Chen"
+ },
+ "yang2020deep": {
+  "id": "10.1007/978-3-030-58555-6_36",
+  "title": "Deep Plastic Surgery: Robust and Controllable Image Editing with Human-Drawn Sketches",
+  "url": "https://doi.org/10.1007/978-3-030-58555-6_36",
+  "year": "2020",
+  "first_author": "Shuai Yang"
+ },
+ "meng2022sdedit": {
+  "id": "https://arxiv.org/abs/2108.01073",
+  "title": "SDEdit: Guided Image Synthesis and Editing with Stochastic Differential Equations",
+  "url": "https://arxiv.org/abs/2108.01073",
+  "year": "2022",
+  "first_author": "Chenlin Meng"
+ },
+ "voynov2023sketch": {
+  "id": "10.1145/3588432.3591560",
+  "title": "Sketch-Guided Text-to-Image Diffusion Models",
+  "url": "https://doi.org/10.1145/3588432.3591560",
+  "year": "2023",
+  "first_author": "Andrey Voynov"
+ },
+ "winnemoller2012xdog": {
+  "id": "10.1016/j.cag.2012.03.004",
+  "title": "XDoG: An eXtended Difference-of-Gaussians Compendium Including Advanced Image Stylization",
+  "url": "https://doi.org/10.1016/j.cag.2012.03.004",
+  "year": "2012",
+  "first_author": "Holger Winnem{\\\"o}ller"
+ },
+ "cheng2023adaptively": {
+  "id": "10.1109/WACV56688.2023.00404",
+  "title": "Adaptively-Realistic Image Generation from Stroke and Sketch with Diffusion Model",
+  "url": "https://doi.org/10.1109/WACV56688.2023.00404",
+  "year": "2023",
+  "first_author": "Shin-I Cheng"
+ },
+ "gao2024frequency": {
+  "id": "10.1609/aaai.v38i3.27951",
+  "title": "Frequency-Controlled Diffusion Model for Versatile Text-Guided Image-to-Image Translation",
+  "url": "https://doi.org/10.1609/aaai.v38i3.27951",
+  "year": "2024",
+  "first_author": "Xiang Gao"
+ },
+ "gao2024fbsdiff": {
+  "id": "10.1145/3664647.3681380",
+  "title": "FBSDiff: Plug-and-Play Frequency Band Substitution of Diffusion Features for Highly Controllable Text-Driven Image Translation",
+  "url": "https://doi.org/10.1145/3664647.3681380",
+  "year": "2024",
+  "first_author": "Xiang Gao"
+ },
+ "choi2021ilvr": {
+  "id": "10.1109/ICCV48922.2021.01410",
+  "title": "ILVR: Conditioning Method for Denoising Diffusion Probabilistic Models",
+  "url": "https://doi.org/10.1109/ICCV48922.2021.01410",
+  "year": "2021",
+  "first_author": "Jooyoung Choi"
+ },
+ "wang2009face": {
+  "id": "10.1109/TPAMI.2008.222",
+  "title": "Face Photo-Sketch Synthesis and Recognition",
+  "url": "https://doi.org/10.1109/TPAMI.2008.222",
+  "year": "2009",
+  "first_author": "Xiaogang Wang"
  }
 }

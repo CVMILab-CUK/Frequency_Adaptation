@@ -42,8 +42,9 @@ We change what the condition is rather than how hard the model listens to it.
 The condition is the image after a radial high-pass filter with normalised
 cutoff $r$. At $r{=}0$ the model receives the grayscale image and the task is
 colourisation. As $r$ grows the filter removes more of the spectrum, until at
-$r{=}1$ almost nothing is left: measured on FFHQ, a cutoff of $0.05$ already
-discards 97.5\,\% of the spectral energy. Training draws $r$ per sample, so one
+$r{=}1$ almost nothing is left: measured on \energyN{} FFHQ test images, a
+cutoff of $0.05$ already discards \energyRemovedZeroFive\,\% of the spectral
+energy. Training draws $r$ per sample, so one
 set of weights sees the whole range, and $r$ becomes an inference-time
 parameter.
 
@@ -151,8 +152,14 @@ ablate the normalisation.
 
 \input{fig_mask}
 
-\paragraph{Condition encoder.} A strided convolutional stem reads the condition
-image directly at $512^2$ and reduces it $8\times$. We do not encode the
+\paragraph{Condition encoder.} A convolutional encoder reads the condition
+image directly at $512^2$ and reduces it $8\times$ to the latent grid: seven
+$3{\times}3$ convolutions with SiLU activations, three of them with stride 2
+and followed by group normalisation, widening from 32 to 128 channels before a
+final projection to 4. Each attention site reads the encoder output through a
+$1{\times}1$ projection. The ablations call an optional $3{\times}3$
+convolution of 64, 128 or 256 channels inserted before that projection a
+\emph{stem}; the main model has none. We do not encode the
 condition with the frozen VAE; Sec.~\ref{sec:vae} shows why.
 
 \paragraph{Injection.} Encoder features enter the UNet in two places. Zero-initialised
@@ -169,7 +176,9 @@ Stable Diffusion~1.5~\cite{rombach2021high} bit for bit, which we assert before 
 \input{fig_arch}
 
 \paragraph{Training.} SD1.5~\cite{rombach2021high} stays frozen. We train
-\ourParams{} parameters on FFHQ-512~\cite{karras2018style} with
+\ourParams{} parameters on FFHQ-512~\cite{karras2018style} (images under their
+Flickr authors' Creative Commons or public-domain licences, the dataset under
+CC~BY-NC-SA~4.0) with
 BLIP~\cite{li2022blip} captions, split \nTrain{} train / \nValid{} validation /
 \nTest{} test by a seeded shuffle of the 70,000 images (5\% test, 2\%
 validation, seed 2026). AdamW, learning rate $10^{-4}$, $\beta=(0.9,0.999)$,
@@ -178,7 +187,8 @@ bf16, 12 epochs on one H200. The loss is $\epsilon$-prediction with Min-SNR
 weighting~\cite{hang2023efficient}, $\gamma=5$. Text conditioning is dropped
 with probability 0.1 and the structure condition independently with probability
 0.05. An EMA of the adapter is kept with a 10-step interval. $r$ is drawn
-uniformly from $[0,1]$ per sample. Code and adapter weights accompany the
+uniformly from $[0,1]$ per sample, although we claim the dial only on
+$r \in [0.05, 0.3]$. Code and adapter weights accompany the
 submission.
 
 \section{Experiments}
@@ -227,12 +237,16 @@ ViT-B/32~\cite{radford2021learning} against each image's own caption.
 \foreach \lab [count=\i from 0] in {reference, $r{=}0$, $r{=}0.05$, $r{=}0.1$, $r{=}0.2$, $r{=}0.3$, $r{=}0.5$, $r{=}0.7$, $r{=}1$}
   \node[font=\scriptsize, anchor=south, inner sep=1.5pt]
     at ($(d.north west)!{(\i*390+192)/3504}!(d.north east)$) {\lab};
+\draw[black!60, line width=0.4pt]
+  ($(d.north west)!{(6*390)/3504}!(d.north east)+(0,4mm)$) -- ($(d.north east)+(0,4mm)$)
+  node[font=\scriptsize, anchor=south east, inner sep=1pt] {beyond the claimed range};
 \end{tikzpicture}
 \caption{One seed and one caption per row; only $r$ changes. The rows are the
 first three test images in generation order. As $r$ rises, background detail
 thins and clothing and colour drift from the reference while the face layout
 holds; at $r{=}1$ the pose of the second row changes as well. The reference is
-never shown to the model.}
+never shown to the model. Columns beyond $r{=}0.3$ lie outside the claimed
+range; at $r{=}1$ colour artefacts appear on the first row.}
 \label{fig:dial}
 \end{figure*}
 
@@ -286,7 +300,8 @@ $r$ & SC $\pm$ SEM & seed sd & Edge-F1 & Diversity & FID \\
 500 images; seed sd is over three training seeds. Edge-F1 is a cutoff-independent
 reading of the same runs and is reported alongside SC because SC re-extracts at
 the same cutoff the model was given (Sec.~\ref{sec:metrics}). FID has a single
-estimate per cell and no variance; we use it for row-to-row comparison only.}
+estimate per cell and no variance, so small differences between rows are not
+read as effects.}
 \label{tab:main}
 \end{table}
 
@@ -375,8 +390,9 @@ image-quality one.
 
 Capacity helps much less: widening the projection to a 128-channel stem raises
 SC at $r{=}0.05$ from \scEaZeroFive{} to \scEcapZeroFive{}, and doubling again
-to 256 reaches only \scEcapbZeroFive{}. A $7{\times}7$ attention window is worse
-than $3{\times}3$ (\scEwinZeroFive{}). All of these vary capacity with the skip
+to 256 reaches only \scEcapbZeroFive{}. A $7{\times}7$ window gives \scEwinZeroFive{}, far below
+the $3{\times}3$ design (\scEaZeroFive{}) and close to the no-adapter control
+(\pathAllOffZeroFive{}). All of these vary capacity with the skip
 path absent, so they bound how far capacity carries \emph{that} design rather
 than settling capacity against placement in general.
 
@@ -396,7 +412,10 @@ is drawn. A log-uniform sampler lifts SC at $r{=}0$ to \ablLogZero{} and lowers
 FID there to \ablFidLogZero{}, but gives up the upper range (\ablLogFiveZero{}
 at $r{=}0.5$ against \scMainFiveZero{}): it moves the dial's resolution toward
 small $r$ rather than improving it everywhere. The results above use the uniform
-sampler.
+sampler. The main model keeps the $3{\times}3$ window and no stem, although the
+$1{\times}1$ and stem variants score higher at several cutoffs in
+Table~\ref{tab:ablfull}, because these one-field ablations were trained after
+the main configuration and its three seeds had been fixed.
 
 \begin{table}[t]\centering\footnotesize
 \setlength{\tabcolsep}{2.6pt}
@@ -425,7 +444,7 @@ $r$ log-uniform            & \ablLogZero & \ablLogZeroFive & \ablLogThreeZero & 
 one training seed each; the second row is the main model's spread over three
 seeds. The main model uses a $3{\times}3$ window, a zero-initialised gate,
 learned $2{\times}2$ strided downsampling of the condition features at each
-attention site, no stem, a grayscale condition, condition dropout 0.05, and $r$
+attention site, no stem before the $1{\times}1$ projection, a grayscale condition, condition dropout 0.05, and $r$
 uniform on $[0,1]$. Drawing $r=u^2$ with $u$ uniform concentrates training at
 small $r$; the log-uniform sampler on $[10^{-3},1]$ does so more strongly.}
 \label{tab:abl}
@@ -438,7 +457,7 @@ small $r$; the log-uniform sampler on $[10^{-3},1]$ does so more strongly.}
 \toprule
 Cond.\ encoder & Injection & SC $r{=}0.05$ & SC $r{=}0.1$ & FID $r{=}0.1$ \\
 \midrule
-\multicolumn{2}{l}{\itshape no adapter (control)} & \pathAllOffZero & \pathAllOffOneZero & \pathFidAllOff \\
+\multicolumn{2}{l}{\itshape no adapter (control)} & \pathAllOffZeroFive & \pathAllOffOneZero & \pathFidAllOffOneZero \\
 \midrule
 frozen VAE & attn, no gate      & \scEbaseZeroFive & \scEbaseOneZero & \fidEbase \\
 frozen VAE & attn               & \scEgateZeroFive & \scEgateOneZero & \fidEgate \\
@@ -453,10 +472,11 @@ conv       & attn + skip        & \scMainZeroFive  & \scMainOneZero  & \fidMainO
 \caption{Absolute configurations, not a cumulative chain: every row below the
 control differs from the \emph{conv / attn} row in exactly one field, and all
 rows use a $3{\times}3$ window and a zero-initialised gate unless stated. The
-main model is the last row and carries no stem, i.e.\ the minimal $1{\times}1$
-projection. The first three rows sit at or below the no-adapter control, so at
-that level a weak design and a run that failed to learn are not
-distinguishable. Stem width with the skip path present is varied in Table~\ref{tab:abl}.}
+main model is the last row and carries no stem; its attention sites read the
+encoder output through a $1{\times}1$ projection. The frozen-VAE rows use
+attention injection only. They and the $7{\times}7$ row stay close to the
+no-adapter control at both cutoffs, so at that level a weak design and a run
+that failed to learn are not distinguishable. Stem width with the skip path present is varied in Table~\ref{tab:abl}.}
 \label{tab:where}
 \end{table}
 
@@ -472,12 +492,11 @@ the specialist wins at $r{=}0.1$ (\specOneZero{} against \sMeanOneZero{},
 $\Delta{=}\specDOneZero{}$, $\specROneZero{}$ sd) and the single model wins at
 $r{=}0.3$ (\sMeanThreeZero{} against \specThreeZero{}, $\specDThreeZero{}$,
 $\specRThreeZero{}$ sd). Neither $r{=}0.5$ ($\specRFiveZero{}$ sd) nor
-$r{=}0.7$ ($\specRSevenZero{}$ sd) separates. Our earlier single-seed reading
-called $r{=}0.7$ a marginal win for the specialist; across seeds it is a tie.
+$r{=}0.7$ ($\specRSevenZero{}$ sd) separates.
 
-One model therefore does not dominate four. What it does instead is give a dial
-the specialists cannot: a model trained at $r{=}0.1$ has never seen $r{=}0.3$,
-so its curve is a single point.
+One model does not dominate four. It gives a dial the specialists cannot: a
+model trained at $r{=}0.1$ has never seen $r{=}0.3$, so its curve is a single
+point.
 
 \subsection{The skip path alone}
 \label{sec:skiponly}
@@ -572,9 +591,21 @@ and data would be the matched control; we have not run it.
 \subsection{Hand-drawn sketches}
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/sketch}
-\caption{Hand-drawn face sketches (odd columns) and what the model makes of
-them (even columns), zero-shot. The drawings carry no cutoff; the model has to
+\setlength{\tabcolsep}{0pt}%
+\begin{tabular}{@{}r@{\hspace{2pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{}}
+\rotatebox{90}{\scriptsize\hspace{3mm}drawing} &
+\includegraphics[width=0.235\columnwidth,trim={0 0 1792 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={512 0 1280 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={1024 0 768 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={1536 0 256 0},clip]{figures/sketch} \\[1pt]
+\rotatebox{90}{\scriptsize\hspace{3mm}output} &
+\includegraphics[width=0.235\columnwidth,trim={256 0 1536 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={768 0 1024 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={1280 0 512 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={1792 0 0 0},clip]{figures/sketch}
+\end{tabular}
+\caption{Hand-drawn face sketches (top row) and what the model makes of
+them (bottom row), zero-shot. The drawings carry no cutoff; the model has to
 read structure density off the drawing itself, which the per-image min--max
 normalisation permits. Most of the scans carry the archive filename stamped
 across the top, and the model redraws it --- a literal reading of the condition
@@ -587,11 +618,14 @@ what the score is measuring.}
 
 
 Figure~\ref{fig:sketch} shows the transfer. On \sketchFaceN{} real face
-drawings the model was never trained on, structure
+drawings from the CUHK Face Sketch database~\cite{wang2009face}, which the
+model was never trained on, prompted with ``a high-quality photo of a face'', structure
 consistency against the input drawing is \sketchFaceSC{} and CLIP score is
 \sketchFaceClip{}. FID is not reported: \sketchFaceN{} images is too few for a
 stable estimate, and our evaluator refuses rather than print one. We also ran
-\sketchSceneN{} general-scene drawings, far outside the training domain, where
+\sketchSceneN{} general-scene drawings, the sketch half of the public
+photograph--sketch set \texttt{rhfeiyang/photo-sketch-pair-500} on Hugging Face,
+far outside the training domain and with the same face prompt, where
 structure consistency falls to \sketchSceneSC{} and FID against FFHQ is
 \sketchSceneFid{}: the model follows the drawing but does not produce a face.
 That is the expected failure for a face model and we report it rather than omit it.
@@ -610,7 +644,7 @@ we have not isolated why.
 \section{Limitations}
 
 The useful range is roughly $r \in [0, 0.3]$. Above it the condition retains
-little energy --- 0.0014 of the spectrum at $r{=}0.5$ --- and structure
+little energy --- \energyRetainedFiveZero{} of the spectrum at $r{=}0.5$ --- and structure
 consistency becomes hard to interpret, since two nearly empty signals correlate
 near zero whatever the model does.
 

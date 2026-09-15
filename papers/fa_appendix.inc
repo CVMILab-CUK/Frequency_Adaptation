@@ -23,7 +23,7 @@ sqrt cutoff sampler  & \ablSqrtZero     & \ablSqrtZeroFive     & \ablSqrtOneZero
 no condition dropout & \ablDropZero     & \ablDropZeroFive     & \ablDropOneZero     & \ablDropThreeZero     & \ablDropFiveZero \\
 no zero-init gate    & \ablNogateZero   & \ablNogateZeroFive   & \ablNogateOneZero   & \ablNogateThreeZero   & \ablNogateFiveZero \\
 \midrule
-\multicolumn{6}{l}{\itshape superseded designs, kept for the record} \\
+\multicolumn{6}{l}{\itshape designs not adopted (Sec.~\ref{sec:vae})} \\
 256px source pipeline & --- & \scEresZeroFive & \scEresOneZero & \scEresThreeZero & --- \\
 VAE condition         & --- & \scEbaseZeroFive & \scEbaseOneZero & \scEbaseThreeZero & --- \\
 \bottomrule
@@ -55,9 +55,11 @@ no condition dropout   & \ablFidDropZero & \ablFidDropZeroFive & \ablFidDropOneZ
 no zero-init gate      & \ablFidNogateZero & \ablFidNogateZeroFive & \ablFidNogateOneZero & \ablFidNogateThreeZero & \ablFidNogateFiveZero \\
 \bottomrule
 \end{tabular}
-\caption{FID for the same one-field ablations as Table~\ref{tab:ablfull}. No
-variant separates from the working model by more than the sampling spread, so
-the ablations move structure consistency without trading image quality for it.}
+\caption{FID for the same one-field ablations as Table~\ref{tab:ablfull}, one
+training seed each. FID is a single estimate per cell with no variance
+(Table~\ref{tab:main}), so small differences are not read as effects; the largest
+departures are the log-uniform and $r{=}u^2$ samplers at $r{=}0$
+(\ablFidLogZero{} and \ablFidSqrtZero{} against \fidMainZero{}).}
 \label{tab:ablfid}
 \end{table}
 
@@ -88,14 +90,14 @@ columns are the ones plotted in Figure~\ref{fig:curve}.}
 \toprule
 $r$ & skip only & skip only FID & seed mean & seed s.d. \\
 \midrule
-0.00 & \skipOnlyZero      & \skipOnlyFidZero      & ---               & --- \\
+0.00 & \skipOnlyZero      & \skipOnlyFidZero      & \sMeanZero        & \sSdZero \\
 0.05 & \skipOnlyZeroFive  & \skipOnlyFidZeroFive  & \seedMeanZeroFive & \seedStdZeroFive \\
 0.10 & \skipOnlyOneZero   & \skipOnlyFidOneZero   & \seedMeanOneZero  & \seedStdOneZero \\
 0.20 & \skipOnlyTwoZero   & \skipOnlyFidTwoZero   & \seedMeanTwoZero  & \seedStdTwoZero \\
 0.30 & \skipOnlyThreeZero & \skipOnlyFidThreeZero & \seedMeanThreeZero& \seedStdThreeZero \\
 0.50 & \skipOnlyFiveZero  & \skipOnlyFidFiveZero  & \seedMeanFiveZero & \seedStdFiveZero \\
 0.70 & \skipOnlySevenZero & \skipOnlyFidSevenZero & \seedMeanSevenZero& \seedStdSevenZero \\
-1.00 & \skipOnlyOneHundred& \skipOnlyFidOneHundred& ---               & --- \\
+1.00 & \skipOnlyOneHundred& \skipOnlyFidOneHundred& \sMeanOneHundred  & \sSdOneHundred \\
 \bottomrule
 \end{tabular}
 \caption{Left: the skip path trained alone (Sec.~\ref{sec:skiponly}). Right:
@@ -117,32 +119,40 @@ adapter strength & SC & FID & SC, seed 2027 \\
 \swEVal & \swESc & \swEFid & \swEScB \\
 \swFVal & \swFSc & \swFFid & --- \\
 \swGVal & \swGSc & \swGFid & \swGScB \\
-1.00    & \scMainOneZero & \fidMainOneZero & \seedMeanOneZero \\
+1.00    & \scMainOneZero & \fidMainOneZero & --- \\
 \bottomrule
 \end{tabular}
-\caption{The strength knob at $r{=}0.1$, swept finely. Every point pays for
-structure consistency with FID; the cutoff dial reaches the same range while FID
-stays in the fifties (Table~\ref{tab:allmetrics}). Three points were repeated on
-a second seed.}
+\caption{The strength knob on the randomised-$r$ adapter at $r{=}0.1$, swept
+finely. Each scaled point below 1.00 pays for lower structure consistency with
+FID; over $r \in [0.05, 0.3]$ the cutoff dial keeps FID between
+\fidMainZeroFive{} and \fidMainOneZero{} (Table~\ref{tab:allmetrics}). Scales
+\swCVal{}, \swEVal{} and \swGVal{} were repeated with sampling seed 2027 on the
+same checkpoint.}
 \label{tab:strengthfull}
 \end{table}
 
 \begin{table}[h]\centering\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lrrrr}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrrr}
 \toprule
-$r$ & specialist & one model & difference & $z$ \\
+ & & \multicolumn{2}{c}{one model, 3 seeds} & & \\
+\cmidrule(lr){3-4}
+$r$ & specialist & mean & sd & difference & diff.\,/\,sd \\
 \midrule
-0.10 & \specOneZero   & \scMainOneZero   & \specDOneZero   & \specZOneZero \\
-0.30 & \specThreeZero & \scMainThreeZero & \specDThreeZero & \specZThreeZero \\
-0.50 & \specFiveZero  & \scMainFiveZero  & \specDFiveZero  & \specZFiveZero \\
-0.70 & \specSevenZero & \scMainSevenZero & \specDSevenZero & \specZSevenZero \\
+0.10 & \specOneZero   & \sMeanOneZero   & \sSdOneZero   & \specDOneZero   & \specROneZero \\
+0.30 & \specThreeZero & \sMeanThreeZero & \sSdThreeZero & \specDThreeZero & \specRThreeZero \\
+0.50 & \specFiveZero  & \sMeanFiveZero  & \sSdFiveZero  & \specDFiveZero  & \specRFiveZero \\
+0.70 & \specSevenZero & \sMeanSevenZero & \sSdSevenZero & \specDSevenZero & \specRSevenZero \\
 \bottomrule
 \end{tabular}
-\caption{Per-cutoff specialists against the single randomised-$r$ model, each at
-its own cutoff. A positive difference favours the specialist. The single model
-wins at $r{=}0.3$ and loses at $r{=}0.1$; what it gives that no specialist can
-is the rest of the curve.}
+\caption{Per-cutoff specialists (one training run each, seed 2026) against the
+single randomised-$r$ model averaged over training seeds 2026--2028, each at its
+own cutoff. Difference is specialist minus the three-seed mean; the last column
+divides it by the three-seed standard deviation, as in Sec.~\ref{sec:spec}. A
+positive difference favours the specialist. The specialist wins at $r{=}0.1$,
+the single model wins at $r{=}0.3$, and neither separates at $r{=}0.5$ or
+$0.7$; what the single model gives that no specialist can is the rest of the
+curve.}
 \label{tab:specfull}
 \end{table}
 

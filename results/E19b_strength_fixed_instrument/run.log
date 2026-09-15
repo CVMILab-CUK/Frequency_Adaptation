@@ -1,0 +1,8 @@
+E12_scale0.25/gen_r0.1: sc_fix@0.1 0.0408 (floor 0.0026) band1 0.053 band5 0.018
+E12_scale0.5/gen_r0.1: sc_fix@0.1 0.2146 (floor 0.0073) band1 0.285 band5 0.057
+E12_scale0.75/gen_r0.1: sc_fix@0.1 0.4893 (floor 0.0082) band1 0.624 band5 0.140
+E16_spec_scale0.25/gen_r0.1: sc_fix@0.1 0.0640 (floor 0.0050) band1 0.089 band5 0.022
+E16_spec_scale0.5/gen_r0.1: sc_fix@0.1 0.3193 (floor 0.0090) band1 0.433 band5 0.094
+E16_spec_scale0.75/gen_r0.1: sc_fix@0.1 0.5829 (floor 0.0087) band1 0.736 band5 0.219
+E16_spec_scale1.0/gen_r0.1: sc_fix@0.1 0.7050 (floor 0.0059) band1 0.863 band5 0.310
+wrote results/E19b_strength_fixed_instrument/results.json (7 entries)

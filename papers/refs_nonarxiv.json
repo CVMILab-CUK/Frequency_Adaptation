@@ -1,6 +1,7 @@
 [
  {
   "key": "feng2025simplifying",
+  "type": "inproceedings",
   "authors": [
    "Zhida Feng",
    "Li Chen",
@@ -11,11 +12,250 @@
   "title": "Simplifying Control Mechanism in Text-to-Image Diffusion Models",
   "booktitle": "Proceedings of the AAAI Conference on Artificial Intelligence",
   "volume": "39",
-  "number": "3",
   "pages": "3013--3021",
   "year": "2025",
   "doi": "10.1609/aaai.v39i3.32309",
   "url": "https://doi.org/10.1609/aaai.v39i3.32309",
-  "verified_against": "Crossref metadata for the DOI; doi.org resolves (HTTP 200); the proceedings PDF from ojs.aaai.org/index.php/AAAI/article/view/32309 carries the same title and five authors"
+  "verified_against": "Crossref metadata for the DOI; doi.org resolves (HTTP 200); the proceedings PDF from ojs.aaai.org/index.php/AAAI/article/view/32309 carries the same title and five authors. Issue number 3 dropped from the entry: eg-alpha-doi refuses volume and number together on @inproceedings."
+ },
+ {
+  "key": "farbman2008edge",
+  "type": "article",
+  "authors": [
+   "Zeev Farbman",
+   "Raanan Fattal",
+   "Dani Lischinski",
+   "Richard Szeliski"
+  ],
+  "title": "Edge-Preserving Decompositions for Multi-Scale Tone and Detail Manipulation",
+  "journal": "ACM Transactions on Graphics",
+  "volume": "27",
+  "number": "3",
+  "year": "2008",
+  "doi": "10.1145/1360612.1360666",
+  "url": "https://doi.org/10.1145/1360612.1360666",
+  "verified_against": "Crossref api.crossref.org/works/10.1145/1360612.1360666; author PDF szeliski.org/papers/Farbman-SG08.pdf",
+  "claim_quote": "it is important to control the spatial scale of the extracted details, and it is often desirable to manipulate details at multiple scales"
+ },
+ {
+  "key": "paris2011local",
+  "type": "article",
+  "authors": [
+   "Sylvain Paris",
+   "Samuel W. Hasinoff",
+   "Jan Kautz"
+  ],
+  "title": "Local Laplacian Filters: Edge-Aware Image Processing with a Laplacian Pyramid",
+  "journal": "ACM Transactions on Graphics",
+  "volume": "30",
+  "number": "4",
+  "year": "2011",
+  "doi": "10.1145/2010324.1964963",
+  "url": "https://doi.org/10.1145/2010324.1964963",
+  "verified_against": "Crossref for the DOI; project page people.csail.mit.edu/sparis/publi/2011/siggraph/",
+  "claim_quote": "we propose a set of image filters to achieve edge-preserving smoothing, detail enhancement, tone mapping, and inverse tone mapping ... relying only on simple point-wise nonlinearities and small Gaussian convolutions"
+ },
+ {
+  "key": "oliva2006hybrid",
+  "type": "article",
+  "authors": [
+   "Aude Oliva",
+   "Antonio Torralba",
+   "Philippe G. Schyns"
+  ],
+  "title": "Hybrid Images",
+  "journal": "ACM Transactions on Graphics",
+  "volume": "25",
+  "number": "3",
+  "pages": "527--532",
+  "year": "2006",
+  "doi": "10.1145/1179352.1141919",
+  "url": "https://doi.org/10.1145/1179352.1141919",
+  "verified_against": "Crossref for the DOI; ACM-copyright PDF web.stanford.edu/class/ee367/reading/OlivaTorralb_Hybrid_Siggraph06.pdf",
+  "claim_quote": "A hybrid image is a picture that combines the low-spatial frequencies of one picture with the high spatial frequencies of another picture producing an image with an interpretation that changes with viewing distance."
+ },
+ {
+  "key": "chen2020deepfacedrawing",
+  "type": "article",
+  "authors": [
+   "Shu-Yu Chen",
+   "Wanchao Su",
+   "Lin Gao",
+   "Shihong Xia",
+   "Hongbo Fu"
+  ],
+  "title": "DeepFaceDrawing: Deep Generation of Face Images from Sketches",
+  "journal": "ACM Transactions on Graphics",
+  "volume": "39",
+  "number": "4",
+  "year": "2020",
+  "doi": "10.1145/3386569.3392386",
+  "url": "https://doi.org/10.1145/3386569.3392386",
+  "verified_against": "Crossref for the DOI; arXiv abs 2006.01047",
+  "claim_quote": "treats input sketches as soft constraints"
+ },
+ {
+  "key": "yang2020deep",
+  "type": "inproceedings",
+  "authors": [
+   "Shuai Yang",
+   "Zhangyang Wang",
+   "Jiaying Liu",
+   "Zongming Guo"
+  ],
+  "title": "Deep Plastic Surgery: Robust and Controllable Image Editing with Human-Drawn Sketches",
+  "booktitle": "Computer Vision -- ECCV 2020",
+  "pages": "601--617",
+  "year": "2020",
+  "doi": "10.1007/978-3-030-58555-6_36",
+  "url": "https://doi.org/10.1007/978-3-030-58555-6_36",
+  "verified_against": "Springer chapter page for the DOI; author project page williamyang1991.github.io/projects/ECCV2020/",
+  "claim_quote": "a refinement level control parameter that enables users to flexibly define how 'reliable' the input sketch should be considered for the final output, balancing between sketch faithfulness and output verisimilitude"
+ },
+ {
+  "key": "meng2022sdedit",
+  "type": "inproceedings",
+  "authors": [
+   "Chenlin Meng",
+   "Yutong He",
+   "Yang Song",
+   "Jiaming Song",
+   "Jiajun Wu",
+   "Jun-Yan Zhu",
+   "Stefano Ermon"
+  ],
+  "title": "SDEdit: Guided Image Synthesis and Editing with Stochastic Differential Equations",
+  "booktitle": "International Conference on Learning Representations",
+  "year": "2022",
+  "url": "https://arxiv.org/abs/2108.01073",
+  "verified_against": "arXiv abs 2108.01073 citation meta tags; ICLR 2022 poster listing",
+  "claim_quote": "SDEdit first adds noise to the input, then subsequently denoises the resulting image through the SDE prior to increase its realism. SDEdit does not require task-specific training or inversions and can naturally achieve the balance between realism and faithfulness."
+ },
+ {
+  "key": "voynov2023sketch",
+  "type": "inproceedings",
+  "authors": [
+   "Andrey Voynov",
+   "Kfir Aberman",
+   "Daniel Cohen-Or"
+  ],
+  "title": "Sketch-Guided Text-to-Image Diffusion Models",
+  "booktitle": "SIGGRAPH 2023 Conference Proceedings",
+  "pages": "1--11",
+  "year": "2023",
+  "doi": "10.1145/3588432.3591560",
+  "url": "https://doi.org/10.1145/3588432.3591560",
+  "verified_against": "Crossref for the DOI; abstract from the ACM record via Semantic Scholar",
+  "claim_quote": "guide a pretrained text-to-image diffusion model, with a spatial map from another domain (e.g., sketch) during inference time ... does not require to train a dedicated model or a specialized encoder ... train a Latent Guidance Predictor (LGP) - a small, per-pixel, Multi-Layer Perceptron"
+ },
+ {
+  "key": "winnemoller2012xdog",
+  "type": "article",
+  "authors": [
+   "Holger Winnem{\\\"o}ller",
+   "Jan Eric Kyprianidis",
+   "Sven C. Olsen"
+  ],
+  "title": "XDoG: An eXtended Difference-of-Gaussians Compendium Including Advanced Image Stylization",
+  "journal": "Computers \\& Graphics",
+  "volume": "36",
+  "number": "6",
+  "pages": "740--753",
+  "year": "2012",
+  "doi": "10.1016/j.cag.2012.03.004",
+  "url": "https://doi.org/10.1016/j.cag.2012.03.004",
+  "verified_against": "Crossref for the DOI; author page kyprianidis.com/p/cag2012/",
+  "claim_quote": "a variety of styles, including pencil-shading, pastel, hatching, and woodcut ... all of which are obtained using an extended DoG formulation"
+ },
+ {
+  "key": "cheng2023adaptively",
+  "type": "inproceedings",
+  "authors": [
+   "Shin-I Cheng",
+   "Yu-Jie Chen",
+   "Wei-Chen Chiu",
+   "Hung-Yu Tseng",
+   "Hsin-Ying Lee"
+  ],
+  "title": "Adaptively-Realistic Image Generation from Stroke and Sketch with Diffusion Model",
+  "booktitle": "IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)",
+  "pages": "4054--4062",
+  "year": "2023",
+  "doi": "10.1109/WACV56688.2023.00404",
+  "url": "https://doi.org/10.1109/WACV56688.2023.00404",
+  "verified_against": "arXiv abs 2208.12675; CVF WACV 2023 page with the DOI",
+  "claim_quote": "Users can not only decide the level of faithfulness to the input strokes and sketches, but also the degree of realism."
+ },
+ {
+  "key": "gao2024frequency",
+  "type": "inproceedings",
+  "authors": [
+   "Xiang Gao",
+   "Zhengbo Xu",
+   "Junhan Zhao",
+   "Jiaying Liu"
+  ],
+  "title": "Frequency-Controlled Diffusion Model for Versatile Text-Guided Image-to-Image Translation",
+  "booktitle": "Proceedings of the AAAI Conference on Artificial Intelligence",
+  "volume": "38",
+  "pages": "1824--1832",
+  "year": "2024",
+  "doi": "10.1609/aaai.v38i3.27951",
+  "url": "https://doi.org/10.1609/aaai.v38i3.27951",
+  "verified_against": "AAAI OJS ojs.aaai.org/index.php/AAAI/article/view/27951; arXiv abs 2407.03006",
+  "claim_quote": "extracts image features carrying different DCT spectral bands to control the text-to-image generation process ... simply by switching among different frequency control branches"
+ },
+ {
+  "key": "gao2024fbsdiff",
+  "type": "inproceedings",
+  "authors": [
+   "Xiang Gao",
+   "Jiaying Liu"
+  ],
+  "title": "FBSDiff: Plug-and-Play Frequency Band Substitution of Diffusion Features for Highly Controllable Text-Driven Image Translation",
+  "booktitle": "Proceedings of the 32nd ACM International Conference on Multimedia",
+  "pages": "4101--4109",
+  "year": "2024",
+  "doi": "10.1145/3664647.3681380",
+  "url": "https://doi.org/10.1145/3664647.3681380",
+  "verified_against": "arXiv abs 2408.00998; Crossref for the DOI",
+  "claim_quote": "without any model training, model fine-tuning, or online optimization process ... flexible control over both guiding factor and guiding intensity of the reference image simply by tuning the type and bandwidth of the substituted frequency band"
+ },
+ {
+  "key": "choi2021ilvr",
+  "type": "inproceedings",
+  "authors": [
+   "Jooyoung Choi",
+   "Sungwon Kim",
+   "Yonghyun Jeong",
+   "Youngjune Gwon",
+   "Sungroh Yoon"
+  ],
+  "title": "ILVR: Conditioning Method for Denoising Diffusion Probabilistic Models",
+  "booktitle": "Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)",
+  "pages": "14367--14376",
+  "year": "2021",
+  "doi": "10.1109/ICCV48922.2021.01410",
+  "url": "https://doi.org/10.1109/ICCV48922.2021.01410",
+  "verified_against": "CVF open access ICCV 2021 page; arXiv abs 2108.02938",
+  "claim_quote": "allows adaptation of a single DDPM without any additional learning in various image generation tasks, such as generation from various downsampling factors"
+ },
+ {
+  "key": "wang2009face",
+  "type": "article",
+  "authors": [
+   "Xiaogang Wang",
+   "Xiaoou Tang"
+  ],
+  "title": "Face Photo-Sketch Synthesis and Recognition",
+  "journal": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+  "volume": "31",
+  "number": "11",
+  "pages": "1955--1967",
+  "year": "2009",
+  "doi": "10.1109/TPAMI.2008.222",
+  "url": "https://doi.org/10.1109/TPAMI.2008.222",
+  "verified_against": "PubMed record PMID 19762924 (NCBI eutils XML); doi.org resolves to IEEE Xplore document 4624272; Semantic Scholar metadata agrees",
+  "claim_quote": "a face sketch database including 606 faces, which can be downloaded from our Web site (http://mmlab.ie.cuhk.edu.hk/facesketch.html)"
  }
 ]

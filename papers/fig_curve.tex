@@ -5,7 +5,7 @@
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
-\begin{axis}[draft, xlabel={cutoff $r$}, ylabel={},
+\begin{axis}[draft, xlabel={cutoff $r$}, ylabel={score},
              xmin=-0.03, xmax=1.03, ymin=0, ymax=0.8,
              legend pos=north east]
   \addplot[mark=square*, black] table[x=r, y=sc] {curve.dat};
@@ -25,12 +25,15 @@
   \addplot[mark=square*, black] table[x=sc, y=fid] {curve.dat};
   \addlegendentry{cutoff $r$}
   \addplot[mark=o, black, densely dashed] table[x=sc, y=fid] {scale.dat};
-  \addlegendentry{adapter strength}
+  \addlegendentry{randomised-$r$ at $r{=}0.1$, scaled}
+  \addplot[mark=triangle, black!55, dotted] coordinates {(\sscSCQuarter,\sscFidQuarter) (\sscSCHalf,\sscFidHalf) (\sscSCThreeQ,\sscFidThreeQ) (\sscSCOne,\sscFidOne)};
+  \addlegendentry{fixed-$r{=}0.1$ adapter, scaled}
 \end{axis}
 \end{tikzpicture}
 \caption{\textbf{Top:} structure consistency falls and sample diversity rises
-as the cutoff grows. \textbf{Bottom:} the same runs in the structure-consistency
-/ FID plane. Narrowing the condition's bandwidth traverses the axis at nearly
+as the cutoff grows. \textbf{Bottom:} the cutoff sweep of Table~\ref{tab:main}
+and the two scaled adapters of Table~\ref{tab:strength} in the
+structure-consistency / FID plane. Narrowing the condition's bandwidth traverses the axis at nearly
 constant FID; weakening the adapter buys the same structure consistency by
 degrading the image. Both panels are plotted directly from the evaluation
 outputs.}

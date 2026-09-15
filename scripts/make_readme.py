@@ -220,12 +220,13 @@ conditioning bug before any GPU time is spent.
 
 ```bash
 cd papers && make        # regenerate numbers from results/, then both PDFs
-                make refs # re-verify every reference against the arXiv API
+                make refs # re-verify every reference (arXiv API or publisher record)
 ```
 
 No number in either PDF is typed by hand: `scripts/paper_numbers.py` emits them
 from `results/*/results.json`, and a missing run fails the build rather than
-printing a stale value. All {nref} references were checked against the arXiv API
+printing a stale value. All {nref} references were checked against the arXiv API or, for published-only
+entries, the publisher or DOI record,
 and their abstract pages fetched before entering `refs.bib`.
 
 ## Layout
