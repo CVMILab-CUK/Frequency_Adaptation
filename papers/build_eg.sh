@@ -1,7 +1,8 @@
 #!/bin/bash
 # Official Computer Graphics Forum submission build. The style package in
 # egstyle/ is the unmodified December 2024 egPublStyle-cgf from eg.org, plus
-# comment.sty and lastpage.sty which this TeX Live install does not ship.
+# comment.sty, lastpage.sty and placeins.sty (public domain, from CTAN) which
+# this TeX Live install does not ship.
 set -e
 cd "$(dirname "$0")"
 export TEXINPUTS=".:./egstyle//:" BSTINPUTS=".:./egstyle//:" BIBINPUTS=".:./egstyle//:"

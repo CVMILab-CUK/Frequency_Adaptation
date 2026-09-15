@@ -1,25 +1,33 @@
 \appendix
 \section{Full per-cutoff results}
+\suppressfloats[t]
 
 The main text reports each experiment at the cutoff that carries its argument.
 The tables here give every cutoff that was measured, from the same
 \texttt{results.json} files the rest of the paper is generated from.
+Tables~\ref{tab:ablfull} and~\ref{tab:ablfid} extend Table~\ref{tab:abl};
+Table~\ref{tab:allmetrics} extends Table~\ref{tab:main};
+Table~\ref{tab:skipseed} extends Sec.~\ref{sec:skiponly} and the seed spread;
+Table~\ref{tab:strengthfull} extends Sec.~\ref{sec:strength};
+Table~\ref{tab:specfull} extends Sec.~\ref{sec:spec};
+Tables~\ref{tab:oodfull} and~\ref{tab:sketchspec} extend Sec.~\ref{sec:ood} and the hand-drawn sketches;
+Table~\ref{tab:repro} lists the settings behind all of them.
 
-\begin{table}[h]\centering\footnotesize
-\setlength{\tabcolsep}{3.2pt}
+\begin{table}[!tbp]\centering\footnotesize
+\setlength{\tabcolsep}{2.2pt}
 \begin{tabular}{lrrrrr}
 \toprule
 variant & $r{=}0$ & 0.05 & 0.1 & 0.3 & 0.5 \\
 \midrule
-working model        & \scMainZero      & \scMainZeroFive      & \scMainOneZero      & \scMainThreeZero      & \scMainFiveZero \\
+main model        & \scMainZero      & \scMainZeroFive      & \scMainOneZero      & \scMainThreeZero      & \scMainFiveZero \\
 $1{\times}1$ window  & \ablKoneZero     & \ablKoneZeroFive     & \ablKoneOneZero     & \ablKoneThreeZero     & \ablKoneFiveZero \\
 $5{\times}5$ window  & \ablKfiveZero    & \ablKfiveZeroFive    & \ablKfiveOneZero    & \ablKfiveThreeZero    & \ablKfiveFiveZero \\
 64-ch stem           & \ablStemsfZero   & \ablStemsfZeroFive   & \ablStemsfOneZero   & \ablStemsfThreeZero   & \ablStemsfFiveZero \\
 256-ch stem          & \ablStemskipZero & \ablStemskipZeroFive & \ablStemskipOneZero & \ablStemskipThreeZero & \ablStemskipFiveZero \\
-average downsample   & \ablDavgZero     & \ablDavgZeroFive     & \ablDavgOneZero     & \ablDavgThreeZero     & \ablDavgFiveZero \\
+average-pool downsampling & \ablDavgZero     & \ablDavgZeroFive     & \ablDavgOneZero     & \ablDavgThreeZero     & \ablDavgFiveZero \\
 colour condition     & \ablColorZero    & \ablColorZeroFive    & \ablColorOneZero    & \ablColorThreeZero    & \ablColorFiveZero \\
-log cutoff sampler   & \ablLogZero      & \ablLogZeroFive      & \ablLogOneZero      & \ablLogThreeZero      & \ablLogFiveZero \\
-sqrt cutoff sampler  & \ablSqrtZero     & \ablSqrtZeroFive     & \ablSqrtOneZero     & \ablSqrtThreeZero     & \ablSqrtFiveZero \\
+log-uniform sampler   & \ablLogZero      & \ablLogZeroFive      & \ablLogOneZero      & \ablLogThreeZero      & \ablLogFiveZero \\
+$r{=}u^2$ sampler  & \ablSqrtZero     & \ablSqrtZeroFive     & \ablSqrtOneZero     & \ablSqrtThreeZero     & \ablSqrtFiveZero \\
 no condition dropout & \ablDropZero     & \ablDropZeroFive     & \ablDropOneZero     & \ablDropThreeZero     & \ablDropFiveZero \\
 no zero-init gate    & \ablNogateZero   & \ablNogateZeroFive   & \ablNogateOneZero   & \ablNogateThreeZero   & \ablNogateFiveZero \\
 \midrule
@@ -29,28 +37,28 @@ VAE condition         & --- & \scEbaseZeroFive & \scEbaseOneZero & \scEbaseThree
 \bottomrule
 \end{tabular}
 \caption{Structure consistency for every one-field ablation, at every measured
-cutoff. Each row changes one field of the working model and nothing else. The
+cutoff. Each row changes one field of the main model and nothing else. The
 last block holds two designs the paper argues against: building the condition at
 256 and upsampling (FID \fidEres{} at $r{=}0.1$), and reading it through the
 frozen VAE.}
 \label{tab:ablfull}
 \end{table}
 
-\begin{table}[h]\centering\footnotesize
+\begin{table}[!tbp]\centering\footnotesize
 \setlength{\tabcolsep}{3.2pt}
 \begin{tabular}{lrrrrr}
 \toprule
 variant & $r{=}0$ & 0.05 & 0.1 & 0.3 & 0.5 \\
 \midrule
-working model          & \fidMainZero & \fidMainZeroFive & \fidMainOneZero & \fidMainThreeZero & \fidMainFiveZero \\
+main model          & \fidMainZero & \fidMainZeroFive & \fidMainOneZero & \fidMainThreeZero & \fidMainFiveZero \\
 $1{\times}1$ window    & \ablFidKoneZero & \ablFidKoneZeroFive & \ablFidKoneOneZero & \ablFidKoneThreeZero & \ablFidKoneFiveZero \\
 $5{\times}5$ window    & \ablFidKfiveZero & \ablFidKfiveZeroFive & \ablFidKfiveOneZero & \ablFidKfiveThreeZero & \ablFidKfiveFiveZero \\
 64-ch stem             & \ablFidStemsfZero & \ablFidStemsfZeroFive & \ablFidStemsfOneZero & \ablFidStemsfThreeZero & \ablFidStemsfFiveZero \\
 256-ch stem            & \ablFidStemskipZero & \ablFidStemskipZeroFive & \ablFidStemskipOneZero & \ablFidStemskipThreeZero & \ablFidStemskipFiveZero \\
-average downsample     & \ablFidDavgZero & \ablFidDavgZeroFive & \ablFidDavgOneZero & \ablFidDavgThreeZero & \ablFidDavgFiveZero \\
+average-pool downsampling   & \ablFidDavgZero & \ablFidDavgZeroFive & \ablFidDavgOneZero & \ablFidDavgThreeZero & \ablFidDavgFiveZero \\
 colour condition       & \ablFidColorZero & \ablFidColorZeroFive & \ablFidColorOneZero & \ablFidColorThreeZero & \ablFidColorFiveZero \\
-log cutoff sampler     & \ablFidLogZero & \ablFidLogZeroFive & \ablFidLogOneZero & \ablFidLogThreeZero & \ablFidLogFiveZero \\
-sqrt cutoff sampler    & \ablFidSqrtZero & \ablFidSqrtZeroFive & \ablFidSqrtOneZero & \ablFidSqrtThreeZero & \ablFidSqrtFiveZero \\
+log-uniform sampler     & \ablFidLogZero & \ablFidLogZeroFive & \ablFidLogOneZero & \ablFidLogThreeZero & \ablFidLogFiveZero \\
+$r{=}u^2$ sampler    & \ablFidSqrtZero & \ablFidSqrtZeroFive & \ablFidSqrtOneZero & \ablFidSqrtThreeZero & \ablFidSqrtFiveZero \\
 no condition dropout   & \ablFidDropZero & \ablFidDropZeroFive & \ablFidDropOneZero & \ablFidDropThreeZero & \ablFidDropFiveZero \\
 no zero-init gate      & \ablFidNogateZero & \ablFidNogateZeroFive & \ablFidNogateOneZero & \ablFidNogateThreeZero & \ablFidNogateFiveZero \\
 \bottomrule
@@ -63,7 +71,7 @@ departures are the log-uniform and $r{=}u^2$ samplers at $r{=}0$
 \label{tab:ablfid}
 \end{table}
 
-\begin{table}[h]\centering\footnotesize
+\begin{table}[!tbp]\centering\footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrr}
 \toprule
@@ -79,12 +87,12 @@ $r$ & SC & FID & LPIPS & CLIP & Edge-F1 & Div. \\
 1.00 & \scMainOneHundred & \fidMainOneHundred & \lpipsMainOneHundred & \clipMainOneHundred & \edgeMainOneHundred & \divMainOneHundred \\
 \bottomrule
 \end{tabular}
-\caption{Every metric for the working model, at every cutoff. The SC and FID
+\caption{Every metric for the main model, at every cutoff. The SC and FID
 columns are the ones plotted in Figure~\ref{fig:curve}.}
 \label{tab:allmetrics}
 \end{table}
 
-\begin{table}[h]\centering\footnotesize
+\begin{table}[!tbp]\centering\footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrr}
 \toprule
@@ -102,11 +110,11 @@ $r$ & skip only & skip only FID & seed mean & seed s.d. \\
 \end{tabular}
 \caption{Left: the skip path trained alone (Sec.~\ref{sec:skiponly}). Right:
 mean and standard deviation of structure consistency over seeds 2026, 2027 and
-2028 for the working model.}
+2028 for the main model.}
 \label{tab:skipseed}
 \end{table}
 
-\begin{table}[h]\centering\footnotesize
+\begin{table}[!tbp]\centering\footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrr}
 \toprule
@@ -131,7 +139,7 @@ same checkpoint.}
 \label{tab:strengthfull}
 \end{table}
 
-\begin{table}[h]\centering\footnotesize
+\begin{table}[!tbp]\centering\footnotesize
 \setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{lrrrrr}
 \toprule
@@ -156,42 +164,89 @@ curve.}
 \label{tab:specfull}
 \end{table}
 
-\begin{table}[h]\centering\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lrrrr}
+\begin{table}[!tbp]\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrrr}
 \toprule
-$r$ & OOD SC & OOD FID & in-domain SC & in-domain FID \\
+ & \multicolumn{3}{c}{out of domain} & \multicolumn{3}{c}{FFHQ test} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+$r$ & vs.\ input & vs.\ filtered & FID & vs.\ input & vs.\ filtered & FID \\
 \midrule
-0.05 & \oodOodZeroFive  & \oodOodFidZeroFive  & \oodIndZeroFive  & \oodIndFidZeroFive \\
-0.10 & \oodOodOneZero   & \oodOodFidOneZero   & \oodIndOneZero   & \oodIndFidOneZero \\
-0.20 & \oodOodTwoZero   & \oodOodFidTwoZero   & \oodIndTwoZero   & \oodIndFidTwoZero \\
-0.30 & \oodOodThreeZero & \oodOodFidThreeZero & \oodIndThreeZero & \oodIndFidThreeZero \\
+0.05 & \oodOodZeroFive  & \oodOodFZeroFive  & \oodOodFidZeroFive  & \oodIndZeroFive  & \oodIndFZeroFive  & \oodIndFidZeroFive \\
+0.10 & \oodOodOneZero   & \oodOodFOneZero   & \oodOodFidOneZero   & \oodIndOneZero   & \oodIndFOneZero   & \oodIndFidOneZero \\
+0.20 & \oodOodTwoZero   & \oodOodFTwoZero   & \oodOodFidTwoZero   & \oodIndTwoZero   & \oodIndFTwoZero   & \oodIndFidTwoZero \\
+0.30 & \oodOodThreeZero & \oodOodFThreeZero & \oodOodFidThreeZero & \oodIndThreeZero & \oodIndFThreeZero & \oodIndFidThreeZero \\
 \bottomrule
 \end{tabular}
-\caption{Out-of-domain photographs against in-domain, scored against the input
-drawing with the same script and prompt (Sec.~\ref{sec:ood}). The control falls
-in both; the image quality does not transfer.}
+\caption{\oodN{} general-scene photographs against \oodN{} FFHQ test images, run
+with the same script and the prompt ``a high-quality photo''
+(Sec.~\ref{sec:ood}). ``Vs.\ input'' correlates the grayscale output with the
+grayscale input photograph, ``vs.\ filtered'' with the filtered condition the
+model was given; neither filters the output, so these are not the
+structure-consistency values of Table~\ref{tab:main}. Each FID is against that
+run's own input photographs. The control falls in both; the image quality does
+not transfer.}
 \label{tab:oodfull}
 \end{table}
 
-\begin{table}[h]\centering\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lrrr}
+\begin{table}[!tbp]\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrr}
 \toprule
-$r$ & sketch dial SC & $\pm$ s.e.m. & specialist \\
+ & \multicolumn{3}{c}{\sdialN{} face sketches} & \multicolumn{2}{c}{FFHQ test photos} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+$r$ & vs.\ original & $\pm$ SEM & vs.\ filtered & vs.\ original & vs.\ filtered \\
 \midrule
-0.00 & \sdialZero       & \sdialSemZero       & --- \\
-0.05 & \sdialZeroFive   & \sdialSemZeroFive   & --- \\
-0.10 & \sdialOneZero    & \sdialSemOneZero    & \specOneZero \\
-0.20 & \sdialTwoZero    & \sdialSemTwoZero    & --- \\
-0.30 & \sdialThreeZero  & \sdialSemThreeZero  & \specThreeZero \\
-0.50 & \sdialFiveZero   & \sdialSemFiveZero   & \specFiveZero \\
-0.70 & \sdialSevenZero  & \sdialSemSevenZero  & \specSevenZero \\
-1.00 & \sdialOneHundred & \sdialSemOneHundred & --- \\
+0.00 & \sdialZero       & \sdialSemZero       & \sdialFZero       & --- & --- \\
+0.05 & \sdialZeroFive   & \sdialSemZeroFive   & \sdialFZeroFive   & \oodIndZeroFive  & \oodIndFZeroFive \\
+0.10 & \sdialOneZero    & \sdialSemOneZero    & \sdialFOneZero    & \oodIndOneZero   & \oodIndFOneZero \\
+0.20 & \sdialTwoZero    & \sdialSemTwoZero    & \sdialFTwoZero    & \oodIndTwoZero   & \oodIndFTwoZero \\
+0.30 & \sdialThreeZero  & \sdialSemThreeZero  & \sdialFThreeZero  & \oodIndThreeZero & \oodIndFThreeZero \\
+\midrule
+\multicolumn{6}{l}{\itshape beyond the range we claim} \\
+0.50 & \sdialFiveZero   & \sdialSemFiveZero   & \sdialFFiveZero   & --- & --- \\
+0.70 & \sdialSevenZero  & \sdialSemSevenZero  & \sdialFSevenZero  & --- & --- \\
+1.00 & \sdialOneHundred & \sdialSemOneHundred & \sdialFOneHundred & --- & --- \\
 \bottomrule
 \end{tabular}
-\caption{Left: the dial applied to \sdialN{} hand-drawn sketches, scored against
-the drawing. Right: per-cutoff specialists at their own cutoff, for the four
-cutoffs where one was trained.}
+\caption{The dial applied to \sdialN{} hand-drawn face sketches (main model,
+sampling seed 2026, prompt ``a high-quality photo of a face''). ``Vs.\ original''
+correlates the grayscale output with the unfiltered drawing; ``vs.\ filtered''
+with the drawing filtered at $r$ that the model was given. Neither filters the
+output, so neither is the structure-consistency instrument of
+Table~\ref{tab:main}. The photograph columns come from the same script on FFHQ
+test images with the prompt ``a high-quality photo'' (Table~\ref{tab:oodfull}).
+The $r{=}0$ row is an independent re-run of the zero-shot evaluation of
+Figure~\ref{fig:sketch} (\sketchFaceSC{} there). No specialist was run on
+sketches.}
 \label{tab:sketchspec}
+\end{table}
+
+\section{Reproducibility}
+\label{sec:repro}
+
+\begin{table}[!tbp]\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lp{0.70\columnwidth}@{}}
+\toprule
+Item & Setting \\
+\midrule
+Base model        & \texttt{stable-diffusion-v1-5/}\allowbreak\texttt{stable-diffusion-v1-5}, frozen \\
+Condition encoder & seven $3{\times}3$ convolutions, SiLU, three with stride 2 and group normalisation, 32 to 128 channels, 4 output channels \\
+Trainable params  & \ourParams{} (main); skip only \paramsSkipOnly{}; attention only \paramsAttnOnly{} \\
+Data              & FFHQ-512, \nTrain{} / \nValid{} / \nTest{}, seeded shuffle (seed 2026); the validation split only monitors training on four images \\
+Optimiser         & AdamW, lr $10^{-4}$, $\beta{=}(0.9,0.999)$, weight decay 0.01, cosine, 500 warm-up steps \\
+Batch / precision & 32 / bf16, gradient clipping 1.0, 12 epochs, Min-SNR $\gamma{=}5$, one H200 \\
+EMA               & decay 0.9999 every 10 steps; evaluation uses the raw weights \\
+Dropout           & text 0.1, structure condition 0.05 \\
+Training seeds    & main model 2026, 2027, 2028; specialists, ablations and skip only 2026 \\
+Sampling          & DDIM, 50 steps, CFG 7.5, seed 2026; Diversity seeds $2026{+}10^5{+}i$ for image $i$ \\
+Evaluation        & first 500 of the \nTest{} test images; clean-FID, clean mode, 512 px; LPIPS AlexNet against the reference; CLIP ViT-B/32 (OpenAI weights), $100\times$ cosine \\
+Baselines         & \texttt{lllyasviel/}\allowbreak\texttt{sd-controlnet-canny}, \texttt{lllyasviel/}\allowbreak\texttt{sd-controlnet-hed}, \texttt{TencentARC/}\allowbreak\texttt{t2iadapter\_}\allowbreak\texttt{canny\_sd15v2}; Canny 100/200 for all; conditioning scale 1.0; default PNDM sampler, 50 steps, CFG 7.5, seed 2026 \\
+Software          & Python 3.12.3, PyTorch 2.10 (NGC 25.11), diffusers 0.32.2, clean-fid 0.1.35, lpips 0.1.4, open\_clip 2.30.0 \\
+\bottomrule
+\end{tabular}
+\caption{Settings behind every table, read from the run manifests and
+evaluation scripts.}
+\label{tab:repro}
 \end{table}

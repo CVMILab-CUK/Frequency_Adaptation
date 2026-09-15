@@ -300,6 +300,12 @@ if d:
     col = d.get("E10b/gen_r0.2")
     if col and "sc_fix@0.1" in col:
         mac("fixInstTwoZero", col["sc_fix@0.1"]["mean"])
+    # the unrelated-image anchor for SC: each generation against a deranged
+    # reference, at the cutoff it was generated with
+    for c, k, rm in [("0.0", "Zero", "0.0"), ("0.1", "OneZero", "0.1")]:
+        col = d.get(f"E10b/gen_r{c}")
+        if col and f"sc_fix@{rm}_floor" in col:
+            mac(f"scFloor{k}", col[f"sc_fix@{rm}_floor"]["mean"])
 
 # ---- review 2026-09-14 (T17): the no-adapter control at the cutoffs Table
 # tab:where prints, not the r=0 value in every column
