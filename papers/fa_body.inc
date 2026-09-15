@@ -433,10 +433,11 @@ the first two test images.
 \end{tikzpicture}
 \caption{The first two test images under adapter strength and under the cutoff,
 one seed and caption per row, taken from the runs of Table~\ref{tab:strength}.
-At scale 0.75 the fixed-$r$ adapter still follows the reference; lowering the
-strength of either adapter to 0.50 or below yields photographs whose pose,
-framing and colour depart from it (the second row turns grayscale at scale
-0.25), while moving the cutoff to $r{=}0.3$ keeps the reference layout.}
+At scale 0.75 the fixed-$r$ adapter still follows the reference. Lowering the
+strength of either adapter to 0.50 changes background and colour, and in the
+second row the pose; at 0.25 the pose and framing change in both rows and the
+second row turns grayscale. Moving the cutoff to $r{=}0.3$ keeps the reference
+layout.}
 \label{fig:strength}
 \end{figure*}
 
