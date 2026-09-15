@@ -57,13 +57,13 @@
 \draw[line width=1.1pt] (9.3,0.12) -- (9.3,-5.15);
 \node[lbl, right=1mm, align=left] at (9.45,-1.0)
   {\begin{minipage}{22mm}\raggedright skip 텐서마다\\0초기화 $1{\times}1$ 헤드\\[1pt]
-   신호의 \textbf{\pathSkipOnlyZero{}}\end{minipage}};
+   단독 SC \textbf{\pathSkipOnlyZero{}}\end{minipage}};
 
 % path 2: SA at the cross-attention sites -- the minor one
 \node[train, minimum width=30mm] (sa) at (4.1,-5.15) {교차 어텐션 16곳의 SA};
 \draw[minor] (9.3,-5.15) -- (sa.east);
 \draw[minor] (sa.north) -- (mid.south);
-\node[lbl, below=0.6mm of sa] {신호의 \textbf{\pathAttnOnlyZero{}} \ (패널 b)};
+\node[lbl, below=0.6mm of sa] {단독 SC \textbf{\pathAttnOnlyZero{}} \ (패널 b)};
 \node[frozen, minimum width=15mm] (clip) at (0.9,-5.15) {CLIP 텍스트};
 \draw[flow] (clip) -- (sa.west);
 
@@ -109,11 +109,11 @@
 \caption{\textbf{(a)} 반경 $r$의 원판을 스펙트럼에서 제거하고, 학습되는 합성곱
 인코더가 그 결과를 전체 해상도로 읽는다. VAE는 거치지 않는다. 그 특징은 동결 UNet에 두
 번 들어간다. 모든 skip 텐서에 0으로 초기화된 잔차로($\oplus$), 그리고 교차 어텐션 16곳의
-StandAlone 어텐션으로. 선 굵기는 측정된 분배를 따른다. skip 경로가 구조 신호의
-\pathSkipOnlyZero{}를, 어텐션이 \pathAttnOnlyZero{}를 나른다(\ref{sec:where}절).
+StandAlone 어텐션으로. 선 굵기는 측정된 분배를 따른다. $r{=}0$에서 skip 경로만 켜면 SC가
+\pathSkipOnlyZero{}, 어텐션만 켜면 \pathAttnOnlyZero{}다(\ref{sec:where}절).
 \textbf{(b)} StandAlone 한 지점. 쿼리는 UNet 자신의 latent에서 동결 $W_Q$를 거쳐 오고,
 키와 값은 조건에서 학습된 $1{\times}1$ 투영을 거쳐 온다. unfold로 각 위치가 전체 맵이 아니라
-자기 $3{\times}3$ 이웃만 참조한다. 결과는 동결 출력 투영과 0초기화 채널별 게이트를 지나,
+자기 $3{\times}3$ 이웃만 참조한다. $1{\times}1$ 창도 적어도 그만큼 잘 작동한다(\ref{sec:where}절). 결과는 동결 출력 투영과 0초기화 채널별 게이트를 지나,
 latent에 더해져 아래의 텍스트 쿼리가 구조를 보게 하고, 층이 반환하는 값에도 더해진다.}
 \label{fig:arch}
 \end{figure*}

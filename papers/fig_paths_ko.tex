@@ -15,19 +15,21 @@
   legend pos=north east,
   enlarge x limits=0.16,
   every axis plot/.append style={line width=0.4pt}]
-  \addplot[fill=black!72, draw=black] table[x=label, y=sc0] {paths.dat};
+  \addplot[fill=black!72, draw=black, area legend] table[x=label, y=sc0] {paths.dat};
   \addlegendentry{$r{=}0$}
-  \addplot[fill=black!22, draw=black] table[x=label, y=sc3] {paths.dat};
+  \addplot[fill=black!22, draw=black, area legend] table[x=label, y=sc3] {paths.dat};
   \addlegendentry{$r{=}0.3$}
   \draw[densely dashed, black!55, line width=0.4pt]
     (axis cs:both,\pathAllOffZero) -- (axis cs:off,\pathAllOffZero);
-  \node[font=\scriptsize, anchor=south east, inner sep=1pt, yshift=1pt]
-    at (axis cs:off,\pathAllOffZero) {동결 백본 단독};
+  \addlegendimage{line legend, densely dashed, black!55, line width=0.4pt}
+  \addlegendentry{양쪽 끔, $r{=}0$}
 \end{axis}
 \end{tikzpicture}
 \caption{두 주입 경로를 모두 켠 경우, 각각 단독, 그리고 둘 다 끈 경우. skip 잔차가
 구조 신호의 대부분을 나르고, 교차 어텐션 단독으로는 거의 회복하지 못하며, 둘 다 끄면
-동결 백본으로 떨어진다(FID \pathFidAllOff{}, 양쪽 켰을 때는 \pathFidBoth{}).
-두 경로는 거의 가산적이다.}
+동결 백본으로 떨어진다(FID \pathFidAllOff{}, 양쪽 켰을 때는 \pathFidBoth{}, skip만
+\pathFidSkipOnly{}, 어텐션만 \pathFidAttnOnly{}). 점선은 $r{=}0$에서 양쪽을 끈 대조군이다.
+$r{=}0$에서는 대조군 대비 단일 경로 이득의 합이 양쪽 경로 점수와 대략 같고, $r{=}0.3$에서는
+양쪽 경로가 그 합을 넘는다.}
 \label{fig:paths}
 \end{figure}

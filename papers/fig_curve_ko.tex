@@ -16,7 +16,7 @@
     every axis plot/.append style={line width=0.7pt, mark size=1.7pt},
   }}
 \begin{tikzpicture}
-\begin{axis}[draft, xlabel={차단 반경 $r$}, ylabel={},
+\begin{axis}[draft, xlabel={차단 반경 $r$}, ylabel={점수},
              xmin=-0.03, xmax=1.03, ymin=0, ymax=0.8,
              legend pos=north east]
   \addplot[mark=square*, black] table[x=r, y=sc] {curve.dat};
@@ -36,12 +36,15 @@
   \addplot[mark=square*, black] table[x=sc, y=fid] {curve.dat};
   \addlegendentry{차단 반경 $r$}
   \addplot[mark=o, black, densely dashed] table[x=sc, y=fid] {scale.dat};
-  \addlegendentry{어댑터 세기}
+  \addlegendentry{무작위-$r$, $r{=}0.1$에서 스케일}
+  \addplot[mark=triangle, black!55, dotted] coordinates {(\sscSCQuarter,\sscFidQuarter) (\sscSCHalf,\sscFidHalf) (\sscSCThreeQ,\sscFidThreeQ) (\sscSCOne,\sscFidOne)};
+  \addlegendentry{고정-$r{=}0.1$ 어댑터, 스케일}
 \end{axis}
 \end{tikzpicture}
 \caption{\textbf{위:} 차단 반경이 커질수록 구조 순응도는 내려가고 표본 다양성은
-올라간다. \textbf{아래:} 같은 실행들을 구조 순응도/FID 평면에 놓은 것. 조건의 대역폭을
-좁히면 FID가 거의 일정한 채로 축을 이동하고, 어댑터를 약하게 하면 같은 구조 순응도를
-이미지 품질로 지불한다. 두 패널 모두 평가 출력에서 직접 그렸다.}
+올라간다. \textbf{아래:} 표~\ref{tab:main}의 차단 반경 스윕과 표~\ref{tab:strength}의 두 스케일
+어댑터를 구조 순응도/FID 평면에 놓은 것. 조건의 대역폭을 좁히면 좁은 FID 대역 안에서 구조
+순응도가 내려가고, 어느 어댑터든 약하게 하면 FID가 오르며 내려간다. 스케일한 점은
+$r_m{=}0.1$로, 차단 반경 점은 각자의 차단 반경으로 채점했다. 두 패널 모두 평가 출력에서 직접 그렸다.}
 \label{fig:curve}
 \end{figure}
