@@ -265,6 +265,13 @@ separate conclusion from Diversity alone.
 between the 500 generations and the same 500 references, and CLIP score with
 ViT-B/32~\cite{radford2021learning} against each image's own caption.
 
+\paragraph{Fixed instrument.}\label{sec:fixedinst}
+Structure consistency re-extracts the condition at the same cutoff the model was
+given, so the measuring instrument moves with the thing it measures. A falling
+curve could in principle come from the instrument rather than the model. We
+therefore re-scored the same generations with the cutoff held at $r_m{=}0.1$
+throughout.
+
 \begin{figure*}[t]
 \centering
 \begin{tikzpicture}
@@ -344,6 +351,11 @@ Across seeds 2026, 2027 and 2028 the curve is stable: SC at $r{=}0.05$ is
 \seedMeanZeroFive{}\,$\pm$\,\seedStdZeroFive{} and at $r{=}0.3$ it is
 \seedMeanThreeZero{}\,$\pm$\,\seedStdThreeZero{}.
 
+Re-scored with the fixed instrument of Sec.~\ref{sec:fixedinst}, the curve still falls: \fixInstZeroFive{} at $r{=}0.05$, \fixInstOneZero{} at
+$r{=}0.1$ and \fixInstThreeZero{} at $r{=}0.3$. Holding the instrument fixed
+compresses the range, as it must, but does not remove the decline, so the dial
+is a property of the generations and not of the metric.
+
 \subsection{Strength is not the same knob}
 \label{sec:strength}
 An obvious alternative is to train on one cutoff and turn the adapter's
@@ -388,6 +400,121 @@ beyond anything the cutoff produces over its whole sweep, where FID stays within
 \fidMainZero{}--\fidMainOneHundred{} and diversity peaks at
 \divMainOneHundred{}. Turning the adapter down removes structure by degrading
 the sample; narrowing the condition's band removes it while image quality holds.
+
+\subsection{Against per-cutoff specialists}
+\label{sec:spec}
+
+We trained four adapters at fixed $r$ and compared each against the single
+randomised-$r$ model at its own cutoff. Because the single model was trained
+three times, we express each gap against its three-seed spread rather than
+against a within-run standard error; a gap smaller than the two-sided $t$
+critical value at $df=2$ (\tailCrit{}) is not separable. The result is mixed:
+the specialist wins at $r{=}0.1$ (\specOneZero{} against \sMeanOneZero{},
+$\Delta{=}\specDOneZero{}$, $\specROneZero{}$ sd) and the single model wins at
+$r{=}0.3$ (\sMeanThreeZero{} against \specThreeZero{}, $\specDThreeZero{}$,
+$\specRThreeZero{}$ sd). Neither $r{=}0.5$ ($\specRFiveZero{}$ sd) nor
+$r{=}0.7$ ($\specRSevenZero{}$ sd) separates.
+
+One model does not dominate four. It gives a dial the specialists cannot: a
+model trained at $r{=}0.1$ has never seen $r{=}0.3$, so its curve is a single
+point.
+
+\subsection{Baselines}
+
+Against pretrained ControlNet~\cite{zhang2023adding} on its own condition, over the same test images
+and captions: ControlNet-Canny reaches Edge-F1 \baseCannyEdge{}, LPIPS
+\baseCannyLpips{}, FID \baseCannyFid{} with \baseParams{} trainable parameters;
+ControlNet-HED reaches \baseHedEdge{} / \baseHedLpips{} / \baseHedFid{}. At
+$r{=}0.1$ our adapter reaches Edge-F1 \edgeMainOneZero{}, LPIPS
+\lpipsMainOneZero{} and FID \fidMainOneZero{} with \ourParams{} parameters.
+Two asymmetries make this a comparison of operating points rather than a
+like-for-like control: the conditions differ (Canny edges against a frequency
+band), and our adapter was trained on \nTrain{} FFHQ images while ControlNet is
+zero-shot here and FID is measured against FFHQ statistics. On text alignment we
+do not win anywhere: our best CLIP over the whole sweep is
+\clipMainOneHundred{}, below ControlNet-Canny's \baseCannyClip{}
+(ControlNet-HED reaches \baseHedClip{}). T2I-Adapter-Canny~\cite{mou2023adapter},
+a \baseTParams{}-parameter side network and so closer to our design than a copied
+encoder, reaches Edge-F1 \baseTEdge{}, LPIPS \baseTLpips{}, FID \baseTFid{} and
+CLIP \baseTClip{} under the same protocol. We leave out its sketch checkpoint,
+which expects a PiDiNet sketch we did not compute; fed Canny edges it would
+measure that mismatch rather than the method. Training ControlNet on our condition
+and data would be the matched control; we have not run it.
+
+\subsection{Outside the training domain}
+\label{sec:ood}
+
+Everything above is FFHQ. To test whether the dial is specific to faces we ran
+the same sweep on photographs from outside the training distribution, scoring
+against the input drawing with the identical script, prompt and cutoffs.
+
+Structure consistency falls from \oodOodZeroFive{} at $r{=}0.05$ to
+\oodOodThreeZero{} at $r{=}0.3$, a decline of \oodDrop{} against \oodDropIn{}
+in domain --- a ratio of \oodDropRatio{}. The dial therefore carries out of
+domain, and if anything responds more sharply there, which is what one would
+expect when the model has less of a prior to fall back on. With the adapter off
+the same images score \oodOffOneZero{}, so the residual structure is coming
+from the condition and not from the backbone.
+
+Image quality does not transfer: FID rises from \oodIndFidOneZero{} in domain
+to \oodOodFidOneZero{} out of it. The control survives the domain shift; the
+generative quality does not, and we make no claim otherwise.
+
+\subsection{Hand-drawn sketches}
+\begin{figure}[t]
+\centering
+\setlength{\tabcolsep}{0pt}%
+\begin{tabular}{@{}r@{\hspace{2pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{}}
+\rotatebox{90}{\scriptsize\hspace{3mm}drawing} &
+\includegraphics[width=0.235\columnwidth,trim={0 0 1792 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={512 0 1280 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={1024 0 768 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={1536 0 256 0},clip]{figures/sketch} \\[1pt]
+\rotatebox{90}{\scriptsize\hspace{3mm}output} &
+\includegraphics[width=0.235\columnwidth,trim={256 0 1536 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={768 0 1024 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={1280 0 512 0},clip]{figures/sketch} &
+\includegraphics[width=0.235\columnwidth,trim={1792 0 0 0},clip]{figures/sketch}
+\end{tabular}
+\caption{Hand-drawn face sketches (top row) and what the model makes of
+them (bottom row), zero-shot. The drawings carry no cutoff; the model has to
+read structure density off the drawing itself, which the per-image min--max
+normalisation permits. Most of the scans carry the archive filename stamped
+across the top, and the model redraws it --- a literal reading of the condition
+it was given. Removing the whole top \bandFrac{}\% of the frame
+(\bandRows{} rows), a generous over-estimate of that band, moves the score to
+\bandSCcut{} (\bandDelta{}, \bandSem{} standard errors), so the band is not
+what the score is measuring.}
+\label{fig:sketch}
+\end{figure}
+
+
+Figure~\ref{fig:sketch} shows the transfer. On \sketchFaceN{} real face
+drawings from the CUHK Face Sketch database~\cite{wang2009face}, which the
+model was never trained on, prompted with ``a high-quality photo of a face'', structure
+consistency against the input drawing is \sketchFaceSC{} and CLIP score is
+\sketchFaceClip{}. FID is not reported: \sketchFaceN{} images is too few for a
+stable estimate, and our evaluator refuses rather than print one. We also ran
+\sketchSceneN{} general-scene drawings, the sketch half of the public
+photograph--sketch set \texttt{rhfeiyang/photo-sketch-pair-500} on Hugging Face,
+far outside the training domain and with the same face prompt, where
+structure consistency falls to \sketchSceneSC{} and FID against FFHQ is
+\sketchSceneFid{}: the model follows the drawing but does not produce a face.
+That is the expected failure for a face model and we report it rather than omit it.
+
+A drawing arrives without a cutoff, but the artist can give it one: filter the
+drawing at $r$ and hand the model the result, the operation every training
+condition went through. On \sdialN{} face drawings, structure consistency
+against the original drawing falls from \sdialZero{} at $r{=}0$ to
+\sdialOneZero{} at $r{=}0.1$, \sdialThreeZero{} at $r{=}0.3$ and
+\sdialOneHundred{} at $r{=}1$, so the dial carries over to drawings; $r{=}0.5$ and
+$r{=}0.7$ lie within a standard error (\sdialSemFiveZero{}) of each other.
+Against the filtered drawing it was actually given, the score at $r{=}0.1$ is
+\sdialFOneZero{}, well below the \scMainOneZero{} a filtered photograph yields;
+we have not isolated why.
+
+\section{What the design needs}
+\label{sec:design}
 
 \subsection{The VAE eats the condition}
 \label{sec:vae}
@@ -453,6 +580,35 @@ Table~\ref{tab:ablfull}, because these one-field ablations were trained after
 the main configuration and its three seeds had been fixed.
 
 \begin{table}[t]\centering\footnotesize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{llrrr}
+\toprule
+Cond.\ encoder & Injection & SC $r{=}0.05$ & SC $r{=}0.1$ & FID $r{=}0.1$ \\
+\midrule
+\multicolumn{2}{l}{\itshape no adapter (control)} & \pathAllOffZeroFive & \pathAllOffOneZero & \pathFidAllOffOneZero \\
+\midrule
+frozen VAE & attn, no gate      & \scEbaseZeroFive & \scEbaseOneZero & \fidEbase \\
+frozen VAE & attn               & \scEgateZeroFive & \scEgateOneZero & \fidEgate \\
+conv       & attn               & \scEaZeroFive    & \scEaOneZero    & \fidEa \\
+conv, 128  & attn               & \scEcapZeroFive  & \scEcapOneZero  & \fidEcap \\
+conv, 256  & attn               & \scEcapbZeroFive & \scEcapbOneZero & \fidEcapb \\
+conv       & attn, $7{\times}7$ & \scEwinZeroFive  & \scEwinOneZero  & \fidEwin \\
+\midrule
+conv       & attn + skip        & \scMainZeroFive  & \scMainOneZero  & \fidMainOneZero \\
+\bottomrule
+\end{tabular}
+\caption{Absolute configurations, not a cumulative chain: every row below the
+control differs from the \emph{conv / attn} row in exactly one field, and all
+rows use a $3{\times}3$ window and a zero-initialised gate unless stated. The
+main model is the last row and carries no stem; its attention sites read the
+encoder output through a $1{\times}1$ projection. The frozen-VAE rows use
+attention injection only. They and the $7{\times}7$ row stay close to the
+no-adapter control at both cutoffs, so at that level a weak design and a run
+that failed to learn are not distinguishable. Stem width with the skip path present is varied in Table~\ref{tab:abl}.}
+\label{tab:where}
+\end{table}
+
+\begin{table}[t]\centering\footnotesize
 \setlength{\tabcolsep}{2.6pt}
 \begin{tabular}{lrrrrr}
 \toprule
@@ -486,52 +642,6 @@ small $r$; the log-uniform sampler on $[10^{-3},1]$ does so more strongly.}
 \end{table}
 
 
-\begin{table}[t]\centering\footnotesize
-\setlength{\tabcolsep}{2pt}
-\begin{tabular}{llrrr}
-\toprule
-Cond.\ encoder & Injection & SC $r{=}0.05$ & SC $r{=}0.1$ & FID $r{=}0.1$ \\
-\midrule
-\multicolumn{2}{l}{\itshape no adapter (control)} & \pathAllOffZeroFive & \pathAllOffOneZero & \pathFidAllOffOneZero \\
-\midrule
-frozen VAE & attn, no gate      & \scEbaseZeroFive & \scEbaseOneZero & \fidEbase \\
-frozen VAE & attn               & \scEgateZeroFive & \scEgateOneZero & \fidEgate \\
-conv       & attn               & \scEaZeroFive    & \scEaOneZero    & \fidEa \\
-conv, 128  & attn               & \scEcapZeroFive  & \scEcapOneZero  & \fidEcap \\
-conv, 256  & attn               & \scEcapbZeroFive & \scEcapbOneZero & \fidEcapb \\
-conv       & attn, $7{\times}7$ & \scEwinZeroFive  & \scEwinOneZero  & \fidEwin \\
-\midrule
-conv       & attn + skip        & \scMainZeroFive  & \scMainOneZero  & \fidMainOneZero \\
-\bottomrule
-\end{tabular}
-\caption{Absolute configurations, not a cumulative chain: every row below the
-control differs from the \emph{conv / attn} row in exactly one field, and all
-rows use a $3{\times}3$ window and a zero-initialised gate unless stated. The
-main model is the last row and carries no stem; its attention sites read the
-encoder output through a $1{\times}1$ projection. The frozen-VAE rows use
-attention injection only. They and the $7{\times}7$ row stay close to the
-no-adapter control at both cutoffs, so at that level a weak design and a run
-that failed to learn are not distinguishable. Stem width with the skip path present is varied in Table~\ref{tab:abl}.}
-\label{tab:where}
-\end{table}
-
-\subsection{Against per-cutoff specialists}
-\label{sec:spec}
-
-We trained four adapters at fixed $r$ and compared each against the single
-randomised-$r$ model at its own cutoff. Because the single model was trained
-three times, we express each gap against its three-seed spread rather than
-against a within-run standard error; a gap smaller than the two-sided $t$
-critical value at $df=2$ (\tailCrit{}) is not separable. The result is mixed:
-the specialist wins at $r{=}0.1$ (\specOneZero{} against \sMeanOneZero{},
-$\Delta{=}\specDOneZero{}$, $\specROneZero{}$ sd) and the single model wins at
-$r{=}0.3$ (\sMeanThreeZero{} against \specThreeZero{}, $\specDThreeZero{}$,
-$\specRThreeZero{}$ sd). Neither $r{=}0.5$ ($\specRFiveZero{}$ sd) nor
-$r{=}0.7$ ($\specRSevenZero{}$ sd) separates.
-
-One model does not dominate four. It gives a dial the specialists cannot: a
-model trained at $r{=}0.1$ has never seen $r{=}0.3$, so its curve is a single
-point.
 
 \subsection{The skip path alone}
 \label{sec:skiponly}
@@ -567,114 +677,6 @@ isolation. The last column comes from switching a path off at test time, so it
 is not a trained-from-scratch comparison.}
 \label{tab:skiponly}
 \end{table}
-
-\subsection{Reading the dial with a fixed instrument}
-\label{sec:fixedinst}
-
-Structure consistency re-extracts the condition at the same cutoff the model was
-given, so the measuring instrument moves with the thing it measures. A falling
-curve could in principle come from the instrument rather than the model. We
-therefore re-scored the same generations with the cutoff held at $r_m{=}0.1$
-throughout.
-
-The curve still falls: \fixInstZeroFive{} at $r{=}0.05$, \fixInstOneZero{} at
-$r{=}0.1$ and \fixInstThreeZero{} at $r{=}0.3$. Holding the instrument fixed
-compresses the range, as it must, but does not remove the decline, so the dial
-is a property of the generations and not of the metric.
-
-\subsection{Outside the training domain}
-\label{sec:ood}
-
-Everything above is FFHQ. To test whether the dial is specific to faces we ran
-the same sweep on photographs from outside the training distribution, scoring
-against the input drawing with the identical script, prompt and cutoffs.
-
-Structure consistency falls from \oodOodZeroFive{} at $r{=}0.05$ to
-\oodOodThreeZero{} at $r{=}0.3$, a decline of \oodDrop{} against \oodDropIn{}
-in domain --- a ratio of \oodDropRatio{}. The dial therefore carries out of
-domain, and if anything responds more sharply there, which is what one would
-expect when the model has less of a prior to fall back on. With the adapter off
-the same images score \oodOffOneZero{}, so the residual structure is coming
-from the condition and not from the backbone.
-
-Image quality does not transfer: FID rises from \oodIndFidOneZero{} in domain
-to \oodOodFidOneZero{} out of it. The control survives the domain shift; the
-generative quality does not, and we make no claim otherwise.
-
-\subsection{Baselines}
-
-Against pretrained ControlNet~\cite{zhang2023adding} on its own condition, over the same test images
-and captions: ControlNet-Canny reaches Edge-F1 \baseCannyEdge{}, LPIPS
-\baseCannyLpips{}, FID \baseCannyFid{} with \baseParams{} trainable parameters;
-ControlNet-HED reaches \baseHedEdge{} / \baseHedLpips{} / \baseHedFid{}. At
-$r{=}0.1$ our adapter reaches Edge-F1 \edgeMainOneZero{}, LPIPS
-\lpipsMainOneZero{} and FID \fidMainOneZero{} with \ourParams{} parameters.
-Two asymmetries make this a comparison of operating points rather than a
-like-for-like control: the conditions differ (Canny edges against a frequency
-band), and our adapter was trained on \nTrain{} FFHQ images while ControlNet is
-zero-shot here and FID is measured against FFHQ statistics. On text alignment we
-do not win anywhere: our best CLIP over the whole sweep is
-\clipMainOneHundred{}, below ControlNet-Canny's \baseCannyClip{}
-(ControlNet-HED reaches \baseHedClip{}). T2I-Adapter-Canny~\cite{mou2023adapter},
-a \baseTParams{}-parameter side network and so closer to our design than a copied
-encoder, reaches Edge-F1 \baseTEdge{}, LPIPS \baseTLpips{}, FID \baseTFid{} and
-CLIP \baseTClip{} under the same protocol. We leave out its sketch checkpoint,
-which expects a PiDiNet sketch we did not compute; fed Canny edges it would
-measure that mismatch rather than the method. Training ControlNet on our condition
-and data would be the matched control; we have not run it.
-
-\subsection{Hand-drawn sketches}
-\begin{figure}[t]
-\centering
-\setlength{\tabcolsep}{0pt}%
-\begin{tabular}{@{}r@{\hspace{2pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{}}
-\rotatebox{90}{\scriptsize\hspace{3mm}drawing} &
-\includegraphics[width=0.235\columnwidth,trim={0 0 1792 0},clip]{figures/sketch} &
-\includegraphics[width=0.235\columnwidth,trim={512 0 1280 0},clip]{figures/sketch} &
-\includegraphics[width=0.235\columnwidth,trim={1024 0 768 0},clip]{figures/sketch} &
-\includegraphics[width=0.235\columnwidth,trim={1536 0 256 0},clip]{figures/sketch} \\[1pt]
-\rotatebox{90}{\scriptsize\hspace{3mm}output} &
-\includegraphics[width=0.235\columnwidth,trim={256 0 1536 0},clip]{figures/sketch} &
-\includegraphics[width=0.235\columnwidth,trim={768 0 1024 0},clip]{figures/sketch} &
-\includegraphics[width=0.235\columnwidth,trim={1280 0 512 0},clip]{figures/sketch} &
-\includegraphics[width=0.235\columnwidth,trim={1792 0 0 0},clip]{figures/sketch}
-\end{tabular}
-\caption{Hand-drawn face sketches (top row) and what the model makes of
-them (bottom row), zero-shot. The drawings carry no cutoff; the model has to
-read structure density off the drawing itself, which the per-image min--max
-normalisation permits. Most of the scans carry the archive filename stamped
-across the top, and the model redraws it --- a literal reading of the condition
-it was given. Removing the whole top \bandFrac{}\% of the frame
-(\bandRows{} rows), a generous over-estimate of that band, moves the score to
-\bandSCcut{} (\bandDelta{}, \bandSem{} standard errors), so the band is not
-what the score is measuring.}
-\label{fig:sketch}
-\end{figure}
-
-
-Figure~\ref{fig:sketch} shows the transfer. On \sketchFaceN{} real face
-drawings from the CUHK Face Sketch database~\cite{wang2009face}, which the
-model was never trained on, prompted with ``a high-quality photo of a face'', structure
-consistency against the input drawing is \sketchFaceSC{} and CLIP score is
-\sketchFaceClip{}. FID is not reported: \sketchFaceN{} images is too few for a
-stable estimate, and our evaluator refuses rather than print one. We also ran
-\sketchSceneN{} general-scene drawings, the sketch half of the public
-photograph--sketch set \texttt{rhfeiyang/photo-sketch-pair-500} on Hugging Face,
-far outside the training domain and with the same face prompt, where
-structure consistency falls to \sketchSceneSC{} and FID against FFHQ is
-\sketchSceneFid{}: the model follows the drawing but does not produce a face.
-That is the expected failure for a face model and we report it rather than omit it.
-
-A drawing arrives without a cutoff, but the artist can give it one: filter the
-drawing at $r$ and hand the model the result, the operation every training
-condition went through. On \sdialN{} face drawings, structure consistency
-against the original drawing falls from \sdialZero{} at $r{=}0$ to
-\sdialOneZero{} at $r{=}0.1$, \sdialThreeZero{} at $r{=}0.3$ and
-\sdialOneHundred{} at $r{=}1$, so the dial carries over to drawings; $r{=}0.5$ and
-$r{=}0.7$ lie within a standard error (\sdialSemFiveZero{}) of each other.
-Against the filtered drawing it was actually given, the score at $r{=}0.1$ is
-\sdialFOneZero{}, well below the \scMainOneZero{} a filtered photograph yields;
-we have not isolated why.
 
 \section{Limitations}
 
