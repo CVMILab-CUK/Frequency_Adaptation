@@ -31,14 +31,20 @@ attention-only design buys far less. The adapter trains
 
 \section{Introduction}
 
-ControlNet~\cite{zhang2023adding} and its successors~\cite{mou2023adapter,zhao2023controlnet,qin2023unicontrol,li2024controlnet} solved conditional control and then froze it.
+Image editing has long given users a scale or frequency band to
+turn~\cite{farbman2008edge,paris2011local}, and sketch-based face synthesis has
+treated a drawing as a soft constraint rather than a
+template~\cite{chen2020deepfacedrawing}, in some systems with an explicit
+control over how far the sketch is trusted~\cite{yang2020deep}.
+ControlNet~\cite{zhang2023adding} and its successors~\cite{mou2023adapter,zhao2023controlnet,qin2023unicontrol,li2024controlnet} moved that control into training.
 An adapter trained on Canny edges follows Canny edges; one trained on depth
-follows depth. The strength of that following is a property of the trained
-weights, so an artist who wants the same sketch honoured more loosely has to
-pick a different checkpoint or accept whatever the one they have was trained to
-do.
+follows depth. Following a structure more loosely then means picking a
+different checkpoint or scaling the adapter down at inference.
 
 We change what the condition is rather than how hard the model listens to it.
+Multi-scale editing removes or amplifies a band of the output
+image~\cite{farbman2008edge,paris2011local}; here the band is removed from the
+condition, and the generative prior decides what fills it.
 The condition is the image after a radial high-pass filter with normalised
 cutoff $r$. At $r{=}0$ the model receives the grayscale image and the task is
 colourisation. As $r$ grows the filter removes more of the spectrum, until at
@@ -71,7 +77,8 @@ Our contributions are:
 \paragraph{Conditional control.} Text-to-image diffusion
 \cite{ho2020denoising,song2020denoising,rombach2021high,nichol2021glide,saharia2022photorealistic}
 became spatially controllable with ControlNet~\cite{zhang2023adding}, which
-duplicates the encoder and injects residuals through zero convolutions.
+reads the condition image with a small convolutional network, duplicates the
+encoder and injects residuals through zero convolutions.
 T2I-Adapter~\cite{mou2023adapter} does the same job with a small feature
 extractor, IP-Adapter~\cite{ye2023adapter} adds decoupled cross-attention for
 image prompts, and GLIGEN~\cite{li2023gligen} grounds generation on boxes.
@@ -84,10 +91,12 @@ network to encoder and decoder in both directions, CtrLoRA~\cite{xu2024ctrlora}
 adapts a shared base ControlNet to each new condition with LoRA, and
 Simple-ControlNet~\cite{feng2025simplifying} feeds the condition through a
 single-scale projection at the top of the UNet with LoRA on self-attention, in
-under 3M parameters, exposing a scale on that projection at inference. Our
-adapter is not smaller than these. Each of these fixes the condition type and, with it, how tightly the
-output must follow: the operating point is a property of the trained weights.
-Our cutoff moves that point at inference on one set of weights.
+under 3M parameters, exposing a scale on that projection at inference. Each of
+these fixes the condition type at training and, with it, how tightly the output
+follows; an inference-time scale such as Simple-ControlNet's moves that
+operating point by weakening the adapter. Our cutoff moves it through the
+condition on one set of weights, and on our adapter the two controls separate
+in FID (Sec.~\ref{sec:strength}).
 
 \paragraph{Efficient control on transformer backbones.} As backbones moved from
 UNets to diffusion transformers~\cite{peebles2022scalable,esser2024scaling},
@@ -97,48 +106,74 @@ OminiControl~\cite{tan2024ominicontrol} reuses the backbone itself as the
 condition processor, and EasyControl~\cite{zhang2025easycontrol} and
 NanoControl~\cite{liu2025nanocontrol} inject conditions through
 LoRA-style~\cite{hu2021lora} modules at a small fraction of the parameter cost.
-Recent work also examines where conditions should enter:
-Laytrol~\cite{huang2025laytrol} on preserving pretrained knowledge under layout
-control, PixelControl~\cite{lin2026pixelcontrol} on condition fidelity, and
-Zhou et al.~\cite{zhou2026rethinking} on removing redundant attention in multi-condition
-DiTs. Our injection-site comparison (Sec.~\ref{sec:where}) reaches a compatible
-conclusion on a UNet backbone: placement dominates capacity.
+Recent work also revisits how conditions enter these models:
+Laytrol~\cite{huang2025laytrol} inherits the backbone's parameters to preserve
+pretrained knowledge under layout control, PixelControl~\cite{lin2026pixelcontrol}
+notes that the VAE's spatial compression can weaken high-frequency and low-area
+condition signals, and Zhou et al.~\cite{zhou2026rethinking} replace
+concatenate-and-attend with position-aligned and keyword-scoped attention in
+multi-condition DiTs. On a UNet the question has a concrete form, since skip
+tensors are available as an entry point: in our comparison
+(Sec.~\ref{sec:where}) skip residuals carry more structure than cross-attention.
 
-\paragraph{Frequency in diffusion.} Frequency decomposition appears in diffusion
+\paragraph{Frequency bands as an editing axis.} Band decompositions are a
+standard editing axis in graphics: detail manipulation rescales the bands of an
+edge-preserving or Laplacian decomposition~\cite{farbman2008edge,paris2011local},
+and hybrid images combine the low spatial frequencies of one picture with the
+high frequencies of another, so that the interpretation changes with viewing
+distance~\cite{oliva2006hybrid}. In diffusion, frequency decomposition appears
 mostly as an intervention on the model's own signals rather than on its
 condition. FreeU~\cite{si2023freeu} rebalances skip and backbone features
 spectrally at no training cost, FreSca~\cite{huang2025fresca} scales frequency
-bands of the noise prediction and, like us, uses an energy-based cutoff,
+bands of the noise prediction using spatial or energy-based cutoffs,
 DeCo~\cite{ma2025deco} decouples frequencies in pixel-space diffusion, and
 FeRA~\cite{yin2025fera} routes adaptation by frequency energy.
 FOCUS~\cite{tjio2025focus} conditions the reverse process on learned frequency
-priors for test-time adaptation. Closest to us in spirit,
-Prasain~\cite{prasain2026beyond} conditions on wavelet bands instead of edge maps for
-map-to-satellite synthesis. None of them randomises the condition's
+priors for test-time adaptation. Closest to us in the choice of control,
+frequency bands also act as a knob on image-to-image guidance:
+FCDiffusion~\cite{gao2024frequency} extracts DCT bands of the source features and
+switches among frequency control branches, FBSDiff~\cite{gao2024fbsdiff} sets
+the guiding intensity of a reference through the bandwidth of a substituted band
+without training, and ILVR~\cite{choi2021ilvr} conditions a pretrained DDPM on a
+reference at a chosen downsampling factor without further learning.
+Prasain~\cite{prasain2026beyond} conditions on wavelet bands instead of edge
+maps for map-to-satellite synthesis. None of them randomises the condition's
 \emph{bandwidth} during training so that the band becomes a control at
-inference. The general pattern --- randomise a conditioning parameter while
-training, expose it as an inference knob --- is not itself new:
-SDXL~\cite{podell2023sdxl} samples crop coordinates during data loading and
-surfaces them as a user control. Our delta is the choice of parameter, and the
-dissociation that follows from it: bandwidth and adapter strength are not
-interchangeable knobs.
+inference. Randomising a conditioning parameter while training and exposing it
+at inference is not itself new: SDXL~\cite{podell2023sdxl} samples crop
+coordinates during data loading and surfaces them as a user control, and
+Imagen~\cite{saharia2022photorealistic} draws the augmentation level of its
+low-resolution condition at random in training and sweeps it at inference, there
+to find the best sample quality rather than to give the user a control. Our
+delta is the choice of parameter and its measured separation from adapter
+strength: bandwidth and adapter strength are different controls
+(Sec.~\ref{sec:strength}).
 
-\paragraph{Structure preservation.} StructDiff~\cite{he2026structdiff} targets
-structure-preserving spatially controllable generation, and sketch-conditioned
-pipelines have long used edge maps as the structural carrier. The idea that a
-frequency band is itself an editing axis, and that a drawing should act as a
-soft constraint rather than a hard one, both predate diffusion in the graphics
-literature; our motivating sentence borrows from that line and the bibliography
-below does not yet reflect it. Our condition is
-a continuum rather than a fixed extractor, which is what makes a dial possible.
+\paragraph{Drawings as soft constraints.} Sketch-based face synthesis has
+treated rough drawings as soft constraints~\cite{chen2020deepfacedrawing} and,
+closest to our goal, lets the user set how far a drawing is trusted through a
+refinement level~\cite{yang2020deep}; diffusion-based stroke and sketch
+synthesis likewise lets the user decide the level of faithfulness to the
+input~\cite{cheng2023adaptively}. With pretrained diffusion models, sketch
+guidance can be applied at inference through a small latent guidance predictor
+instead of a dedicated encoder~\cite{voynov2023sketch}, and the noise added
+before denoising balances faithfulness to the input against realism without
+training~\cite{meng2022sdedit}. An extended difference-of-Gaussians operator
+turns a photograph into line drawings across a range of styles set by its
+parameters~\cite{winnemoller2012xdog}. Our control differs in what it varies:
+the information content of the condition, set by a frequency cutoff, on one
+adapter whose response we measure separately from its strength. Because the
+condition is a continuum and not a fixed extractor, a single adapter can expose
+it as a dial. StructDiff~\cite{he2026structdiff} targets structure-preserving,
+spatially controllable single-image generation, and sketch-conditioned
+pipelines have long used edge maps as the structural carrier.
 
 \paragraph{Training and evaluation.} We train with classifier-free
 guidance~\cite{ho2022classifier} dropout and Min-SNR loss
 weighting~\cite{hang2023efficient}, and evaluate with FID~\cite{heusel2017gans}
 under the clean-FID protocol~\cite{parmar2021aliased},
 LPIPS~\cite{zhang2018unreasonable} and CLIP score~\cite{radford2021learning} on
-FFHQ~\cite{karras2018style} with BLIP~\cite{li2022blip} captions. SDXL and
-SD3~\cite{podell2023sdxl,esser2024scaling} are the natural next backbones.
+FFHQ~\cite{karras2018style} with BLIP~\cite{li2022blip} captions.
 
 \section{Method}
 
