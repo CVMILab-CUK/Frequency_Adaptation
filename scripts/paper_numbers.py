@@ -339,31 +339,29 @@ for nm, run in [("SkipOnly", "E18_skip_only"), ("AttnOnly", "E9a_conv_encoder"),
 # ---- E22: how fast the condition empties, measured instead of typed
 d = load("E22_spectral_energy")
 if d:
-    mac("energyRemovedZeroFive", 100 * d["energy_removed@0.05"]["mean"], "{:.1f}")
-    mac("energyRetainedFiveZero", d["energy_retained@0.5"]["mean"])
+    # non-constant energy only: the DC term dominates |F|^2 and the disc
+    # removes it at every r, which would inflate the fraction removed
+    mac("acRemovedZeroFive", 100 * d["ac_removed@0.05"]["mean"], "{:.1f}")
+    mac("acRetainedFiveZero", d["ac_retained@0.5"]["mean"])
     mac("condStdZero", d["cond_std@0.0"]["mean"], "{:.3f}")
     mac("condStdOneHundred", d["cond_std@1.0"]["mean"], "{:.3f}")
     mac("energyN", d["provenance"]["n_images"])
-    if "ac_removed@0.05" in d:
-        # non-constant energy only: the DC term dominates |F|^2 and the disc
-        # removes it at every r, which would inflate the fraction removed
-        mac("acRemovedZeroFive", 100 * d["ac_removed@0.05"]["mean"], "{:.1f}")
-        mac("acRetainedFiveZero", d["ac_retained@0.5"]["mean"])
 
 # ---- the span of Diversity over the sweep, which Sec. Metrics quotes
 _dv = [pc[c]["Diversity"]["mean"] for c in CUTS]
 mac("divRange", max(_dv) - min(_dv), "{:.2f}")
 
 # ---- E21 protocol details the OOD section states
-d = load("E21_ood_photos")
-if d:
-    mac("oodN", d["provenance"]["n_images"])
-    for tag, path in [("Ood", "E21_ood_photos"), ("Ind", "E21_indomain_photos")]:
-        dd = load(path)
-        for c in ["0.05", "0.1", "0.2", "0.3"]:
-            v = dd["per_cutoff"].get(c) if dd else None
-            if v and v.get("SC_vs_filtered"):
-                mac(f"ood{tag}F{key[c]}", v["SC_vs_filtered"]["mean"])
+for tag, path in [("Ood", "E21_ood_photos"), ("Ind", "E21_indomain_photos")]:
+    d = load(path)
+    if not d:
+        continue
+    if tag == "Ood":
+        mac("oodN", d["provenance"]["n_images"])
+    for c in ["0.05", "0.1", "0.2", "0.3"]:
+        v = d["per_cutoff"].get(c)
+        if v and v.get("SC_vs_filtered"):
+            mac(f"ood{tag}F{key[c]}", v["SC_vs_filtered"]["mean"])
 d = load("E21_ood_photos_off")
 if d and "0.1" in d["per_cutoff"]:
     mac("oodOffFidOneZero", d["per_cutoff"]["0.1"]["FID"], "{:.2f}")

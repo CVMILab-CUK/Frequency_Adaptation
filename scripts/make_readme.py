@@ -121,9 +121,9 @@ resulting condition, displayed at ±2σ. Columns are r = 0, 0.05, 0.1, 0.2, 0.3,
 0.5, 0.7, 1.0.</em></p>
 
 Natural images concentrate their energy at low frequency, so the condition
-empties fast — a cutoff of 0.05 already discards {100*_e22['ac_removed@0.05']['mean']:.1f} % of the spectral energy outside
-the constant term.
-Above r ≈ 0.2 the condition looks like flat grey (averaged over the test images its standard deviation
+empties fast — a cutoff of 0.05 already discards {100*_e22['ac_removed@0.05']['mean']:.1f} %
+of the spectral energy outside the constant term. Above r ≈ 0.2 the condition
+looks like flat grey (averaged over the test images its standard deviation
 falls from {_e22['cond_std@0.0']['mean']:.3f} to {_e22['cond_std@1.0']['mean']:.3f}), yet the face outline survives and the model still reaches
 SC {pc['0.2']['SC']['mean']:.4f} at r = 0.2. Low contrast is not the same as no
 information.
@@ -227,9 +227,9 @@ cd papers && make        # regenerate numbers from results/, then both PDFs
 
 No number in either PDF is typed by hand: `scripts/paper_numbers.py` emits them
 from `results/*/results.json`, and a missing run fails the build rather than
-printing a stale value. All {nref} references were checked against the arXiv API or, for published-only
-entries, the publisher or DOI record,
-and their abstract pages fetched before entering `refs.bib`.
+printing a stale value. All {nref} references were checked against the arXiv API
+or, for entries published without an arXiv version, the publisher or DOI record,
+before entering `refs.bib`.
 
 ## Layout
 

@@ -2,12 +2,17 @@
  "provenance": {
   "ref": "results/E10b/reference",
   "n_images": 500,
-  "definition": "E22 -- how much of the spectrum the condition filter removes, measured.\n\nThe paper quotes how fast the condition empties as r grows. Those figures used\nto be typed by hand; this script measures them on the held-out reference\nphotographs with the exact mask the condition uses (datalibs.frequency), so the\ntext can take them from results/ like every other number.\n\n  energy_removed[r]   fraction of grayscale spectral energy |F|^2 (DC included)\n                      inside the cut disc of normalised radius r\n  energy_retained[r]  1 - energy_removed[r]\n  cond_std[r]         standard deviation of the condition the model receives\n                      (high_pass_torch output, per-image min-max normalised)"
+  "definition": "E22 -- how much of the spectrum the condition filter removes, measured.\n\nThe paper quotes how fast the condition empties as r grows. Those figures used\nto be typed by hand; this script measures them on the held-out reference\nphotographs with the exact mask the condition uses (datalibs.frequency), so the\ntext can take them from results/ like every other number.\n\n  energy_removed[r]   fraction of grayscale spectral energy |F|^2 (DC included)\n                      inside the cut disc of normalised radius r\n  energy_retained[r]  1 - energy_removed[r]\n  ac_removed[r]       the same fraction of the non-constant energy (DC excluded),\n                      since the disc removes the DC term at every r; ac_retained\n                      is its complement\n  cond_std[r]         standard deviation of the condition the model receives\n                      (high_pass_torch output, per-image min-max normalised)"
  },
  "energy_removed@0.0": {
   "mean": 0.7710254697799682,
   "sem": 0.004570091828545764,
   "first_image": 0.6548868417739868
+ },
+ "ac_removed@0.0": {
+  "mean": 1.4781951904296875e-08,
+  "sem": 3.032072473379442e-08,
+  "first_image": -1.1920928955078125e-07
  },
  "cond_std@0.0": {
   "mean": 0.23765978199243545,
@@ -19,6 +24,11 @@
   "sem": 0.0005768903500733833,
   "first_image": 0.9663816690444946
  },
+ "ac_removed@0.05": {
+  "mean": 0.8860932010412216,
+  "sem": 0.0019339764008515445,
+  "first_image": 0.9025874733924866
+ },
  "cond_std@0.05": {
   "mean": 0.06543789638578892,
   "sem": 0.0004707222534595613,
@@ -28,6 +38,11 @@
   "mean": 0.9877946782112121,
   "sem": 0.00030657397517840025,
   "first_image": 0.9844694137573242
+ },
+ "ac_removed@0.1": {
+  "mean": 0.9435612819194794,
+  "sem": 0.0011980779607674132,
+  "first_image": 0.9549985527992249
  },
  "cond_std@0.1": {
   "mean": 0.04766269325464964,
@@ -39,6 +54,11 @@
   "sem": 0.00016007408445839943,
   "first_image": 0.9929066896438599
  },
+ "ac_removed@0.2": {
+  "mean": 0.9727271864414215,
+  "sem": 0.0007158701137273954,
+  "first_image": 0.9794464707374573
+ },
  "cond_std@0.2": {
   "mean": 0.038714093688875434,
   "sem": 0.00036572920973116686,
@@ -48,6 +68,11 @@
   "mean": 0.9964320621490479,
   "sem": 0.0001049999804152212,
   "first_image": 0.9959792494773865
+ },
+ "ac_removed@0.3": {
+  "mean": 0.9832134685516357,
+  "sem": 0.0004983601634524363,
+  "first_image": 0.9883493781089783
  },
  "cond_std@0.3": {
   "mean": 0.035431757494807245,
@@ -59,6 +84,11 @@
   "sem": 4.983848596912867e-05,
   "first_image": 0.9982855319976807
  },
+ "ac_removed@0.5": {
+  "mean": 0.9925786882638932,
+  "sem": 0.00024866072584299784,
+  "first_image": 0.9950321316719055
+ },
  "cond_std@0.5": {
   "mean": 0.033884001683443785,
   "sem": 0.00032107526686419224,
@@ -68,6 +98,11 @@
   "mean": 0.9993473397493362,
   "sem": 2.1026144570549124e-05,
   "first_image": 0.9992477297782898
+ },
+ "ac_removed@0.7": {
+  "mean": 0.9968915001153946,
+  "sem": 0.00011171395300823249,
+  "first_image": 0.9978203177452087
  },
  "cond_std@0.7": {
   "mean": 0.03519295291975141,
@@ -79,50 +114,15 @@
   "sem": 3.0541647348657584e-06,
   "first_image": 0.9999557137489319
  },
- "cond_std@1.0": {
-  "mean": 0.03437608745507896,
-  "sem": 0.0003791191898741832,
-  "first_image": 0.026183560490608215
- },
- "ac_removed@0.0": {
-  "mean": 1.4781951904296875e-08,
-  "sem": 3.032072473379442e-08,
-  "first_image": -1.1920928955078125e-07
- },
- "ac_removed@0.05": {
-  "mean": 0.8860932010412216,
-  "sem": 0.0019339764008515445,
-  "first_image": 0.9025874733924866
- },
- "ac_removed@0.1": {
-  "mean": 0.9435612819194794,
-  "sem": 0.0011980779607674132,
-  "first_image": 0.9549985527992249
- },
- "ac_removed@0.2": {
-  "mean": 0.9727271864414215,
-  "sem": 0.0007158701137273954,
-  "first_image": 0.9794464707374573
- },
- "ac_removed@0.3": {
-  "mean": 0.9832134685516357,
-  "sem": 0.0004983601634524363,
-  "first_image": 0.9883493781089783
- },
- "ac_removed@0.5": {
-  "mean": 0.9925786882638932,
-  "sem": 0.00024866072584299784,
-  "first_image": 0.9950321316719055
- },
- "ac_removed@0.7": {
-  "mean": 0.9968915001153946,
-  "sem": 0.00011171395300823249,
-  "first_image": 0.9978203177452087
- },
  "ac_removed@1.0": {
   "mean": 0.99970574426651,
   "sem": 1.6580135626285834e-05,
   "first_image": 0.9998717308044434
+ },
+ "cond_std@1.0": {
+  "mean": 0.03437608745507896,
+  "sem": 0.0003791191898741832,
+  "first_image": 0.026183560490608215
  },
  "energy_retained@0.0": {
   "mean": 0.22897453022003178

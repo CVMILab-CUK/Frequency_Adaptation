@@ -9,6 +9,9 @@ text can take them from results/ like every other number.
   energy_removed[r]   fraction of grayscale spectral energy |F|^2 (DC included)
                       inside the cut disc of normalised radius r
   energy_retained[r]  1 - energy_removed[r]
+  ac_removed[r]       the same fraction of the non-constant energy (DC excluded),
+                      since the disc removes the DC term at every r; ac_retained
+                      is its complement
   cond_std[r]         standard deviation of the condition the model receives
                       (high_pass_torch output, per-image min-max normalised)
 """
@@ -26,7 +29,7 @@ a = ap.parse_args()
 R = [0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
 dev = "cuda" if torch.cuda.is_available() else "cpu"
 names = sorted(f for f in os.listdir(a.ref) if f.endswith(".png"))
-acc = {f"{k}@{r}": [] for r in R for k in ("energy_removed", "cond_std")}
+acc = {f"{k}@{r}": [] for r in R for k in ("energy_removed", "ac_removed", "cond_std")}
 for i in range(0, len(names), 32):
     x = np.stack([np.asarray(Image.open(os.path.join(a.ref, f)).convert("RGB")) for f in names[i:i + 32]])
     g = rgb_to_gray_torch(torch.from_numpy(x).permute(0, 3, 1, 2).float().div(255).to(dev))
@@ -38,10 +41,9 @@ for i in range(0, len(names), 32):
     dc = e[..., h // 2, w // 2].sum(dim=-1)
     for r in R:
         keep = radial_mask_torch(h, w, r, dev, "high_pass")      # 0 inside the disc
-        removed = 1.0 - (e * keep).sum(dim=(-3, -2, -1)) / tot
-        acc[f"energy_removed@{r}"] += removed.cpu().tolist()
-        acc.setdefault(f"ac_removed@{r}", [])
-        acc[f"ac_removed@{r}"] += (1.0 - (e * keep).sum(dim=(-3, -2, -1)) / (tot - dc)).cpu().tolist()
+        kept = (e * keep).sum(dim=(-3, -2, -1))
+        acc[f"energy_removed@{r}"] += (1.0 - kept / tot).cpu().tolist()
+        acc[f"ac_removed@{r}"] += (1.0 - kept / (tot - dc)).cpu().tolist()
         acc[f"cond_std@{r}"] += high_pass_torch(g, r).flatten(1).std(1).cpu().tolist()
 
 res = {"provenance": {"ref": a.ref, "n_images": len(names), "definition": __doc__.strip()}}
