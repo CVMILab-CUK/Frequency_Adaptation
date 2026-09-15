@@ -33,10 +33,15 @@ for i in range(0, len(names), 32):
     _, _, h, w = g.shape
     e = torch.fft.fftshift(torch.fft.fft2(g), dim=(-2, -1)).abs() ** 2
     tot = e.sum(dim=(-3, -2, -1))
+    # the mean (DC) term alone is most of |F|^2 and the disc removes it even at
+    # r=0, so also report the fraction of the non-constant energy
+    dc = e[..., h // 2, w // 2].sum(dim=-1)
     for r in R:
         keep = radial_mask_torch(h, w, r, dev, "high_pass")      # 0 inside the disc
         removed = 1.0 - (e * keep).sum(dim=(-3, -2, -1)) / tot
         acc[f"energy_removed@{r}"] += removed.cpu().tolist()
+        acc.setdefault(f"ac_removed@{r}", [])
+        acc[f"ac_removed@{r}"] += (1.0 - (e * keep).sum(dim=(-3, -2, -1)) / (tot - dc)).cpu().tolist()
         acc[f"cond_std@{r}"] += high_pass_torch(g, r).flatten(1).std(1).cpu().tolist()
 
 res = {"provenance": {"ref": a.ref, "n_images": len(names), "definition": __doc__.strip()}}
@@ -45,6 +50,7 @@ for k, v in acc.items():
     res[k] = {"mean": float(v.mean()), "sem": float(v.std() / np.sqrt(len(v))), "first_image": float(v[0])}
 for r in R:
     res[f"energy_retained@{r}"] = {"mean": 1.0 - res[f"energy_removed@{r}"]["mean"]}
+    res[f"ac_retained@{r}"] = {"mean": 1.0 - res[f"ac_removed@{r}"]["mean"]}
 os.makedirs(os.path.dirname(a.out), exist_ok=True)
 json.dump(res, open(a.out, "w"), indent=1)
 for r in R:

@@ -15,8 +15,8 @@ moves structure consistency from \scMainZeroFive{} at $r{=}0.05$ to
 $r_m{=}0.1$, while FID stays between \fidMainZeroFive{} and \fidMainOneZero{}
 over $r \in [0.05, 0.3]$. Scaling this adapter's strength instead pays for
 lower structure consistency with FID: read with the same fixed instrument,
-scale 0.50 reaches \fixInstHalfScale{}, a little below the cutoff $r{=}0.3$,
-and gains diversity, but raises FID to \fidHalfScale{} against
+scale 0.50 reaches \fixInstHalfScale{} against \fixInstThreeZero{} for the
+cutoff $r{=}0.3$ and gains diversity, but raises FID to \fidHalfScale{} against
 \fidMainThreeZero{}. On hand drawings filtered at $r$, the output's correlation
 with the drawing also falls as $r$ grows.
 \CCSblock
@@ -42,8 +42,8 @@ The condition is the image after a radial high-pass filter with normalised
 cutoff $r$. At $r{=}0$ the model receives the grayscale image and the task is
 colourisation. As $r$ grows the filter removes more of the spectrum, until at
 $r{=}1$ almost nothing is left: measured on \energyN{} FFHQ test images, a
-cutoff of $0.05$ already discards \energyRemovedZeroFive\,\% of the spectral
-energy. Training draws $r$ per sample, so one
+cutoff of $0.05$ already discards \acRemovedZeroFive\,\% of the spectral
+energy outside the constant term. Training draws $r$ per sample, so one
 set of weights sees the whole range, and $r$ becomes an inference-time
 parameter. Trained this way, how tightly an output follows its structure is set
 by the condition while the weights stay fixed, and scaling the adapter's
@@ -155,9 +155,9 @@ input~\cite{cheng2023adaptively}. With pretrained diffusion models, sketch
 guidance can be applied at inference through a small latent guidance predictor
 instead of a dedicated encoder~\cite{voynov2023sketch}, and the noise added
 before denoising balances faithfulness to the input against realism without
-training~\cite{meng2022sdedit}. An extended difference-of-Gaussians operator
-turns a photograph into line drawings across a range of styles set by its
-parameters~\cite{winnemoller2012xdog}. Our control differs in what it varies:
+training~\cite{meng2022sdedit}. One extended difference-of-Gaussians
+formulation renders a photograph in drawing styles from pencil shading to
+hatching and woodcut~\cite{winnemoller2012xdog}. Our control differs in what it varies:
 the information content of the condition, set by a frequency cutoff, on one
 adapter whose response we measure separately from its strength. Because the
 condition is a continuum and not a fixed extractor, a single adapter can expose
@@ -201,7 +201,8 @@ mid block, added through the UNet's existing ControlNet interface. In parallel,
 each cross-attention site attends over a $3{\times}3$ window of the condition
 features, gated by a zero-initialised per-channel vector. At $1{\times}1$ the
 softmax runs over a single position, the site reduces to a gated value
-projection, and structure consistency is no lower (Sec.~\ref{sec:where}). Both paths start as
+projection, and structure consistency is not lower beyond the seed spread
+(Sec.~\ref{sec:where}). Both paths start as
 exact no-ops: with them switched off the network reproduces stock
 Stable Diffusion~1.5~\cite{rombach2021high} bit for bit, which we assert before every training run.
 
@@ -432,8 +433,9 @@ the first two test images.
 \end{tikzpicture}
 \caption{The first two test images under adapter strength and under the cutoff,
 one seed and caption per row, taken from the runs of Table~\ref{tab:strength}.
-Lowering the strength of either adapter yields photographs whose pose, framing
-and colour depart from the reference (the second row turns grayscale at scale
+At scale 0.75 the fixed-$r$ adapter still follows the reference; lowering the
+strength of either adapter to 0.50 or below yields photographs whose pose,
+framing and colour depart from it (the second row turns grayscale at scale
 0.25), while moving the cutoff to $r{=}0.3$ keeps the reference layout.}
 \label{fig:strength}
 \end{figure*}
@@ -561,10 +563,12 @@ error (\sdialSemFiveZero{}) of each other.
 
 Against the filtered drawing the model was actually given, the same generations
 score \sdialFZeroFive{} at $r{=}0.05$, \sdialFOneZero{} at $r{=}0.1$ and
-\sdialFThreeZero{} at $r{=}0.3$. Scored by the same script, FFHQ test photographs
-reach \oodIndFZeroFive{}, \oodIndFOneZero{} and \oodIndFThreeZero{}
-(Sec.~\ref{sec:ood}), so a filtered drawing is followed somewhat less closely
-than a filtered photograph and declines the same way (Table~\ref{tab:sketchspec}).
+\sdialFThreeZero{} at $r{=}0.3$. Scored by the same script, \oodN{} FFHQ test
+photographs prompted with ``a high-quality photo'' reach \oodIndFZeroFive{},
+\oodIndFOneZero{} and \oodIndFThreeZero{} (Sec.~\ref{sec:ood}), so a filtered
+drawing is followed less closely than a filtered photograph at every cutoff, by
+less than half at $r{=}0.3$, though the prompts and set sizes differ
+(Table~\ref{tab:sketchspec}).
 
 \section{What the design needs}
 \label{sec:design}
@@ -755,13 +759,15 @@ modules~\cite{tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}. The
 VAE measurement covers the four-channel SD autoencoder.
 
 We claim the dial on $r \in [0.05, 0.3]$. Above that range the condition retains
-little energy (\energyRetainedFiveZero{} of the spectrum at $r{=}0.5$), and
+little energy (\acRetainedFiveZero{} of the non-constant spectral energy at
+$r{=}0.5$), and
 structure consistency becomes hard to interpret, since two nearly empty signals
 correlate near zero whatever the model does. FID is a single estimate per cell
 with no variance, so we leave gaps inside the band of the cutoff sweep
 (\fidMainZero{}--\fidMainOneHundred{}) uninterpreted. The strength setting's FID
-is measured against FFHQ statistics; the samples of Figure~\ref{fig:strength}
-depart from the reference layout rather than visibly degrading, so the rise
+is measured against FFHQ statistics; at scales of 0.50 and below the samples of
+Figure~\ref{fig:strength} depart from the reference layout rather than visibly
+degrading, so the rise
 reflects leaving that distribution at least in part, and we report no
 no-reference quality measure. The one-field ablations of
 Table~\ref{tab:abl} are single-seed, and the per-image normalisation of the

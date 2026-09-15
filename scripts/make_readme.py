@@ -88,6 +88,7 @@ for r in ["0.05", "0.1", "0.3"]:
 seeds = "\n".join(seed_rows)
 
 nref = len(json.load(open("papers/refs_index.json")))
+_e22 = json.load(open("results/E22_spectral_energy/results.json"))
 
 readme = f"""# A Frequency Dial for Structure-Conditioned Diffusion
 
@@ -120,9 +121,10 @@ resulting condition, displayed at ±2σ. Columns are r = 0, 0.05, 0.1, 0.2, 0.3,
 0.5, 0.7, 1.0.</em></p>
 
 Natural images concentrate their energy at low frequency, so the condition
-empties fast — a cutoff of 0.05 already discards 97.5 % of the spectral energy.
-Above r ≈ 0.2 the condition looks like flat grey (its standard deviation falls
-from 0.196 to 0.041), yet the face outline survives and the model still reaches
+empties fast — a cutoff of 0.05 already discards {100*_e22['ac_removed@0.05']['mean']:.1f} % of the spectral energy outside
+the constant term.
+Above r ≈ 0.2 the condition looks like flat grey (averaged over the test images its standard deviation
+falls from {_e22['cond_std@0.0']['mean']:.3f} to {_e22['cond_std@1.0']['mean']:.3f}), yet the face outline survives and the model still reaches
 SC {pc['0.2']['SC']['mean']:.4f} at r = 0.2. Low contrast is not the same as no
 information.
 

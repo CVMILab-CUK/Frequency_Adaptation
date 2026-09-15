@@ -344,6 +344,11 @@ if d:
     mac("condStdZero", d["cond_std@0.0"]["mean"], "{:.3f}")
     mac("condStdOneHundred", d["cond_std@1.0"]["mean"], "{:.3f}")
     mac("energyN", d["provenance"]["n_images"])
+    if "ac_removed@0.05" in d:
+        # non-constant energy only: the DC term dominates |F|^2 and the disc
+        # removes it at every r, which would inflate the fraction removed
+        mac("acRemovedZeroFive", 100 * d["ac_removed@0.05"]["mean"], "{:.1f}")
+        mac("acRetainedFiveZero", d["ac_retained@0.5"]["mean"])
 
 # ---- the span of Diversity over the sweep, which Sec. Metrics quotes
 _dv = [pc[c]["Diversity"]["mean"] for c in CUTS]
