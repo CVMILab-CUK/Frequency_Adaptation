@@ -1,4 +1,7 @@
 
+% Placeholder for values only the authors can supply (FIX-INSTRUCTIONS 2026-09-16).
+% Remove this line once `grep -c 'AUTHORINPUT{' *.inc *.tex` is 0.
+\providecommand{\AUTHORINPUT}[1]{\textbf{[AUTHOR-INPUT #1]}}
 \begin{abstract}
 \noindent
 A structure-conditioned diffusion adapter is trained for one operating point.
