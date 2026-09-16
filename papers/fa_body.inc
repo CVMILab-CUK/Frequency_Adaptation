@@ -5,23 +5,23 @@
 \begin{abstract}
 \noindent
 A structure-conditioned diffusion adapter is trained for one operating point.
-Canny edges, a depth map, a sketch: each fixes how tightly the output must
-follow the condition, and moving that trade-off means training again or scaling
-the adapter's strength at inference. We train a single adapter on
-high-pass-filtered image conditions and draw the cutoff $r$ per sample, so the
-information in the condition varies during training and $r$ becomes a dial at
-test time. Trained this way, how tightly an output follows its structure is set
-by the condition while the weights stay fixed. On FFHQ-512, a single adapter
-moves structure consistency from \scMainZeroFive{} at $r{=}0.05$ to
-\scMainThreeZero{} at $r{=}0.3$, each output scored at its own cutoff, and from
-\fixInstZeroFive{} to \fixInstThreeZero{} with the instrument fixed at
-$r_m{=}0.1$, while FID stays between \fidMainZeroFive{} and \fidMainOneZero{}
-over $r \in [0.05, 0.3]$. Scaling this adapter's strength instead pays for
-lower structure consistency with FID: read with the same fixed instrument,
-scale 0.50 reaches \fixInstHalfScale{} against \fixInstThreeZero{} for the
-cutoff $r{=}0.3$ and gains diversity, but raises FID to \fidHalfScale{} against
-\fidMainThreeZero{}. On hand drawings filtered at $r$, the output's correlation
-with the drawing also falls as $r$ grows.
+How closely its output follows the condition is fixed at training, and
+loosening it later means another checkpoint or a lower adapter strength. We
+move that choice into the condition. A single adapter on Stable Diffusion~1.5
+is trained on grayscale images passed through a radial high-pass filter, with
+the cutoff $r$ drawn per sample. At test time $r$ becomes a dial, much as
+image-editing tools let users pick a frequency band. On FFHQ-512, raising $r$
+from 0.05 to 0.3 lowers structure consistency from \scMainZeroFive{} to
+\scMainThreeZero{} while FID stays between \fidMainZeroFive{} and
+\fidMainOneZero{}. In our samples the face layout holds while background,
+clothing and colour drift from the reference. Lowering the adapter's strength
+instead pays for looser structure with FID: at strength 0.50 structure is
+looser than at $r{=}0.3$ under the same fixed instrument, and FID is
+\fidHalfScale{} against \fidMainThreeZero{}. At $r{=}0.1$, an adapter trained
+only for that cutoff still follows the structure more closely. Injecting
+through the UNet skip tensors carries most of the structure, and an artist can
+filter a hand drawing the same way; the output's correlation with the drawing
+falls as $r$ grows.
 \CCSblock
 \end{abstract}
 
