@@ -1,6 +1,6 @@
 #!/bin/bash
-# Official Computer Graphics Forum submission build. The style package in
-# egstyle/ is the unmodified December 2024 egPublStyle-cgf from eg.org, plus
+# Eurographics 2027 Full Papers submission build. The style package in
+# egstyle_eg2027/ (or egstyle/ until that exists) is unmodified, plus
 # comment.sty, lastpage.sty and placeins.sty (public domain, from CTAN) which
 # this TeX Live install does not ship.
 set -e
