@@ -1,0 +1,46 @@
+figure,row,col,label,best_match_run,image_idx,ssim,psnr,second_run,second_ssim
+dial,0,0,reference,E1/reference,00000,1.0000,inf,E10a/reference,1.0000
+dial,0,1,r=0,E10b/gen_r0.0,00000,0.9958,43.86,E14g_conddrop0/gen_r0.0,0.9193
+dial,0,2,r=0.05,E10b/gen_r0.05,00000,0.9956,44.32,E14e_color/gen_r0.05,0.9512
+dial,0,3,r=0.1,E10b/gen_r0.1,00000,0.9962,44.36,E14e_color/gen_r0.1,0.9495
+dial,0,4,r=0.2,E10b/gen_r0.2,00000,0.9954,44.60,E14e_color/gen_r0.2,0.9383
+dial,0,5,r=0.3,E10b/gen_r0.3,00000,0.9943,42.53,E14e_color/gen_r0.3,0.9394
+dial,0,6,r=0.5,E10b/gen_r0.5,00000,0.9946,43.73,E14e_color/gen_r0.5,0.9264
+dial,0,7,r=0.7,E10b/gen_r0.7,00000,0.9934,40.09,E10b/gen_r0.5,0.8605
+dial,0,8,r=1,E10b/gen_r1.0,00000,0.9942,41.31,E14e_color/gen_r1.0,0.9106
+dial,1,0,reference,E1/reference,00001,1.0000,inf,E10a/reference,1.0000
+dial,1,1,r=0,E14f_sqrt/gen_r0.0,00001,0.6785,16.10,E14f_log/gen_r0.0,0.6620
+dial,1,2,r=0.05,E14f_sqrt/gen_r0.0,00001,0.6557,15.24,E10b/gen_r0.05,0.6527
+dial,1,3,r=0.1,E14e_color/gen_r0.1,00001,0.6420,14.45,E10b/gen_r0.05,0.6419
+dial,1,4,r=0.2,E12_scale0.75/gen_r0.1,00001,0.6492,14.44,E10b/gen_r0.2,0.6462
+dial,1,5,r=0.3,E12_scale0.75/gen_r0.1,00001,0.6291,14.01,E18a_dial_s2027/gen_r0.3,0.6276
+dial,1,6,r=0.5,E10b/gen_r0.7,00001,0.6396,15.19,E14g_conddrop0/gen_r0.7,0.6372
+dial,1,7,r=0.7,E10b/gen_r0.7,00001,0.6489,15.50,E14g_conddrop0/gen_r0.7,0.6473
+dial,1,8,r=1,E2_fixed_r0.1_s2027/gen_r0.7,00001,0.5712,13.22,E2_fixed_r0.1_s2027/gen_r1.0,0.5581
+dial,2,0,reference,E1/reference,00002,1.0000,inf,E10a/reference,1.0000
+dial,2,1,r=0,E9b/reference,00002,0.7141,15.53,E9b_adapter_off/reference,0.7141
+dial,2,2,r=0.05,E9b/reference,00002,0.6999,14.60,E9b_adapter_off/reference,0.6999
+dial,2,3,r=0.1,E9b/reference,00002,0.6357,13.39,E9b_adapter_off/reference,0.6357
+dial,2,4,r=0.2,E9b/reference,00002,0.5287,13.58,E9b_adapter_off/reference,0.5287
+dial,2,5,r=0.3,E9b/reference,00002,0.5340,14.56,E9b_adapter_off/reference,0.5340
+dial,2,6,r=0.5,E15_stem256_skip/gen_r1.0,00002,0.5251,14.76,E18a_scale0.5_s2027/gen_r0.1,0.5237
+dial,2,7,r=0.7,E15_stem256_skip/gen_r1.0,00002,0.5853,15.58,E18a_scale0.5_s2027/gen_r0.1,0.5748
+dial,2,8,r=1,E15_stem256_skip/gen_r1.0,00002,0.6710,16.33,E18a_scale0.5_s2027/gen_r0.1,0.6356
+strength,0,0,reference,E1/reference,00000,1.0000,inf,E10a/reference,1.0000
+strength,0,1,fixed 1.00,E16_spec_scale1.0/gen_r0.1,00000,1.0000,inf,E2_r0.1/gen_r0.1,0.9971
+strength,0,2,fixed 0.75,E16_spec_scale0.75/gen_r0.1,00000,1.0000,inf,E2_r0.1/gen_r0.1,0.8405
+strength,0,3,fixed 0.50,E16_spec_scale0.5/gen_r0.1,00000,1.0000,inf,E12_scale0.5/gen_r0.1,0.8511
+strength,0,4,fixed 0.25,E16_spec_scale0.25/gen_r0.1,00000,1.0000,inf,E12_scale0.25/gen_r0.1,0.6956
+strength,0,5,rand 0.50,E12_scale0.5/gen_r0.1,00000,1.0000,inf,E18a_scale0.6/gen_r0.1,0.8923
+strength,0,6,rand 0.25,E12_scale0.25/gen_r0.1,00000,1.0000,inf,E9b/gen_r0.2,0.8396
+strength,0,7,rand r=0.1,E10b/gen_r0.1,00000,1.0000,inf,E14e_color/gen_r0.1,0.9552
+strength,0,8,rand r=0.3,E10b/gen_r0.3,00000,1.0000,inf,E14e_color/gen_r0.3,0.9456
+strength,1,0,reference,E1/reference,00001,1.0000,inf,E10a/reference,1.0000
+strength,1,1,fixed 1.00,E16_spec_scale1.0/gen_r0.1,00001,1.0000,inf,E2_r0.1/gen_r0.1,0.9968
+strength,1,2,fixed 0.75,E16_spec_scale0.75/gen_r0.1,00001,1.0000,inf,E14f_log/gen_r0.1,0.8558
+strength,1,3,fixed 0.50,E16_spec_scale0.5/gen_r0.1,00001,1.0000,inf,E12_scale0.5/gen_r0.1,0.8185
+strength,1,4,fixed 0.25,E16_spec_scale0.25/gen_r0.1,00001,1.0000,inf,E12_scale0.25/gen_r0.1,0.7989
+strength,1,5,rand 0.50,E12_scale0.5/gen_r0.1,00001,1.0000,inf,E18a_scale0.6/gen_r0.1,0.8247
+strength,1,6,rand 0.25,E12_scale0.25/gen_r0.1,00001,1.0000,inf,E18a_scale0.2/gen_r0.1,0.8314
+strength,1,7,rand r=0.1,E10b/gen_r0.1,00001,1.0000,inf,E14e_color/gen_r0.1,0.9630
+strength,1,8,rand r=0.3,E10b/gen_r0.3,00001,1.0000,inf,E14e_color/gen_r0.3,0.9254

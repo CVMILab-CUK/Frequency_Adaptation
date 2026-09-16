@@ -1,0 +1,387 @@
+{
+ "figure": "figures/strength.png",
+ "tile_px": 256,
+ "gap_px": 0,
+ "resampler": "LANCZOS",
+ "built_by": "scripts/retile_figures.py",
+ "tiles": [
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    0
+   ],
+   "label": "reference",
+   "run_dir": "results/E10b",
+   "checkpoint": null,
+   "checkpoint_sha256": null,
+   "train_seed": null,
+   "sampling_seed": null,
+   "generator_mode": null,
+   "image_idx": "00000",
+   "caption": null,
+   "r": null,
+   "scale": null,
+   "source_png": "results/E10b/reference/00000.png",
+   "source_png_sha256": "432063f13f70095a2a6fbed92ba91fb1927bb9204e6f2f0046b960402bf420a3",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    1
+   ],
+   "label": "fixed-r=0.1 scale 1.00",
+   "run_dir": "results/E16_spec_scale1.0",
+   "checkpoint": "ckpt_dir/E2_fixed_r0.1/final/adapter.safetensors",
+   "checkpoint_sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00000",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "1.00",
+   "source_png": "results/E16_spec_scale1.0/gen_r0.1/00000.png",
+   "source_png_sha256": "97983c98ed9ac082a61f078aab326f19236a053379f80ab35ec58b465e20c5fa",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    2
+   ],
+   "label": "fixed-r=0.1 scale 0.75",
+   "run_dir": "results/E16_spec_scale0.75",
+   "checkpoint": "ckpt_dir/E2_fixed_r0.1/final/adapter.safetensors",
+   "checkpoint_sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00000",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.75",
+   "source_png": "results/E16_spec_scale0.75/gen_r0.1/00000.png",
+   "source_png_sha256": "c421a62912918ff70306f7091b8ea0a627a8f4b095fa302fc7e9142af2bf95b7",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    3
+   ],
+   "label": "fixed-r=0.1 scale 0.50",
+   "run_dir": "results/E16_spec_scale0.5",
+   "checkpoint": "ckpt_dir/E2_fixed_r0.1/final/adapter.safetensors",
+   "checkpoint_sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00000",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.50",
+   "source_png": "results/E16_spec_scale0.5/gen_r0.1/00000.png",
+   "source_png_sha256": "1478c3ed7f5ce4724eaaa9632fbc8d65f370ab852d3ba98a12f2f6ef320326f1",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    4
+   ],
+   "label": "fixed-r=0.1 scale 0.25",
+   "run_dir": "results/E16_spec_scale0.25",
+   "checkpoint": "ckpt_dir/E2_fixed_r0.1/final/adapter.safetensors",
+   "checkpoint_sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00000",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.25",
+   "source_png": "results/E16_spec_scale0.25/gen_r0.1/00000.png",
+   "source_png_sha256": "3be4c210217a810311a2534e82741b1cc63b723e87486fc766b92ed89c6c05bc",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    5
+   ],
+   "label": "randomised-r scale 0.50",
+   "run_dir": "results/E12_scale0.5",
+   "checkpoint": "ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+   "checkpoint_sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00000",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.50",
+   "source_png": "results/E12_scale0.5/gen_r0.1/00000.png",
+   "source_png_sha256": "cd19c2926b63d1809d1e80cba21f0430caa461ae2a5c5424eb2ee70fe41c59a6",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    6
+   ],
+   "label": "randomised-r scale 0.25",
+   "run_dir": "results/E12_scale0.25",
+   "checkpoint": "ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+   "checkpoint_sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00000",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.25",
+   "source_png": "results/E12_scale0.25/gen_r0.1/00000.png",
+   "source_png_sha256": "cd37b7647d516399d3ef46d4778666abd2a5311d6559c4379fb5f49c5f9d8f81",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    7
+   ],
+   "label": "randomised-r r=0.1 full strength",
+   "run_dir": "results/E10b",
+   "checkpoint": "ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+   "checkpoint_sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00000",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "1.00",
+   "source_png": "results/E10b/gen_r0.1/00000.png",
+   "source_png_sha256": "dc2bf6ab87349f527d42de4a091f0db89506cc4e5c5e90d850d7852bc22c3eec",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    0,
+    8
+   ],
+   "label": "randomised-r r=0.3 full strength",
+   "run_dir": "results/E10b",
+   "checkpoint": "ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+   "checkpoint_sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00000",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.3",
+   "scale": "1.00",
+   "source_png": "results/E10b/gen_r0.3/00000.png",
+   "source_png_sha256": "6416cee841643d675e45910bbddc1826079a88048d1e033abdc8db487483c99e",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    0
+   ],
+   "label": "reference",
+   "run_dir": "results/E10b",
+   "checkpoint": null,
+   "checkpoint_sha256": null,
+   "train_seed": null,
+   "sampling_seed": null,
+   "generator_mode": null,
+   "image_idx": "00001",
+   "caption": null,
+   "r": null,
+   "scale": null,
+   "source_png": "results/E10b/reference/00001.png",
+   "source_png_sha256": "bcc02dc0b7c83192f75e2198fe34fd851342dfaa1738b92aad6e4bb01284924f",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    1
+   ],
+   "label": "fixed-r=0.1 scale 1.00",
+   "run_dir": "results/E16_spec_scale1.0",
+   "checkpoint": "ckpt_dir/E2_fixed_r0.1/final/adapter.safetensors",
+   "checkpoint_sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00001",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "1.00",
+   "source_png": "results/E16_spec_scale1.0/gen_r0.1/00001.png",
+   "source_png_sha256": "3ac461534dd8a6f0cb38808f6997800295d9005c46288c36871f29ee1fbb8646",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    2
+   ],
+   "label": "fixed-r=0.1 scale 0.75",
+   "run_dir": "results/E16_spec_scale0.75",
+   "checkpoint": "ckpt_dir/E2_fixed_r0.1/final/adapter.safetensors",
+   "checkpoint_sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00001",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.75",
+   "source_png": "results/E16_spec_scale0.75/gen_r0.1/00001.png",
+   "source_png_sha256": "d4555c974d3013b2c7850bbb86a4a51874197a6b61cb9ad2ef24c520bdfdd627",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    3
+   ],
+   "label": "fixed-r=0.1 scale 0.50",
+   "run_dir": "results/E16_spec_scale0.5",
+   "checkpoint": "ckpt_dir/E2_fixed_r0.1/final/adapter.safetensors",
+   "checkpoint_sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00001",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.50",
+   "source_png": "results/E16_spec_scale0.5/gen_r0.1/00001.png",
+   "source_png_sha256": "0a03d43c44ffbb3a36c11fb64c8ddf45b36981c498984163c379320b8ab4bc25",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    4
+   ],
+   "label": "fixed-r=0.1 scale 0.25",
+   "run_dir": "results/E16_spec_scale0.25",
+   "checkpoint": "ckpt_dir/E2_fixed_r0.1/final/adapter.safetensors",
+   "checkpoint_sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00001",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.25",
+   "source_png": "results/E16_spec_scale0.25/gen_r0.1/00001.png",
+   "source_png_sha256": "0e41152f2629726328dce97eebeb825ec586e53018d156aa151b26482c6595c9",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    5
+   ],
+   "label": "randomised-r scale 0.50",
+   "run_dir": "results/E12_scale0.5",
+   "checkpoint": "ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+   "checkpoint_sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00001",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.50",
+   "source_png": "results/E12_scale0.5/gen_r0.1/00001.png",
+   "source_png_sha256": "e6012cf964af2a02930f27363cd740e0728d726f21a34b55469978c5409f105f",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    6
+   ],
+   "label": "randomised-r scale 0.25",
+   "run_dir": "results/E12_scale0.25",
+   "checkpoint": "ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+   "checkpoint_sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00001",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "0.25",
+   "source_png": "results/E12_scale0.25/gen_r0.1/00001.png",
+   "source_png_sha256": "7a224db8d9f5a94977c91a5a0e0c8416d6373034d099f2c3d13997b530457edf",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    7
+   ],
+   "label": "randomised-r r=0.1 full strength",
+   "run_dir": "results/E10b",
+   "checkpoint": "ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+   "checkpoint_sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00001",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.1",
+   "scale": "1.00",
+   "source_png": "results/E10b/gen_r0.1/00001.png",
+   "source_png_sha256": "cd9a3a9bf0683ba9888b50e6e841201919c0db0c20d7e7df8293f4a019dead29",
+   "resampler": "LANCZOS"
+  },
+  {
+   "figure": "strength",
+   "tile": [
+    1,
+    8
+   ],
+   "label": "randomised-r r=0.3 full strength",
+   "run_dir": "results/E10b",
+   "checkpoint": "ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+   "checkpoint_sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "train_seed": 2026,
+   "sampling_seed": 2026,
+   "generator_mode": "eval/run_eval.py:165 - torch.Generator(cpu).manual_seed(seed + batch_start), one draw per batch",
+   "image_idx": "00001",
+   "caption": "BLIP caption of that test image (per-image, as in Table 1)",
+   "r": "0.3",
+   "scale": "1.00",
+   "source_png": "results/E10b/gen_r0.3/00001.png",
+   "source_png_sha256": "c5368340bfb5dfbd7333c5203fd62685fe629b956867b679fc299770a0568a94",
+   "resampler": "LANCZOS"
+  }
+ ]
+}
