@@ -1,0 +1,32 @@
+SRMv2 EG_2027 Full Papers -- form draft (not part of the paper build)
+=====================================================================
+
+Title (keep unchanged): A Frequency Dial for Structure-Conditioned Diffusion
+Abstract: paste abstract_srmv2.txt (T05).
+Authors, order, on-site presenter (fixed after 2026-09-25):
+  <<AUTHOR-INPUT A09: 저자 목록·순서·소속, Lucca 현장 발표자 1인, senior author 리뷰어 추천 필드에 넣을 이름>>
+Topics / keywords (use the CfP topic spelling, e.g. image/video editing; generative AI; deep learning for graphics):
+  <<AUTHOR-INPUT A11: 폼의 토픽·키워드 선택 항목과 선택값>>
+Prior dissemination / dual submission:
+  <<AUTHOR-INPUT A10: 한국어판(fa_ko)·arXiv판의 공개·투고 이력. 타 venue 심사 후 리젝·철회 이력이 있으면 CfP 권장대로 커버레터를 Additional Attachments에 첨부. arXiv판에 "under review" 표기 금지>>
+
+AI Use Declaration Statement
+----------------------------
+Delete items that did not happen; do not add uses that did not happen; do not
+delete an item that did happen. If any task of FIX-INSTRUCTIONS 2026-09-16 was
+applied, item (ii) happened.
+
+<<AUTHOR-INPUT A08: tool name(s) and version(s), dates of use, and which of (i)-(iii) apply; confirm the sentence on figures, tables and datasets>>
+<TOOL(S) AND VERSION(S)> was used between <DATES> for the following purposes:
+(i) checking grammar and wording of text written by the authors;
+(ii) an automated pre-submission review that flagged inconsistencies between
+text, tables and figures and proposed changes to the structure of the abstract,
+introduction and conclusion; the authors assessed each proposal and rewrote
+adopted passages;
+(iii) assistance with <code / LaTeX formatting / bibliography formatting>.
+The authors designed and ran all experiments, verified every number against the
+run outputs, and take full responsibility for the content.
+No generative AI tool was used to create, edit or retouch any figure, table or dataset.
+The face and scene images in the result figures are outputs of Stable
+Diffusion 1.5 with the adapter studied in the paper, produced by the authors'
+evaluation code as experimental results.
