@@ -619,15 +619,15 @@ older setups.
 
 \input{fig_paths}
 
-Table~\ref{tab:where} lists absolute configurations; each row below the control
-differs from the \emph{conv / attn} row in one field. Figure~\ref{fig:paths}
+Table~\ref{tab:where} lists absolute configurations. Each row below the control
+changes one field of the \emph{conv / attn} row, except the frozen-VAE row
+without a zero-initialised gate, which changes two. Figure~\ref{fig:paths}
 decomposes the main model by switching paths off at test time. Keeping only
 cross-attention drops SC at $r{=}0$ from \pathBothZero{} to \pathAttnOnlyZero{};
 keeping only the skip path retains \pathSkipOnlyZero{}. With both paths off the
 model falls to \pathAllOffZero{} SC and FID \pathFidAllOff{}, the control that
-says the adapter is doing the work. On FID the two single paths are close
-(\pathFidSkipOnly{} against \pathFidAttnOnly{}), so the placement effect we
-measure is a structure-fidelity effect and not a general image-quality one.
+says the adapter is doing the work. The two single paths are close on FID
+(\pathFidSkipOnly{} against \pathFidAttnOnly{}) and far apart on SC.
 
 Within the attention-only design, a 128-channel stem raises SC at $r{=}0.05$
 from \scEaZeroFive{} to \scEcapZeroFive{}, and a 256-channel stem reaches
@@ -681,9 +681,10 @@ conv       & attn, $7{\times}7$ & \scEwinZeroFive  & \scEwinOneZero  & \fidEwin 
 conv       & attn + skip        & \scMainZeroFive  & \scMainOneZero  & \fidMainOneZero \\
 \bottomrule
 \end{tabular}}
-\caption{Absolute configurations, not a cumulative chain: every row below the
-control differs from the \emph{conv / attn} row in exactly one field, and all
-rows use a $3{\times}3$ window and a zero-initialised gate unless stated. The
+\caption{Absolute configurations, not a cumulative chain. Rows below the
+control change one field of the \emph{conv / attn} row; the first frozen-VAE
+row changes two (encoder, and no zero-initialised gate). All rows use a
+$3{\times}3$ window and a zero-initialised gate unless stated. The
 main model is the last row and carries no stem; its attention sites read the
 encoder output through a $1{\times}1$ projection. The frozen-VAE rows use
 attention injection only. They and the $7{\times}7$ row stay close to the
