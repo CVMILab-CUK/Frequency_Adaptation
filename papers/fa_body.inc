@@ -567,19 +567,22 @@ cutoff.
 \centering
 \setlength{\tabcolsep}{0pt}%
 \begin{tabular}{@{}r@{\hspace{2pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{}}
-\rotatebox{90}{\scriptsize\hspace{3mm}drawing} &
+\rotatebox{90}{\scriptsize\hspace{1mm}drawing (input)} &
 \includegraphics[width=0.235\columnwidth,trim={0 0 1792 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={512 0 1280 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1024 0 768 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1536 0 256 0},clip]{figures/sketch} \\[1pt]
-\rotatebox{90}{\scriptsize\hspace{3mm}output} &
+\rotatebox{90}{\scriptsize\hspace{1mm}output, unedited} &
 \includegraphics[width=0.235\columnwidth,trim={256 0 1536 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={768 0 1024 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1280 0 512 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1792 0 0 0},clip]{figures/sketch}
 \end{tabular}
-\caption{Hand-drawn face sketches (top row) and what the model makes of
-them (bottom row), zero-shot. The drawings carry no cutoff; the model has to
+% <<AUTHOR-INPUT A36: 40장 중 Fig.6에 보인 4장을 고른 규칙(예: 처음 4장, 점수 사분위 대표)>>
+\caption{Four of the \sketchFaceN{} CUHK face drawings, chosen by
+\AUTHORINPUT{A36} (top row), and the unedited zero-shot outputs of the main
+model for them (bottom row; prompt ``a high-quality photo of a face''). The
+drawings carry no cutoff; the model has to
 read structure density off the drawing itself, which the per-image min--max
 normalisation permits. Most of the scans carry the archive filename stamped
 across the top, and the model redraws it --- a literal reading of the condition
