@@ -176,13 +176,6 @@ it as a dial. StructDiff~\cite{he2026structdiff} targets structure-preserving,
 spatially controllable single-image generation; \AUTHORINPUT{A26}.
 % <<AUTHOR-INPUT A26: StructDiff가 고정하거나 바꾸는 것 중 우리 cutoff가 하지 않는 것, 한 절(영어)>>
 
-\paragraph{Training and evaluation.} We train with classifier-free
-guidance~\cite{ho2022classifier} dropout and Min-SNR loss
-weighting~\cite{hang2023efficient}, and evaluate with FID~\cite{heusel2017gans}
-under the clean-FID protocol~\cite{parmar2021aliased},
-LPIPS~\cite{zhang2018unreasonable} and CLIP score~\cite{radford2021learning} on
-FFHQ~\cite{karras2018style} with BLIP~\cite{li2022blip} captions.
-
 \section{Method}
 
 \paragraph{Condition.} Given an image $x$, we convert to grayscale, take the
@@ -230,7 +223,8 @@ validation, seed 2026). AdamW, learning rate $10^{-4}$, $\beta=(0.9,0.999)$,
 cosine schedule with 500 warm-up steps, gradient clipping at 1.0, batch 32,
 bf16, 12 epochs on one H200. The loss is $\epsilon$-prediction with Min-SNR
 weighting~\cite{hang2023efficient}, $\gamma=5$. Text conditioning is dropped
-with probability 0.1 and the structure condition independently with probability
+with probability 0.1 for classifier-free guidance~\cite{ho2022classifier} and
+the structure condition independently with probability
 0.05. AdamW uses the PyTorch default weight decay of 0.01. An EMA of the
 adapter (decay 0.9999) is kept with a 10-step interval; evaluation uses the
 raw weights. $r$ is drawn uniformly from $[0,1]$ per sample.
@@ -306,7 +300,7 @@ to the same information as LPIPS and serves as a secondary reading.
 
 \paragraph{FID, LPIPS and CLIP.} Clean-FID~\cite{heusel2017gans,parmar2021aliased}
 in its clean mode at 512 pixels, between the 500 generations and the same 500
-references. The LPIPS column is AlexNet LPIPS between each generation and its
+references. The LPIPS column is AlexNet LPIPS~\cite{zhang2018unreasonable} between each generation and its
 own reference, averaged over images. CLIP score is 100 times the cosine
 similarity of ViT-B/32~\cite{radford2021learning} embeddings of the image and
 its own caption.
