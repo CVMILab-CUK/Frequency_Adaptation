@@ -807,17 +807,15 @@ changes, and whether artists find the control useful, is not measured here.
 
 Randomising the bandwidth of a structure condition during training turns the
 cutoff into an inference-time control, and that control is not reproducible by
-scaling this adapter's strength. A single adapter, trained once with the cutoff
-drawn per sample, moves structure consistency from \scMainZeroFive{} to
-\scMainThreeZero{} as $r$ goes from 0.05 to 0.3, each output scored at its own
-cutoff (Table~\ref{tab:main}). Read with the instrument fixed at $r_m{=}0.1$,
-scaling its strength to 0.50 reaches \fixInstHalfScale{} at FID \fidHalfScale{},
-where the cutoff $r{=}0.3$ reaches \fixInstThreeZero{} at FID
-\fidMainThreeZero{} (Sec.~\ref{sec:strength}). The design reads the condition
+scaling this adapter's strength. One checkpoint covers $r \in [0.05, 0.3]$ at
+FID between \fidMainZeroFive{} and \fidMainOneZero{}; across that range our
+samples keep the face layout while background, clothing and colour follow the
+reference less. Lowering strength to a comparable looseness costs FID
+(Sec.~\ref{sec:strength}). The checkpoint trails a specialist at $r{=}0.1$ and
+leads one at $r{=}0.3$ (Sec.~\ref{sec:spec}). The design reads the condition
 with a convolutional encoder rather than the frozen autoencoder and injects it
 through the UNet skip tensors and cross-attention, both choices measured on
-SD1.5. One checkpoint covers the cutoff range $r \in [0.05, 0.3]$ at FID between
-\fidMainZeroFive{} and \fidMainOneZero{}, where the specialists of
-Sec.~\ref{sec:spec} need one adapter per operating point.
+SD1.5.
+% <<AUTHOR-INPUT A14: (선택) 편집 용도 마무리 한 문장 -- 어떤 과제에서 r을 정하는지(예: 초상의 배치를 두고 주변을 다시 그리기). 측정이 아니라 의도된 용도로 쓴다. 쓰지 않으면 이 주석 줄을 지운다>>
 
 \ifx\AppendixAfterReferences\undefined\input{fa_appendix.inc}\fi
