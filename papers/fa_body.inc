@@ -416,13 +416,19 @@ Both scaled curves leave the FFHQ image distribution as they go. At scale 0.25
 the fixed-$r$ adapter reaches FID \sscFidQuarter{} and diversity
 \sscDivQuarter{}, beyond anything the cutoff produces over its whole sweep,
 where FID stays within \fidMainZero{}--\fidMainOneHundred{} and diversity peaks
-at \divMainOneHundred{}. Turning the adapter down removes structure while FID
-rises, to \fidHalfScale{} at scale 0.50; narrowing the condition's band removes
-it while FID stays between \fidMainZeroFive{} and \fidMainOneZero{} on the
-claimed range. At full strength the fixed-$r{=}0.1$ adapter reaches FID
-\sscFidOne{} against \fidMainOneZero{} for the randomised model at the same
-cutoff. Figure~\ref{fig:strength} shows what the scaled settings produce for
-the first two test images.
+at \divMainOneHundred{}. Turning the randomised-$r$ adapter down removes
+structure while FID rises, to \fidHalfScale{} at scale 0.50 (\sscFidHalf{} for
+the fixed-$r$ adapter). The fine sweep of Table~\ref{tab:strengthfull} brackets
+the cutoff $r{=}0.3$, which reads \fixInstThreeZero{} at FID
+\fidMainThreeZero{} on the instrument $r_m{=}0.1$: scale \swFVal{} gives
+\swFSc{} at FID \swFFid{}, and scale \swEVal{} gives \swESc{} at FID
+\swEFid{}.
+% <<AUTHOR-INPUT A13: Table 10의 SC가 fixed-instrument 판독(저장된 8-bit 이미지)과 같은 기준인지. 다르면 "on the instrument $r_m{=}0.1$"을 지우고 "each scored at $r{=}0.1$"로 바꾼다>>
+% <<AUTHOR-INPUT A17: 1-2문장 -- 이 어댑터에서 strength를 낮추면 왜 FID가 오르는가. Limitations는 샘플이 열화가 아니라 reference 배치를 떠난다고 쓴다. Figure~\ref{fig:strength} scale 0.25의 둘째 행 grayscale을 어떻게 보는가>>
+At full strength the fixed-$r{=}0.1$ adapter reaches FID \sscFidOne{} against
+\fidMainOneZero{} for the randomised-$r$ adapter at the same cutoff.
+Figure~\ref{fig:strength} shows what the scaled settings produce for the first
+two test images.
 
 \begin{figure*}[t]
 \centering
