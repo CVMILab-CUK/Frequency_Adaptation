@@ -727,10 +727,10 @@ sampler. The main model keeps the $3{\times}3$ window and no stem, although the
 $1{\times}1$ and stem variants score higher at several cutoffs in
 Table~\ref{tab:abl}, because these one-field ablations were trained after
 the main configuration and its three seeds had been fixed. The same holds for
-the $r{=}u^2$ sampler, which concentrates training at small $r$ and scores
-higher structure consistency than the main model at each measured cutoff of
-the claimed range (Tables~\ref{tab:abl} and~\ref{tab:ablfull}), with FID lower
-at $r{=}0.1$ and within single-estimate noise at $r{=}0.05$ and $0.3$
+the $r{=}u^2$ sampler. It concentrates training at small $r$ and scores higher
+structure consistency than the main model at each measured cutoff of the
+claimed range (Tables~\ref{tab:abl} and~\ref{tab:ablfull}). Its FID is lower at
+$r{=}0.1$ and within single-estimate noise at $r{=}0.05$ and $0.3$
 (Table~\ref{tab:ablfid}).
 % <<AUTHOR-INPUT A25: u^2 샘플러를 채택하지 않은 이유가 위 학습 순서 하나뿐인지 확인. 다른 이유가 있으면 "The same holds for ..." 문장의 주절을 그 이유로 바꾼다. 다시 한다면 무엇을 고르겠는가(선택)>>
 
