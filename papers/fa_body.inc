@@ -58,21 +58,21 @@ control: at low strength pose and framing change, and FID rises
 Our contributions are:
 
 \begin{itemize}\itemsep2pt
-\item A control dial. One adapter spans structure consistency
-      \scMainZeroFive{} to \scMainThreeZero{} on $r \in [0.05, 0.3]$ with FID
-      between \fidMainZeroFive{} and \fidMainOneZero{} (Sec.~\ref{sec:dial}).
-\item The dial and adapter strength separate in FID. With both read by the
-      instrument fixed at $r_m{=}0.1$, scale 0.50 lowers structure consistency
-      to \fixInstHalfScale{} with more diversity but at FID \fidHalfScale{},
-      where the cutoff $r{=}0.3$ reaches \fixInstThreeZero{} at FID
-      \fidMainThreeZero{} (Secs.~\ref{sec:strength} and~\ref{sec:fixedinst}).
-\item Measurements behind two design choices (Sec.~\ref{sec:design}). An encode--decode round trip
-      through the frozen VAE keeps a correlation of \vaeNativeThreeZero{} with
-      a high-pass condition at $r{=}0.3$ (Sec.~\ref{sec:vae}); on SD1.5 the
-      skip path trained alone, with \paramsSkipOnly{} parameters, reaches
-      structure consistency \skipOnlyOneZero{} at $r{=}0.1$, where an
-      attention-only design with \paramsCapb{} parameters reaches
-      \scEcapbOneZero{} (Secs.~\ref{sec:where} and~\ref{sec:skiponly}).
+\item A frequency dial on the condition. Randomising the high-pass cutoff
+      during training gives one adapter an inference-time control over
+      structure adherence on $r \in [0.05, 0.3]$ at a steady FID band
+      (Sec.~\ref{sec:dial}); it trails a per-cutoff specialist at $r{=}0.1$
+      and leads one at $r{=}0.3$ (Sec.~\ref{sec:spec}).
+\item The dial is not adapter strength. Under one fixed instrument, strength
+      settings around the cutoff's structure consistency sit at higher FID
+      and change pose and framing (Secs.~\ref{sec:strength}
+      and~\ref{sec:fixedinst}).
+\item Where the condition should enter a UNet (Sec.~\ref{sec:design}). On
+      SD1.5 the skip-tensor path carries most of the structure that
+      cross-attention alone does not (Secs.~\ref{sec:where}
+      and~\ref{sec:skiponly}), and with attention-only injection a
+      convolutional encoder reads the condition better than the frozen VAE
+      (Table~\ref{tab:where}).
 \end{itemize}
 
 \section{Related work}
