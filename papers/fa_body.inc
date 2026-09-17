@@ -272,7 +272,7 @@ We evaluate on 500 of the \nTest{} held-out images with a DDIM sampler at 50
 steps, CFG 7.5, seed 2026.
 
 \paragraph{Structure consistency.} SC converts the generated image to grayscale,
-applies the \emph{same} high-pass filter at the \emph{same} cutoff the model was
+applies the same high-pass filter at the same cutoff the model was
 given, and takes the Pearson correlation against the given condition over the
 flattened pixel vector, per image, averaged over images. Both signals are the
 per-image min--max normalised filter output, so the correlation is scale free.
