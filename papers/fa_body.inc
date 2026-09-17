@@ -134,7 +134,7 @@ DeCo~\cite{ma2025deco} decouples frequencies in pixel-space diffusion, and
 FeRA~\cite{yin2025fera} routes adaptation by frequency energy.
 FOCUS~\cite{tjio2025focus} conditions the reverse process on learned frequency
 priors for test-time adaptation. Closest to us in the choice of control,
-frequency bands also act as a knob on image-to-image guidance:
+frequency bands also act as a control on image-to-image guidance:
 FCDiffusion~\cite{gao2024frequency} extracts DCT bands of the source features and
 switches among frequency control branches, FBSDiff~\cite{gao2024fbsdiff} sets
 the guiding intensity of a reference through the bandwidth of a substituted band
@@ -412,7 +412,7 @@ An obvious alternative is to train on one cutoff and turn the adapter's
 contribution down at inference, the knob lightweight control modules
 expose~\cite{feng2025simplifying}. We ran it on the adapter trained at fixed
 $r{=}0.1$ (Sec.~\ref{sec:spec}), scaling both injection paths, and, as a second
-check, scaled the randomised-$r$ model at the same cutoff (Table~\ref{tab:strength};
+check, scaled the randomised-$r$ adapter at the same cutoff (Table~\ref{tab:strength};
 Table~\ref{tab:strengthfull} sweeps it finely).
 
 \begin{table}[t]\centering\small
@@ -506,7 +506,7 @@ treat a ratio below the two-sided $t$ critical value at $df=2$ (\tailCrit{})
 as not separable. Because each specialist is a single run, this threshold is
 looser than a prediction interval for a new run. The result is mixed:
 the specialist wins at $r{=}0.1$ (\specOneZero{} against \sMeanOneZero{},
-$\Delta{=}\specDOneZero{}$, $\specROneZero{}$ sd) and the single model wins at
+$\Delta{=}\specDOneZero{}$, $\specROneZero{}$ sd) and the randomised-$r$ adapter wins at
 $r{=}0.3$ (\sMeanThreeZero{} against \specThreeZero{}, $\specDThreeZero{}$,
 $\specRThreeZero{}$ sd). Neither $r{=}0.5$ ($\specRFiveZero{}$ sd) nor
 $r{=}0.7$ ($\specRSevenZero{}$ sd) separates (Table~\ref{tab:specfull}).
@@ -810,7 +810,7 @@ the skip path from scratch, with the attention branch removed entirely.
 It reaches SC \skipOnlyOneZero{} at $r{=}0.1$ against \scMainOneZero{} for both
 paths and \pathAttnOnlyOneZero{} for cross-attention alone, at FID
 \skipOnlyFidOneZero{} against \fidMainOneZero{}. Trained on its own, the skip
-path recovers most but not all of the combined model, so the attention branch
+path recovers most but not all of the main model, so the attention branch
 adds something the skip path does not supply. The skip-only model trains
 \paramsSkipOnly{} parameters against \ourParams{} for both paths, and the
 attention-only design with a 256-channel stem, at \paramsCapb{} parameters,
@@ -863,7 +863,7 @@ reflects leaving that distribution at least in part, and we report no
 no-reference quality measure. The one-field ablations of
 Table~\ref{tab:abl} are single-seed, and the per-image normalisation of the
 condition was fixed by design and never ablated. At $r{=}0.1$ the fixed-cutoff
-specialist leads the single model by $\specROneZero{}$ seed sd
+specialist leads the randomised-$r$ adapter by $\specROneZero{}$ seed sd
 (Sec.~\ref{sec:spec}). The frozen VAE was never paired with the skip path, so in
 Table~\ref{tab:where} the VAE result is confounded with the weakness of
 attention-only injection. The sketch results have no adapter-off control. The
