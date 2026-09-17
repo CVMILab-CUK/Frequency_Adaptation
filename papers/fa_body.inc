@@ -517,9 +517,9 @@ $r{=}0.3$ (\sMeanThreeZero{} against \specThreeZero{}, $\specDThreeZero{}$,
 $\specRThreeZero{}$ sd). Neither $r{=}0.5$ ($\specRFiveZero{}$ sd) nor
 $r{=}0.7$ ($\specRSevenZero{}$ sd) separates (Table~\ref{tab:specfull}).
 
-One model does not dominate four. It gives a dial the specialists cannot: a
-model trained at $r{=}0.1$ has never seen $r{=}0.3$, so its curve is a single
-point.
+One model does not dominate four. A specialist trained at $r{=}0.1$ has never
+seen $r{=}0.3$, so along $r$ it offers one operating point where the
+randomised-$r$ adapter offers the range.
 
 \subsection{Baselines}
 
