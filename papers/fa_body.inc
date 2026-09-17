@@ -365,8 +365,7 @@ Across seeds 2026, 2027 and 2028 the curve is stable: SC at $r{=}0.05$ is
 
 Re-scored with the fixed instrument of Sec.~\ref{sec:fixedinst}, the curve still falls: \fixInstZeroFive{} at $r{=}0.05$, \fixInstOneZero{} at
 $r{=}0.1$ and \fixInstThreeZero{} at $r{=}0.3$. Holding the instrument fixed
-compresses the range, as it must, and keeps the decline, so the decline comes
-from the generations rather than from the metric.
+compresses the range, as it must, and keeps the decline.
 
 \subsection{Adapter strength as the alternative knob}
 \label{sec:strength}
