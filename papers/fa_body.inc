@@ -11,8 +11,9 @@ move that choice into the condition. A single adapter on Stable Diffusion~1.5
 is trained on grayscale images passed through a radial high-pass filter, with
 the cutoff $r$ drawn per sample. At test time $r$ becomes a dial, much as
 image-editing tools let users pick a frequency band. On FFHQ-512, raising $r$
-from 0.05 to 0.3 lowers structure consistency from \scMainZeroFive{} to
-\scMainThreeZero{} while FID stays between \fidMainZeroFive{} and
+from 0.05 to 0.3 lowers structure consistency (mean of three training seeds)
+from \seedMeanZeroFive{} to \seedMeanThreeZero{} while FID stays between
+\fidMainZeroFive{} and
 \fidMainOneZero{}. In our samples the face layout holds while background,
 clothing and colour drift from the reference. Lowering the adapter's strength
 instead pays for looser structure with FID: at strength 0.50 structure is
@@ -350,8 +351,10 @@ $r$ & SC $\pm$ SEM & seed sd & Edge-F1 & Diversity & FID \\
 1.00 & \scMainOneHundred\,$\pm$\,\semMainOneHundred & \sSdOneHundred & \edgeMainOneHundred & \divMainOneHundred & \fidMainOneHundred \\
 \bottomrule
 \end{tabular}
-\caption{Operating curve, 500 of the \nTest{} test images. SEM is over those
-500 images; seed sd is over three training seeds. Edge-F1 is a cutoff-independent
+% <<AUTHOR-INPUT A22: Table 1의 SC/Edge-F1/Diversity/FID 열이 어느 학습 seed인지(2026 예상, Table 14 확인)>>
+\caption{Operating curve, 500 of the \nTest{} test images. All columns come from
+training seed \AUTHORINPUT{A22} except seed sd, which is the standard deviation
+over training seeds 2026--2028; SEM is over the 500 images. Edge-F1 is a cutoff-independent
 reading of the same runs and is reported alongside SC because SC re-extracts at
 the same cutoff the model was given (Sec.~\ref{sec:metrics}). FID has a single
 estimate per cell and no variance, so small differences between rows are not
