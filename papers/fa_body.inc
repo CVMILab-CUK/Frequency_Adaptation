@@ -140,6 +140,9 @@ switches among frequency control branches, FBSDiff~\cite{gao2024fbsdiff} sets
 the guiding intensity of a reference through the bandwidth of a substituted band
 without training, and ILVR~\cite{choi2021ilvr} conditions a pretrained DDPM on a
 reference at a chosen downsampling factor without further learning.
+% <<AUTHOR-CITE C1: Gu, Yang, Davis 2024, "Filter-Guided Diffusion for Controllable Image Generation", SIGGRAPH Conference Papers '24, doi:10.1145/3641519.3657489 -- 저자가 읽고 채택을 확정하면 refs.bib 항목을 추가하고 아래 주석 두 줄의 %를 지우고 C1KEY를 실제 키로 바꾼다. 서술이 논문 내용과 맞는지 저자가 확인한다. 채택하지 않으면 두 줄을 지운다>>
+% Filter-guided diffusion~\cite{C1KEY} applies a spatial filter to the denoised estimate at inference and exposes its scale and the guidance strength as separate controls without training;
+% our band is instead part of what the adapter is trained to read.
 Prasain~\cite{prasain2026beyond} conditions on wavelet bands instead of edge
 maps for map-to-satellite synthesis. None of them randomises the condition's
 \emph{bandwidth} during training so that the band becomes a control at
@@ -162,9 +165,10 @@ input~\cite{cheng2023adaptively}. With pretrained diffusion models, sketch
 guidance can be applied at inference through a small latent guidance predictor
 instead of a dedicated encoder~\cite{voynov2023sketch}, and the noise added
 before denoising balances faithfulness to the input against realism without
-training~\cite{meng2022sdedit}. One extended difference-of-Gaussians
-formulation renders a photograph in drawing styles from pencil shading to
-hatching and woodcut~\cite{winnemoller2012xdog}. Our control differs in what it varies:
+training~\cite{meng2022sdedit}. XDoG~\cite{winnemoller2012xdog} moves a
+photograph from pencil shading to hatching and woodcut by changing the
+parameters of one filter family. Our cutoff is a filter parameter of the same
+kind, set on the condition and left for the generative prior to complete. Our control differs in what it varies:
 the information content of the condition, set by a frequency cutoff, on one
 adapter whose response we measure separately from its strength. Because the
 condition is a continuum and not a fixed extractor, a single adapter can expose
