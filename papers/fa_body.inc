@@ -229,8 +229,9 @@ weighting~\cite{hang2023efficient}, $\gamma=5$. Text conditioning is dropped
 with probability 0.1 and the structure condition independently with probability
 0.05. AdamW uses the PyTorch default weight decay of 0.01. An EMA of the
 adapter (decay 0.9999) is kept with a 10-step interval; evaluation uses the
-raw weights. $r$ is drawn uniformly from $[0,1]$ per sample, although we claim
-the dial only on $r \in [0.05, 0.3]$. Appendix~\ref{sec:repro} lists the
+raw weights. $r$ is drawn uniformly from $[0,1]$ per sample.
+% <<AUTHOR-INPUT A24: 1-2문장 -- 결과를 [0.05, 0.3]에서 보고하는데 학습은 왜 [0,1] 전체인가, Table~\ref{tab:abl}의 sampler들 이전에 더 좁은 구간을 시도했는가>>
+Appendix~\ref{sec:repro} lists the
 remaining settings.
 
 \section{Experiments}
@@ -664,7 +665,13 @@ small $r$ rather than improving it everywhere. The results above use the uniform
 sampler. The main model keeps the $3{\times}3$ window and no stem, although the
 $1{\times}1$ and stem variants score higher at several cutoffs in
 Table~\ref{tab:abl}, because these one-field ablations were trained after
-the main configuration and its three seeds had been fixed.
+the main configuration and its three seeds had been fixed. The same holds for
+the $r{=}u^2$ sampler, which concentrates training at small $r$ and scores
+higher structure consistency than the main model at each measured cutoff of
+the claimed range (Tables~\ref{tab:abl} and~\ref{tab:ablfull}), with FID lower
+at $r{=}0.1$ and within single-estimate noise at $r{=}0.05$ and $0.3$
+(Table~\ref{tab:ablfid}).
+% <<AUTHOR-INPUT A25: u^2 샘플러를 채택하지 않은 이유가 위 학습 순서 하나뿐인지 확인. 다른 이유가 있으면 "The same holds for ..." 문장의 주절을 그 이유로 바꾼다. 다시 한다면 무엇을 고르겠는가(선택)>>
 
 \begin{table}[t]\centering\footnotesize
 \setlength{\tabcolsep}{2pt}
