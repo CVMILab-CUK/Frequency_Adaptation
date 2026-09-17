@@ -225,6 +225,7 @@ bf16, 12 epochs on one H200. The loss is $\epsilon$-prediction with Min-SNR
 weighting~\cite{hang2023efficient}, $\gamma=5$. Text conditioning is dropped
 with probability 0.1 for classifier-free guidance~\cite{ho2022classifier} and
 the structure condition independently with probability
+% <<AUTHOR-INPUT A42: (선택) 한 문장씩 -- 조건을 grayscale로 둔 이유(Table~\ref{tab:abl} colour condition 행과의 관계), 구조 조건 dropout 0.05와 12 epochs를 고른 근거. 넣는다면 이 주석 자리에 영어로>>
 0.05. AdamW uses the PyTorch default weight decay of 0.01. An EMA of the
 adapter (decay 0.9999) is kept with a 10-step interval; evaluation uses the
 raw weights. $r$ is drawn uniformly from $[0,1]$ per sample.
