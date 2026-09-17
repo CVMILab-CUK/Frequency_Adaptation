@@ -23,9 +23,12 @@
              xmin=-0.03, xmax=0.8, ymin=45, ymax=112,
              legend columns=2,
              legend style={at={(0.5,-0.42)}, anchor=north}]
-  \addplot[mark=square*, black, restrict expr to domain={\thisrow{r}}{0.04:0.31}] table[x=sc, y=fid] {curve.dat};
+  % curve.dat rows are ordered r = 0, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1; rows 1-4
+  % are the claimed range. Split by row index because an expression filter on
+  % \thisrow{r} does not survive pgfplots' parser here.
+  \addplot[mark=square*, black, skip coords between index={0}{1}, skip coords between index={5}{8}] table[x=sc, y=fid] {curve.dat};
   \addlegendentry{cutoff, own instrument}
-  \addplot[only marks, mark=square, black!45, y filter/.expression={(\thisrow{r}>0.04 && \thisrow{r}<0.31) ? nan : y}] table[x=sc, y=fid] {curve.dat};
+  \addplot[only marks, mark=square, black!45, skip coords between index={1}{5}] table[x=sc, y=fid] {curve.dat};
   \addlegendentry{cutoff outside $[0.05, 0.3]$}
   \addplot[mark=diamond*, black, densely dotted] coordinates {(\fixInstZeroFive,\fidMainZeroFive) (\fixInstOneZero,\fidMainOneZero) (\fixInstTwoZero,\fidMainTwoZero) (\fixInstThreeZero,\fidMainThreeZero)};
   \addlegendentry{cutoff, instrument $r_m{=}0.1$}
