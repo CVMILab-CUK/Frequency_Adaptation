@@ -9,8 +9,8 @@
   xlabel={}, ylabel={structure consistency},
   symbolic x coords={both,skip,attn,off},
   xtick=data,
-  xticklabels={both paths, skip only, attn only, both off},
-  x tick label style={font=\scriptsize},
+  xticklabels={both paths, skip only\\(test time), attn only\\(test time), both off},
+  x tick label style={font=\scriptsize, align=center},
   ymin=0, ymax=0.78,
   legend pos=north east,
   enlarge x limits=0.16,
@@ -30,8 +30,11 @@ residuals carry most of the structure signal; cross-attention alone recovers
 little of it, and with both off the model falls to the frozen backbone
 (FID \pathFidAllOff{} against \pathFidBoth{} with both paths on; skip only
 \pathFidSkipOnly{}, attention only \pathFidAttnOnly{}). The dashed line is the
-both-off control at $r{=}0$. At $r{=}0$ the single-path gains over the control
-roughly add up to the both-paths score; at $r{=}0.3$ both paths together exceed
-that sum.}
+both-off control at $r{=}0$. Paths are switched off at test time on the trained
+main model; the separately trained skip-only model is in
+Table~\ref{tab:skiponly}. At $r{=}0$ the single-path gains over the control
+roughly add up to the both-paths gain; at $r{=}0.3$ the both-paths gain over
+the control exceeds the sum of the single-path gains.}
+% <<AUTHOR-INPUT A39: (선택) r=0.3에서 두 경로가 서로 무엇을 보완한다고 보는지 한 문장 -- 넣는다면 §5.2 본문에. 쓰지 않으면 이 줄을 지운다>>
 \label{fig:paths}
 \end{figure}
