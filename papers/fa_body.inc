@@ -173,8 +173,8 @@ the information content of the condition, set by a frequency cutoff, on one
 adapter whose response we measure separately from its strength. Because the
 condition is a continuum and not a fixed extractor, a single adapter can expose
 it as a dial. StructDiff~\cite{he2026structdiff} targets structure-preserving,
-spatially controllable single-image generation, and sketch-conditioned
-pipelines have long used edge maps as the structural carrier.
+spatially controllable single-image generation; \AUTHORINPUT{A26}.
+% <<AUTHOR-INPUT A26: StructDiff가 고정하거나 바꾸는 것 중 우리 cutoff가 하지 않는 것, 한 절(영어)>>
 
 \paragraph{Training and evaluation.} We train with classifier-free
 guidance~\cite{ho2022classifier} dropout and Min-SNR loss
