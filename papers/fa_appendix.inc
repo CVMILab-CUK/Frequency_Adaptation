@@ -240,6 +240,7 @@ Base model        & \texttt{stable-diffusion-v1-5/}\allowbreak\texttt{stable-dif
 Condition encoder & seven $3{\times}3$ convolutions, SiLU, three with stride 2 and group normalisation, 32 to 128 channels, 4 output channels \\
 Trainable params  & \ourParams{} (main); skip only \paramsSkipOnly{}; attention only \paramsAttnOnly{} \\
 Data              & FFHQ-512, \nTrain{} / \nValid{} / \nTest{}, seeded shuffle (seed 2026); the validation split only monitors training on four images \\
+Sketch data       & CUHK Face Sketch database, \AUTHORINPUT{A28}; \texttt{rhfeiyang/}\allowbreak\texttt{photo-sketch-pair-500}, \AUTHORINPUT{A29} \\
 Optimiser         & AdamW, lr $10^{-4}$, $\beta{=}(0.9,0.999)$, weight decay 0.01, cosine, 500 warm-up steps \\
 Batch / precision & 32 / bf16, gradient clipping 1.0, 12 epochs, Min-SNR $\gamma{=}5$, one H200 \\
 EMA               & decay 0.9999 every 10 steps; evaluation uses the raw weights \\

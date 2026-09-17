@@ -512,8 +512,10 @@ input; fed Canny edges it would measure that mismatch rather than the method.
 \label{sec:ood}
 
 Everything above is FFHQ. To test whether the dial is specific to faces we ran
+% <<AUTHOR-INPUT A29: rhfeiyang/photo-sketch-pair-500의 dataset card 라이선스와 원출처(upstream). 아래 \AUTHORINPUT{A29}를 "released under <license>" 형태로 바꾼다>>
 the sweep on the \oodN{} general-scene photographs of the public
-photograph--sketch set \texttt{rhfeiyang/photo-sketch-pair-500} on Hugging Face,
+photograph--sketch set \texttt{rhfeiyang/photo-sketch-pair-500} on Hugging Face
+(\AUTHORINPUT{A29}),
 centre-cropped to $512^2$, and, as an in-domain reference under the identical
 script, on the \oodN{} FFHQ test images, both with the prompt ``a high-quality
 photo''. Each generation is scored in two ways: the grayscale output against
@@ -567,8 +569,11 @@ what the score is measuring.}
 \end{figure}
 
 
+% <<AUTHOR-INPUT A28: CUHK Face Sketch database 40장이 속한 하위집합(CUHK student / AR / XM2VTS), 사용 조건(연구 목적 전용 등), 논문에 얼굴 드로잉을 게재해도 되는지. 게재 불가면 Fig.6 타일 교체가 필요하다>>
+% <<AUTHOR-INPUT A30: CUFS에서 40장을 고른 규칙>>
 Figure~\ref{fig:sketch} shows the transfer. On \sketchFaceN{} real face
-drawings from the CUHK Face Sketch database~\cite{wang2009face}, which the
+drawings from the CUHK Face Sketch database~\cite{wang2009face}
+(\AUTHORINPUT{A28}; selected by \AUTHORINPUT{A30}), which the
 model was never trained on, prompted with ``a high-quality photo of a face'', the
 grayscale output correlates with the input drawing at \sketchFaceSC{} and CLIP score is
 \sketchFaceClip{}. FID is not reported: \sketchFaceN{} images is too few for a
