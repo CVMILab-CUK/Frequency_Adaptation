@@ -492,26 +492,43 @@ point.
 
 \subsection{Baselines}
 
-Against pretrained ControlNet~\cite{zhang2023adding}, over the same test images
-and captions, each baseline is given Canny edges (thresholds 100 and 200) at
-conditioning scale 1.0, with the pipeline's default PNDM sampler, 50 steps,
-CFG 7.5 and seed 2026. ControlNet-Canny reaches Edge-F1 \baseCannyEdge{}, LPIPS
-\baseCannyLpips{}, FID \baseCannyFid{} with \baseParams{} trainable parameters;
-the ControlNet-HED checkpoint, fed the same Canny edges rather than HED
-boundaries, reaches \baseHedEdge{} / \baseHedLpips{} / \baseHedFid{}. At
-$r{=}0.1$ our adapter reaches Edge-F1 \edgeMainOneZero{}, LPIPS
-\lpipsMainOneZero{} and FID \fidMainOneZero{} with \ourParams{} parameters.
-Two asymmetries make this a comparison of operating points rather than a
-like-for-like control: the conditions differ (Canny edges against a frequency
-band), and our adapter was trained on \nTrain{} FFHQ images while ControlNet is
-zero-shot here and FID is measured against FFHQ statistics. On text alignment
-ControlNet-Canny's CLIP \baseCannyClip{} exceeds our best over the whole sweep,
-\clipMainOneHundred{} (ControlNet-HED reaches \baseHedClip{}).
-T2I-Adapter-Canny~\cite{mou2023adapter}, a \baseTParams{}-parameter side network
-and so closer to our design than a copied encoder, reaches Edge-F1 \baseTEdge{},
-LPIPS \baseTLpips{}, FID \baseTFid{} and CLIP \baseTClip{} under the same
-protocol. We leave out its sketch checkpoint, which expects PiDiNet sketches as
+Against pretrained ControlNet~\cite{zhang2023adding} and
+T2I-Adapter-Canny~\cite{mou2023adapter}, over the same test images and captions,
+each baseline is given Canny edges (thresholds 100 and 200) at conditioning
+scale 1.0, with the pipeline's default PNDM sampler, 50 steps, CFG 7.5 and seed
+2026; Table~\ref{tab:baselines} lists them next to our adapter at $r{=}0.1$,
+which samples with DDIM. The ControlNet-HED checkpoint is fed the same Canny
+edges rather than HED boundaries. T2I-Adapter-Canny is a side network and so
+closer to our design than a copied encoder. Two asymmetries make this a
+comparison of operating points rather than a like-for-like control: the
+conditions differ (Canny edges against a frequency band), and our adapter was
+trained on \nTrain{} FFHQ images while ControlNet is zero-shot here and FID is
+measured against FFHQ statistics. On text alignment ControlNet-Canny's CLIP
+\baseCannyClip{} exceeds our best over the whole sweep, \clipMainOneHundred{}.
+We leave out T2I-Adapter's sketch checkpoint, which expects PiDiNet sketches as
 input; fed Canny edges it would measure that mismatch rather than the method.
+
+\begin{table}[t]\centering\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrrrrr}
+\toprule
+Method & Sampler & Params & Edge-F1 & LPIPS & FID & CLIP \\
+\midrule
+ControlNet-Canny            & PNDM & \baseParams  & \baseCannyEdge & \baseCannyLpips & \baseCannyFid & \baseCannyClip \\
+ControlNet-HED, Canny input & PNDM & ---          & \baseHedEdge   & \baseHedLpips   & \baseHedFid   & \baseHedClip \\
+T2I-Adapter-Canny           & PNDM & \baseTParams & \baseTEdge     & \baseTLpips     & \baseTFid     & \baseTClip \\
+\midrule
+ours, $r{=}0.1$             & DDIM & \ourParams   & \edgeMainOneZero & \lpipsMainOneZero & \fidMainOneZero & \clipMainOneZero \\
+\bottomrule
+\end{tabular}}
+\caption{Pretrained baselines given Canny edges against our adapter at
+$r{=}0.1$, on the same 500 test images and captions with 50 steps, CFG 7.5 and
+seed 2026. Params: trainable parameters for ControlNet-Canny and ours,
+side-network parameters for T2I-Adapter. The samplers differ, so the rows are
+operating points, not a like-for-like comparison.}
+\label{tab:baselines}
+\end{table}
 
 \subsection{Outside the training domain}
 \label{sec:ood}
