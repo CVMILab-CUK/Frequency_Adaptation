@@ -406,10 +406,8 @@ $r{=}0.3$  & \fixInstThreeZero & \divMainThreeZero & \fidMainThreeZero \\
 \caption{Strength against cutoff. Every scaled row is generated and scored at
 $r{=}0.1$, so it already uses the instrument $r_m{=}0.1$; the cutoff-moved rows
 are scored at their own cutoff, and the last block re-scores the same
-generations with $r_m{=}0.1$ (Sec.~\ref{sec:fixedinst}). With that one
-instrument, scale 0.50 of the randomised-$r$ adapter reaches \fixInstHalfScale{}
-at FID \fidHalfScale{}, and the cutoff $r{=}0.3$ reaches \fixInstThreeZero{} at
-FID \fidMainThreeZero{}. Scale 1.00 of the fixed-$r$ adapter is a separate
+generations with $r_m{=}0.1$ (Sec.~\ref{sec:fixedinst}). Scale 1.00 of the
+fixed-$r$ adapter is a separate
 inference run of the specialist of Sec.~\ref{sec:spec} (\specOneZero{} there).}
 \label{tab:strength}
 \end{table}
