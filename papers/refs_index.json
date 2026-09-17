@@ -1,150 +1,10 @@
 {
- "heusel2017gans": {
-  "id": "1706.08500",
-  "title": "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium",
-  "url": "https://arxiv.org/abs/1706.08500",
-  "year": "2017",
-  "first_author": "Martin Heusel"
- },
- "zhang2018unreasonable": {
-  "id": "1801.03924",
-  "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
-  "url": "https://arxiv.org/abs/1801.03924",
-  "year": "2018",
-  "first_author": "Richard Zhang"
- },
- "karras2018style": {
-  "id": "1812.04948",
-  "title": "A Style-Based Generator Architecture for Generative Adversarial Networks",
-  "url": "https://arxiv.org/abs/1812.04948",
-  "year": "2018",
-  "first_author": "Tero Karras"
- },
- "ho2020denoising": {
-  "id": "2006.11239",
-  "title": "Denoising Diffusion Probabilistic Models",
-  "url": "https://arxiv.org/abs/2006.11239",
-  "year": "2020",
-  "first_author": "Jonathan Ho"
- },
- "song2020denoising": {
-  "id": "2010.02502",
-  "title": "Denoising Diffusion Implicit Models",
-  "url": "https://arxiv.org/abs/2010.02502",
-  "year": "2020",
-  "first_author": "Jiaming Song"
- },
- "radford2021learning": {
-  "id": "2103.00020",
-  "title": "Learning Transferable Visual Models From Natural Language Supervision",
-  "url": "https://arxiv.org/abs/2103.00020",
-  "year": "2021",
-  "first_author": "Alec Radford"
- },
- "parmar2021aliased": {
-  "id": "2104.11222",
-  "title": "On Aliased Resizing and Surprising Subtleties in GAN Evaluation",
-  "url": "https://arxiv.org/abs/2104.11222",
-  "year": "2021",
-  "first_author": "Gaurav Parmar"
- },
- "hu2021lora": {
-  "id": "2106.09685",
-  "title": "LoRA: Low-Rank Adaptation of Large Language Models",
-  "url": "https://arxiv.org/abs/2106.09685",
-  "year": "2021",
-  "first_author": "Edward J. Hu"
- },
- "nichol2021glide": {
-  "id": "2112.10741",
-  "title": "GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models",
-  "url": "https://arxiv.org/abs/2112.10741",
-  "year": "2021",
-  "first_author": "Alex Nichol"
- },
- "rombach2021high": {
-  "id": "2112.10752",
-  "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
-  "url": "https://arxiv.org/abs/2112.10752",
-  "year": "2021",
-  "first_author": "Robin Rombach"
- },
- "li2022blip": {
-  "id": "2201.12086",
-  "title": "BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation",
-  "url": "https://arxiv.org/abs/2201.12086",
-  "year": "2022",
-  "first_author": "Junnan Li"
- },
- "saharia2022photorealistic": {
-  "id": "2205.11487",
-  "title": "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
-  "url": "https://arxiv.org/abs/2205.11487",
-  "year": "2022",
-  "first_author": "Chitwan Saharia"
- },
  "ho2022classifier": {
   "id": "2207.12598",
   "title": "Classifier-Free Diffusion Guidance",
   "url": "https://arxiv.org/abs/2207.12598",
   "year": "2022",
   "first_author": "Jonathan Ho"
- },
- "peebles2022scalable": {
-  "id": "2212.09748",
-  "title": "Scalable Diffusion Models with Transformers",
-  "url": "https://arxiv.org/abs/2212.09748",
-  "year": "2022",
-  "first_author": "William Peebles"
- },
- "li2023gligen": {
-  "id": "2301.07093",
-  "title": "GLIGEN: Open-Set Grounded Text-to-Image Generation",
-  "url": "https://arxiv.org/abs/2301.07093",
-  "year": "2023",
-  "first_author": "Yuheng Li"
- },
- "zhang2023adding": {
-  "id": "2302.05543",
-  "title": "Adding Conditional Control to Text-to-Image Diffusion Models",
-  "url": "https://arxiv.org/abs/2302.05543",
-  "year": "2023",
-  "first_author": "Lvmin Zhang"
- },
- "mou2023adapter": {
-  "id": "2302.08453",
-  "title": "T2I-Adapter: Learning Adapters to Dig out More Controllable Ability for Text-to-Image Diffusion Models",
-  "url": "https://arxiv.org/abs/2302.08453",
-  "year": "2023",
-  "first_author": "Chong Mou"
- },
- "hang2023efficient": {
-  "id": "2303.09556",
-  "title": "Efficient Diffusion Training via Min-SNR Weighting Strategy",
-  "url": "https://arxiv.org/abs/2303.09556",
-  "year": "2023",
-  "first_author": "Tiankai Hang"
- },
- "qin2023unicontrol": {
-  "id": "2305.11147",
-  "title": "UniControl: A Unified Diffusion Model for Controllable Visual Generation In the Wild",
-  "url": "https://arxiv.org/abs/2305.11147",
-  "year": "2023",
-  "first_author": "Can Qin"
- },
- "zhao2023controlnet": {
-  "id": "2305.16322",
-  "title": "Uni-ControlNet: All-in-One Control to Text-to-Image Diffusion Models",
-  "url": "https://arxiv.org/abs/2305.16322",
-  "year": "2023",
-  "first_author": "Shihao Zhao"
- },
- "podell2023sdxl": {
-  "id": "2307.01952",
-  "title": "SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis",
-  "url": "https://arxiv.org/abs/2307.01952",
-  "year": "2023",
-  "first_author": "Dustin Podell"
  },
  "ye2023adapter": {
   "id": "2308.06721",
@@ -153,61 +13,12 @@
   "year": "2023",
   "first_author": "Hu Ye"
  },
- "si2023freeu": {
-  "id": "2309.11497",
-  "title": "FreeU: Free Lunch in Diffusion U-Net",
-  "url": "https://arxiv.org/abs/2309.11497",
-  "year": "2023",
-  "first_author": "Chenyang Si"
- },
- "zavadski2023controlnet": {
-  "id": "2312.06573",
-  "title": "ControlNet-XS: Rethinking the Control of Text-to-Image Diffusion Models as Feedback-Control Systems",
-  "url": "https://arxiv.org/abs/2312.06573",
-  "year": "2023",
-  "first_author": "Denis Zavadski"
- },
- "esser2024scaling": {
-  "id": "2403.03206",
-  "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
-  "url": "https://arxiv.org/abs/2403.03206",
-  "year": "2024",
-  "first_author": "Patrick Esser"
- },
- "li2024controlnet": {
-  "id": "2404.07987",
-  "title": "ControlNet++: Improving Conditional Controls with Efficient Consistency Feedback",
-  "url": "https://arxiv.org/abs/2404.07987",
-  "year": "2024",
-  "first_author": "Ming Li"
- },
  "peng2024controlnext": {
   "id": "2408.06070",
   "title": "ControlNeXt: Powerful and Efficient Control for Image and Video Generation",
   "url": "https://arxiv.org/abs/2408.06070",
   "year": "2024",
   "first_author": "Bohao Peng"
- },
- "xu2024ctrlora": {
-  "id": "2410.09400",
-  "title": "CtrLoRA: An Extensible and Efficient Framework for Controllable Image Generation",
-  "url": "https://arxiv.org/abs/2410.09400",
-  "year": "2024",
-  "first_author": "Yifeng Xu"
- },
- "tan2024ominicontrol": {
-  "id": "2411.15098",
-  "title": "OminiControl: Minimal and Universal Control for Diffusion Transformer",
-  "url": "https://arxiv.org/abs/2411.15098",
-  "year": "2024",
-  "first_author": "Zhenxiong Tan"
- },
- "zhang2025easycontrol": {
-  "id": "2503.07027",
-  "title": "EasyControl: Adding Efficient and Flexible Control for Diffusion Transformer",
-  "url": "https://arxiv.org/abs/2503.07027",
-  "year": "2025",
-  "first_author": "Yuxuan Zhang"
  },
  "huang2025fresca": {
   "id": "2504.02154",
@@ -223,47 +34,12 @@
   "year": "2025",
   "first_author": "Shanyuan Liu"
  },
- "tjio2025focus": {
-  "id": "2508.14437",
-  "title": "FOCUS: Frequency-Optimized Conditioning of DiffUSion Models for mitigating catastrophic forgetting during Test-Time Adaptation",
-  "url": "https://arxiv.org/abs/2508.14437",
-  "year": "2025",
-  "first_author": "Gabriel Tjio"
- },
- "huang2025laytrol": {
-  "id": "2511.07934",
-  "title": "Laytrol: Preserving Pretrained Knowledge in Layout Control for Multimodal Diffusion Transformers",
-  "url": "https://arxiv.org/abs/2511.07934",
-  "year": "2025",
-  "first_author": "Sida Huang"
- },
- "yin2025fera": {
-  "id": "2511.17979",
-  "title": "FeRA: Frequency-Energy Constrained Routing for Effective Diffusion Adaptation Fine-Tuning",
-  "url": "https://arxiv.org/abs/2511.17979",
-  "year": "2025",
-  "first_author": "Bo Yin"
- },
- "ma2025deco": {
-  "id": "2511.19365",
-  "title": "DeCo: Frequency-Decoupled Pixel Diffusion for End-to-End Image Generation",
-  "url": "https://arxiv.org/abs/2511.19365",
-  "year": "2025",
-  "first_author": "Zehong Ma"
- },
  "zhou2026rethinking": {
   "id": "2602.06850",
   "title": "Rethinking Multi-Condition DiTs: Eliminating Redundant Attention via Position-Alignment and Keyword-Scoping",
   "url": "https://arxiv.org/abs/2602.06850",
   "year": "2026",
   "first_author": "Chao Zhou"
- },
- "he2026structdiff": {
-  "id": "2604.12575",
-  "title": "StructDiff: A Structure-Preserving and Spatially Controllable Diffusion Model for Single-Image Generation",
-  "url": "https://arxiv.org/abs/2604.12575",
-  "year": "2026",
-  "first_author": "Yinxi He"
  },
  "prasain2026beyond": {
   "id": "2608.00083",
@@ -376,5 +152,229 @@
   "url": "https://doi.org/10.1109/TPAMI.2008.222",
   "year": "2009",
   "first_author": "Xiaogang Wang"
+ },
+ "heusel2017gans": {
+  "id": "https://proceedings.neurips.cc/paper/2017/hash/8a1d694707eb0fefe65871369074926d-Abstract.html",
+  "title": "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium",
+  "url": "https://proceedings.neurips.cc/paper/2017/hash/8a1d694707eb0fefe65871369074926d-Abstract.html",
+  "year": "2017",
+  "first_author": "Martin Heusel"
+ },
+ "zhang2018unreasonable": {
+  "id": "10.1109/CVPR.2018.00068",
+  "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+  "url": "https://openaccess.thecvf.com/content_cvpr_2018/html/Zhang_The_Unreasonable_Effectiveness_CVPR_2018_paper.html",
+  "year": "2018",
+  "first_author": "Richard Zhang"
+ },
+ "karras2018style": {
+  "id": "10.1109/CVPR.2019.00453",
+  "title": "A Style-Based Generator Architecture for Generative Adversarial Networks",
+  "url": "https://openaccess.thecvf.com/content_CVPR_2019/html/Karras_A_Style-Based_Generator_Architecture_for_Generative_Adversarial_Networks_CVPR_2019_paper.html",
+  "year": "2019",
+  "first_author": "Tero Karras"
+ },
+ "ho2020denoising": {
+  "id": "https://proceedings.neurips.cc/paper/2020/hash/4c5bcfec8584af0d967f1ab10179ca4b-Abstract.html",
+  "title": "Denoising Diffusion Probabilistic Models",
+  "url": "https://proceedings.neurips.cc/paper/2020/hash/4c5bcfec8584af0d967f1ab10179ca4b-Abstract.html",
+  "year": "2020",
+  "first_author": "Jonathan Ho"
+ },
+ "song2020denoising": {
+  "id": "https://iclr.cc/virtual/2021/poster/2804",
+  "title": "Denoising Diffusion Implicit Models",
+  "url": "https://iclr.cc/virtual/2021/poster/2804",
+  "year": "2021",
+  "first_author": "Jiaming Song"
+ },
+ "radford2021learning": {
+  "id": "https://proceedings.mlr.press/v139/radford21a.html",
+  "title": "Learning Transferable Visual Models From Natural Language Supervision",
+  "url": "https://proceedings.mlr.press/v139/radford21a.html",
+  "year": "2021",
+  "first_author": "Alec Radford"
+ },
+ "parmar2021aliased": {
+  "id": "10.1109/CVPR52688.2022.01112",
+  "title": "On Aliased Resizing and Surprising Subtleties in GAN Evaluation",
+  "url": "https://openaccess.thecvf.com/content/CVPR2022/html/Parmar_On_Aliased_Resizing_and_Surprising_Subtleties_in_GAN_Evaluation_CVPR_2022_paper.html",
+  "year": "2022",
+  "first_author": "Gaurav Parmar"
+ },
+ "hu2021lora": {
+  "id": "https://iclr.cc/virtual/2022/poster/6319",
+  "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+  "url": "https://iclr.cc/virtual/2022/poster/6319",
+  "year": "2022",
+  "first_author": "Edward J. Hu"
+ },
+ "nichol2021glide": {
+  "id": "https://proceedings.mlr.press/v162/nichol22a.html",
+  "title": "GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models",
+  "url": "https://proceedings.mlr.press/v162/nichol22a.html",
+  "year": "2022",
+  "first_author": "Alex Nichol"
+ },
+ "rombach2021high": {
+  "id": "10.1109/CVPR52688.2022.01042",
+  "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+  "url": "https://openaccess.thecvf.com/content/CVPR2022/html/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.html",
+  "year": "2022",
+  "first_author": "Robin Rombach"
+ },
+ "li2022blip": {
+  "id": "https://dblp.org/rec/conf/icml/0001LXH22.html",
+  "title": "BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation",
+  "url": "https://dblp.org/rec/conf/icml/0001LXH22.html",
+  "year": "2022",
+  "first_author": "Junnan Li"
+ },
+ "saharia2022photorealistic": {
+  "id": "https://proceedings.neurips.cc/paper_files/paper/2022/hash/ec795aeadae0b7d230fa35cbaf04c041-Abstract-Conference.html",
+  "title": "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+  "url": "https://proceedings.neurips.cc/paper_files/paper/2022/hash/ec795aeadae0b7d230fa35cbaf04c041-Abstract-Conference.html",
+  "year": "2022",
+  "first_author": "Chitwan Saharia"
+ },
+ "peebles2022scalable": {
+  "id": "10.1109/ICCV51070.2023.00387",
+  "title": "Scalable Diffusion Models with Transformers",
+  "url": "https://openaccess.thecvf.com/content/ICCV2023/html/Peebles_Scalable_Diffusion_Models_with_Transformers_ICCV_2023_paper.html",
+  "year": "2023",
+  "first_author": "William Peebles"
+ },
+ "li2023gligen": {
+  "id": "10.1109/CVPR52729.2023.02156",
+  "title": "GLIGEN: Open-Set Grounded Text-to-Image Generation",
+  "url": "https://openaccess.thecvf.com/content/CVPR2023/papers/Li_GLIGEN_Open-Set_Grounded_Text-to-Image_Generation_CVPR_2023_paper.pdf",
+  "year": "2023",
+  "first_author": "Yuheng Li"
+ },
+ "zhang2023adding": {
+  "id": "10.1109/ICCV51070.2023.10377881",
+  "title": "Adding Conditional Control to Text-to-Image Diffusion Models",
+  "url": "https://openaccess.thecvf.com/content/ICCV2023/html/Zhang_Adding_Conditional_Control_to_Text-to-Image_Diffusion_Models_ICCV_2023_paper.html",
+  "year": "2023",
+  "first_author": "Lvmin Zhang"
+ },
+ "mou2023adapter": {
+  "id": "10.1609/aaai.v38i5.28226",
+  "title": "T2I-Adapter: Learning Adapters to Dig out More Controllable Ability for Text-to-Image Diffusion Models",
+  "url": "https://ojs.aaai.org/index.php/AAAI/article/view/28226",
+  "year": "2024",
+  "first_author": "Chong Mou"
+ },
+ "hang2023efficient": {
+  "id": "10.1109/ICCV51070.2023.00684",
+  "title": "Efficient Diffusion Training via Min-SNR Weighting Strategy",
+  "url": "https://openaccess.thecvf.com/content/ICCV2023/papers/Hang_Efficient_Diffusion_Training_via_Min-SNR_Weighting_Strategy_ICCV_2023_paper.pdf",
+  "year": "2023",
+  "first_author": "Tiankai Hang"
+ },
+ "qin2023unicontrol": {
+  "id": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/862f45ccecb2275851bc8acebb8b4d65-Abstract-Conference.html",
+  "title": "UniControl: A Unified Diffusion Model for Controllable Visual Generation In the Wild",
+  "url": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/862f45ccecb2275851bc8acebb8b4d65-Abstract-Conference.html",
+  "year": "2023",
+  "first_author": "Can Qin"
+ },
+ "zhao2023controlnet": {
+  "id": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/2468f84a13ff8bb6767a67518fb596eb-Abstract-Conference.html",
+  "title": "Uni-ControlNet: All-in-One Control to Text-to-Image Diffusion Models",
+  "url": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/2468f84a13ff8bb6767a67518fb596eb-Abstract-Conference.html",
+  "year": "2023",
+  "first_author": "Shihao Zhao"
+ },
+ "podell2023sdxl": {
+  "id": "https://openreview.net/forum?id=di52zR8xgf",
+  "title": "SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis",
+  "url": "https://openreview.net/forum?id=di52zR8xgf",
+  "year": "2024",
+  "first_author": "Dustin Podell"
+ },
+ "si2023freeu": {
+  "id": "https://openaccess.thecvf.com/content/CVPR2024/html/Si_FreeU_Free_Lunch_in_Diffusion_U-Net_CVPR_2024_paper.html",
+  "title": "FreeU: Free Lunch in Diffusion U-Net",
+  "url": "https://openaccess.thecvf.com/content/CVPR2024/html/Si_FreeU_Free_Lunch_in_Diffusion_U-Net_CVPR_2024_paper.html",
+  "year": "2024",
+  "first_author": "Chenyang Si"
+ },
+ "zavadski2023controlnet": {
+  "id": "10.1007/978-3-031-73223-2_20",
+  "title": "ControlNet-XS: Rethinking the Control of Text-to-Image Diffusion Models as Feedback-Control Systems",
+  "url": "https://link.springer.com/chapter/10.1007/978-3-031-73223-2_20",
+  "year": "2024",
+  "first_author": "Denis Zavadski"
+ },
+ "esser2024scaling": {
+  "id": "https://proceedings.mlr.press/v235/esser24a.html",
+  "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+  "url": "https://proceedings.mlr.press/v235/esser24a.html",
+  "year": "2024",
+  "first_author": "Patrick Esser"
+ },
+ "li2024controlnet": {
+  "id": "10.1007/978-3-031-72667-5_8",
+  "title": "ControlNet++: Improving Conditional Controls with Efficient Consistency Feedback",
+  "url": "https://link.springer.com/chapter/10.1007/978-3-031-72667-5_8",
+  "year": "2024",
+  "first_author": "Ming Li"
+ },
+ "xu2024ctrlora": {
+  "id": "https://openreview.net/forum?id=AFdXzklaSH",
+  "title": "CtrLoRA: An Extensible and Efficient Framework for Controllable Image Generation",
+  "url": "https://openreview.net/forum?id=AFdXzklaSH",
+  "year": "2025",
+  "first_author": "Yifeng Xu"
+ },
+ "tan2024ominicontrol": {
+  "id": "https://openaccess.thecvf.com/content/ICCV2025/html/Tan_OminiControl_Minimal_and_Universal_Control_for_Diffusion_Transformer_ICCV_2025_paper.html",
+  "title": "OminiControl: Minimal and Universal Control for Diffusion Transformer",
+  "url": "https://openaccess.thecvf.com/content/ICCV2025/html/Tan_OminiControl_Minimal_and_Universal_Control_for_Diffusion_Transformer_ICCV_2025_paper.html",
+  "year": "2025",
+  "first_author": "Zhenxiong Tan"
+ },
+ "zhang2025easycontrol": {
+  "id": "https://openaccess.thecvf.com/content/ICCV2025/html/Zhang_EasyControl_Adding_Efficient_and_Flexible_Control_for_Diffusion_Transformer_ICCV_2025_paper.html",
+  "title": "EasyControl: Adding Efficient and Flexible Control for Diffusion Transformer",
+  "url": "https://openaccess.thecvf.com/content/ICCV2025/html/Zhang_EasyControl_Adding_Efficient_and_Flexible_Control_for_Diffusion_Transformer_ICCV_2025_paper.html",
+  "year": "2025",
+  "first_author": "Yuxuan Zhang"
+ },
+ "tjio2025focus": {
+  "id": "10.1007/s00138-026-01786-0",
+  "title": "FOCUS: Frequency-Optimized Conditioning of DiffUSion Models for mitigating catastrophic forgetting during Test-Time Adaptation",
+  "url": "https://doi.org/10.1007/s00138-026-01786-0",
+  "year": "2026",
+  "first_author": "Gabriel Tjio"
+ },
+ "huang2025laytrol": {
+  "id": "10.1609/aaai.v40i7.37425",
+  "title": "Laytrol: Preserving Pretrained Knowledge in Layout Control for Multimodal Diffusion Transformers",
+  "url": "https://ojs.aaai.org/index.php/AAAI/article/view/37425",
+  "year": "2026",
+  "first_author": "Sida Huang"
+ },
+ "yin2025fera": {
+  "id": "https://icml.cc/virtual/2026/poster/64490",
+  "title": "FeRA: Frequency-Energy Constrained Routing for Effective Diffusion Adaptation Fine-Tuning",
+  "url": "https://icml.cc/virtual/2026/poster/64490",
+  "year": "2026",
+  "first_author": "Bo Yin"
+ },
+ "ma2025deco": {
+  "id": "https://openaccess.thecvf.com/content/CVPR2026/html/Ma_DeCo_Frequency-Decoupled_Pixel_Diffusion_for_End-to-End_Image_Generation_CVPR_2026_paper.html",
+  "title": "DeCo: Frequency-Decoupled Pixel Diffusion for End-to-End Image Generation",
+  "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Ma_DeCo_Frequency-Decoupled_Pixel_Diffusion_for_End-to-End_Image_Generation_CVPR_2026_paper.html",
+  "year": "2026",
+  "first_author": "Zehong Ma"
+ },
+ "he2026structdiff": {
+  "id": "10.1109/tmm.2026.3716757",
+  "title": "StructDiff: A Structure-Preserving and Spatially Controllable Diffusion Model for Single-Image Generation",
+  "url": "https://doi.org/10.1109/tmm.2026.3716757",
+  "year": "2026",
+  "first_author": "Yinxi He"
  }
 }

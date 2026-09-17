@@ -257,5 +257,612 @@
   "url": "https://doi.org/10.1109/TPAMI.2008.222",
   "verified_against": "PubMed record PMID 19762924 (NCBI eutils XML); doi.org resolves to IEEE Xplore document 4624272; Semantic Scholar metadata agrees",
   "claim_quote": "a face sketch database including 606 faces, which can be downloaded from our Web site (http://mmlab.ie.cuhk.edu.hk/facesketch.html)"
+ },
+ {
+  "key": "heusel2017gans",
+  "type": "inproceedings",
+  "authors": [
+   "Martin Heusel",
+   "Hubert Ramsauer",
+   "Thomas Unterthiner",
+   "Bernhard Nessler",
+   "Sepp Hochreiter"
+  ],
+  "title": "GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium",
+  "booktitle": "Advances in Neural Information Processing Systems",
+  "volume": "30",
+  "pages": "6626--6637",
+  "year": "2017",
+  "url": "https://proceedings.neurips.cc/paper/2017/hash/8a1d694707eb0fefe65871369074926d-Abstract.html",
+  "verified_against": "arxiv.org/abs/1706.08500 abs page (journal-ref field: 'Advances in Neural Information Processing Systems 30 (NIPS 2017)'); proceedings.neurips.cc paper page; dblp.org/rec/conf/nips/HeuselRUNH17. Title and first author (Martin Heusel) match."
+ },
+ {
+  "key": "zhang2018unreasonable",
+  "type": "inproceedings",
+  "authors": [
+   "Richard Zhang",
+   "Phillip Isola",
+   "Alexei A. Efros",
+   "Eli Shechtman",
+   "Oliver Wang"
+  ],
+  "title": "The Unreasonable Effectiveness of Deep Features as a Perceptual Metric",
+  "booktitle": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "pages": "586--595",
+  "year": "2018",
+  "doi": "10.1109/CVPR.2018.00068",
+  "url": "https://openaccess.thecvf.com/content_cvpr_2018/html/Zhang_The_Unreasonable_Effectiveness_CVPR_2018_paper.html",
+  "verified_against": "openaccess.thecvf.com CVPR2018 page; DOI 10.1109/CVPR.2018.00068. Title and first author (Richard Zhang) match."
+ },
+ {
+  "key": "karras2018style",
+  "type": "inproceedings",
+  "authors": [
+   "Tero Karras",
+   "Samuli Laine",
+   "Timo Aila"
+  ],
+  "title": "A Style-Based Generator Architecture for Generative Adversarial Networks",
+  "booktitle": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "pages": "4401--4410",
+  "year": "2019",
+  "doi": "10.1109/CVPR.2019.00453",
+  "url": "https://openaccess.thecvf.com/content_CVPR_2019/html/Karras_A_Style-Based_Generator_Architecture_for_Generative_Adversarial_Networks_CVPR_2019_paper.html",
+  "verified_against": "openaccess.thecvf.com CVPR2019 page. Title and first author (Tero Karras) match. NOTE: published year is 2019, one year after the arXiv 2018 posting/refs.bib year field. The arXiv record says 2018, the venue 2019; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "ho2020denoising",
+  "type": "inproceedings",
+  "authors": [
+   "Jonathan Ho",
+   "Ajay Jain",
+   "Pieter Abbeel"
+  ],
+  "title": "Denoising Diffusion Probabilistic Models",
+  "booktitle": "Advances in Neural Information Processing Systems",
+  "volume": "33",
+  "year": "2020",
+  "url": "https://proceedings.neurips.cc/paper/2020/hash/4c5bcfec8584af0d967f1ab10179ca4b-Abstract.html",
+  "verified_against": "dblp.org/rec/conf/nips/HoJA20; proceedings.neurips.cc paper page. Title and first author (Jonathan Ho) match. (NeurIPS proceedings are unpaginated online publications; no page numbers assigned.)"
+ },
+ {
+  "key": "song2020denoising",
+  "type": "inproceedings",
+  "authors": [
+   "Jiaming Song",
+   "Chenlin Meng",
+   "Stefano Ermon"
+  ],
+  "title": "Denoising Diffusion Implicit Models",
+  "booktitle": "International Conference on Learning Representations (ICLR)",
+  "year": "2021",
+  "url": "https://iclr.cc/virtual/2021/poster/2804",
+  "verified_against": "dblp.org/rec/conf/iclr/SongME21; iclr.cc/virtual/2021/poster/2804. Title and first author (Jiaming Song) match. (ICLR/OpenReview proceedings carry no DOI, volume, or page numbers.) The arXiv record says 2020, the venue 2021; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "radford2021learning",
+  "type": "inproceedings",
+  "authors": [
+   "Alec Radford",
+   "Jong Wook Kim",
+   "Chris Hallacy",
+   "Aditya Ramesh",
+   "Gabriel Goh",
+   "Sandhini Agarwal",
+   "Girish Sastry",
+   "Amanda Askell",
+   "Pamela Mishkin",
+   "Jack Clark",
+   "Gretchen Krueger",
+   "Ilya Sutskever"
+  ],
+  "title": "Learning Transferable Visual Models From Natural Language Supervision",
+  "booktitle": "Proceedings of the International Conference on Machine Learning (ICML)",
+  "volume": "139",
+  "pages": "8748--8763",
+  "year": "2021",
+  "url": "https://proceedings.mlr.press/v139/radford21a.html",
+  "verified_against": "dblp.org/rec/conf/icml/RadfordKHRGASAM21; proceedings.mlr.press/v139/radford21a.html. Title and first author (Alec Radford) match. PMLR ICML papers carry no DOI."
+ },
+ {
+  "key": "parmar2021aliased",
+  "type": "inproceedings",
+  "authors": [
+   "Gaurav Parmar",
+   "Richard Zhang",
+   "Jun-Yan Zhu"
+  ],
+  "title": "On Aliased Resizing and Surprising Subtleties in GAN Evaluation",
+  "booktitle": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "pages": "11400--11410",
+  "year": "2022",
+  "doi": "10.1109/CVPR52688.2022.01112",
+  "url": "https://openaccess.thecvf.com/content/CVPR2022/html/Parmar_On_Aliased_Resizing_and_Surprising_Subtleties_in_GAN_Evaluation_CVPR_2022_paper.html",
+  "verified_against": "openaccess.thecvf.com CVPR2022 page; DOI 10.1109/CVPR52688.2022.01112. Title and first author (Gaurav Parmar) match. The arXiv record says 2021, the venue 2022; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "hu2021lora",
+  "type": "inproceedings",
+  "authors": [
+   "Edward J. Hu",
+   "Yelong Shen",
+   "Phillip Wallis",
+   "Zeyuan Allen-Zhu",
+   "Yuanzhi Li",
+   "Shean Wang",
+   "Lu Wang",
+   "Weizhu Chen"
+  ],
+  "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+  "booktitle": "International Conference on Learning Representations (ICLR)",
+  "year": "2022",
+  "url": "https://iclr.cc/virtual/2022/poster/6319",
+  "verified_against": "dblp.org/rec/conf/iclr/HuSWALWWC22; iclr.cc/virtual/2022/poster/6319. Title and first author (Edward J. Hu) match. (ICLR/OpenReview: no DOI/volume/pages.) The arXiv record says 2021, the venue 2022; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "nichol2021glide",
+  "type": "inproceedings",
+  "authors": [
+   "Alex Nichol",
+   "Prafulla Dhariwal",
+   "Aditya Ramesh",
+   "Pranav Shyam",
+   "Pamela Mishkin",
+   "Bob McGrew",
+   "Ilya Sutskever",
+   "Mark Chen"
+  ],
+  "title": "GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models",
+  "booktitle": "Proceedings of the International Conference on Machine Learning (ICML)",
+  "volume": "162",
+  "pages": "16784--16804",
+  "year": "2022",
+  "url": "https://proceedings.mlr.press/v162/nichol22a.html",
+  "verified_against": "Direct fetch of proceedings.mlr.press/v162/nichol22a.html (raw bib block: pages=16784--16804, volume 162). Title and first author (Alex Nichol) match. The arXiv record says 2021, the venue 2022; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "rombach2021high",
+  "type": "inproceedings",
+  "authors": [
+   "Robin Rombach",
+   "Andreas Blattmann",
+   "Dominik Lorenz",
+   "Patrick Esser",
+   "Björn Ommer"
+  ],
+  "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+  "booktitle": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "pages": "10684--10695",
+  "year": "2022",
+  "doi": "10.1109/CVPR52688.2022.01042",
+  "url": "https://openaccess.thecvf.com/content/CVPR2022/html/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.html",
+  "verified_against": "openaccess.thecvf.com CVPR2022 page; DOI 10.1109/CVPR52688.2022.01042. Title and first author (Robin Rombach) match. The arXiv record says 2021, the venue 2022; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "li2022blip",
+  "type": "inproceedings",
+  "authors": [
+   "Junnan Li",
+   "Dongxu Li",
+   "Caiming Xiong",
+   "Steven Hoi"
+  ],
+  "title": "BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation",
+  "booktitle": "Proceedings of the International Conference on Machine Learning (ICML)",
+  "volume": "162",
+  "pages": "12888--12900",
+  "year": "2022",
+  "url": "https://dblp.org/rec/conf/icml/0001LXH22.html",
+  "verified_against": "dblp.org/rec/conf/icml/0001LXH22; icml.cc/virtual/2022/poster/16015 (pages 12888-12900). Title and first author (Junnan Li) match."
+ },
+ {
+  "key": "saharia2022photorealistic",
+  "type": "inproceedings",
+  "authors": [
+   "Chitwan Saharia",
+   "William Chan",
+   "Saurabh Saxena",
+   "Lala Li",
+   "Jay Whang",
+   "Emily Denton",
+   "Seyed Kamyar Seyed Ghasemipour",
+   "Burcu Karagol Ayan",
+   "S. Sara Mahdavi",
+   "Rapha Gontijo Lopes",
+   "Tim Salimans",
+   "Jonathan Ho",
+   "David J Fleet",
+   "Mohammad Norouzi"
+  ],
+  "title": "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding",
+  "booktitle": "Advances in Neural Information Processing Systems",
+  "volume": "35",
+  "year": "2022",
+  "url": "https://proceedings.neurips.cc/paper_files/paper/2022/hash/ec795aeadae0b7d230fa35cbaf04c041-Abstract-Conference.html",
+  "verified_against": "dblp.org/rec/conf/nips/SahariaCSLWDGLA22; proceedings.neurips.cc paper page. Title and first author (Chitwan Saharia) match. (NeurIPS: no page numbers.)"
+ },
+ {
+  "key": "peebles2022scalable",
+  "type": "inproceedings",
+  "authors": [
+   "William Peebles",
+   "Saining Xie"
+  ],
+  "title": "Scalable Diffusion Models with Transformers",
+  "booktitle": "Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)",
+  "pages": "4195--4205",
+  "year": "2023",
+  "doi": "10.1109/ICCV51070.2023.00387",
+  "url": "https://openaccess.thecvf.com/content/ICCV2023/html/Peebles_Scalable_Diffusion_Models_with_Transformers_ICCV_2023_paper.html",
+  "verified_against": "openaccess.thecvf.com ICCV2023 page; DOI 10.1109/ICCV51070.2023.00387. Title and first author (William Peebles) match. The arXiv record says 2022, the venue 2023; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "li2023gligen",
+  "type": "inproceedings",
+  "authors": [
+   "Yuheng Li",
+   "Haotian Liu",
+   "Qingyang Wu",
+   "Fangzhou Mu",
+   "Jianwei Yang",
+   "Jianfeng Gao",
+   "Chunyuan Li",
+   "Yong Jae Lee"
+  ],
+  "title": "GLIGEN: Open-Set Grounded Text-to-Image Generation",
+  "booktitle": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "pages": "22511--22521",
+  "year": "2023",
+  "doi": "10.1109/CVPR52729.2023.02156",
+  "url": "https://openaccess.thecvf.com/content/CVPR2023/papers/Li_GLIGEN_Open-Set_Grounded_Text-to-Image_Generation_CVPR_2023_paper.pdf",
+  "verified_against": "openaccess.thecvf.com CVPR2023 page; DOI 10.1109/CVPR52729.2023.02156. Title and first author (Yuheng Li) match."
+ },
+ {
+  "key": "zhang2023adding",
+  "type": "inproceedings",
+  "authors": [
+   "Lvmin Zhang",
+   "Anyi Rao",
+   "Maneesh Agrawala"
+  ],
+  "title": "Adding Conditional Control to Text-to-Image Diffusion Models",
+  "booktitle": "Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)",
+  "pages": "3836--3847",
+  "year": "2023",
+  "doi": "10.1109/ICCV51070.2023.10377881",
+  "url": "https://openaccess.thecvf.com/content/ICCV2023/html/Zhang_Adding_Conditional_Control_to_Text-to-Image_Diffusion_Models_ICCV_2023_paper.html",
+  "verified_against": "openaccess.thecvf.com ICCV2023 page; IEEE Xplore document 10377881 (DOI 10.1109/ICCV51070.2023.10377881). Title and first author (Lvmin Zhang) match."
+ },
+ {
+  "key": "mou2023adapter",
+  "type": "inproceedings",
+  "authors": [
+   "Chong Mou",
+   "Xintao Wang",
+   "Liangbin Xie",
+   "Yanze Wu",
+   "Jian Zhang",
+   "Zhongang Qi",
+   "Ying Shan",
+   "Xiaohu Qie"
+  ],
+  "title": "T2I-Adapter: Learning Adapters to Dig out More Controllable Ability for Text-to-Image Diffusion Models",
+  "booktitle": "Proceedings of the AAAI Conference on Artificial Intelligence",
+  "volume": "38",
+  "pages": "4296--4304",
+  "year": "2024",
+  "doi": "10.1609/aaai.v38i5.28226",
+  "url": "https://ojs.aaai.org/index.php/AAAI/article/view/28226",
+  "verified_against": "Direct fetch of ojs.aaai.org/index.php/AAAI/article/view/28226 (volume 38, issue 5, pages 4296-4304, DOI 10.1609/aaai.v38i5.28226). Title and first author (Chong Mou) confirmed. The arXiv record says 2023, the venue 2024; the venue year is used and the citation key is left unchanged. Issue number dropped: eg-alpha-doi does not take volume and number together in @inproceedings."
+ },
+ {
+  "key": "hang2023efficient",
+  "type": "inproceedings",
+  "authors": [
+   "Tiankai Hang",
+   "Shuyang Gu",
+   "Chen Li",
+   "Jianmin Bao",
+   "Dong Chen",
+   "Han Hu",
+   "Xin Geng",
+   "Baining Guo"
+  ],
+  "title": "Efficient Diffusion Training via Min-SNR Weighting Strategy",
+  "booktitle": "Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)",
+  "pages": "7407--7417",
+  "year": "2023",
+  "doi": "10.1109/ICCV51070.2023.00684",
+  "url": "https://openaccess.thecvf.com/content/ICCV2023/papers/Hang_Efficient_Diffusion_Training_via_Min-SNR_Weighting_Strategy_ICCV_2023_paper.pdf",
+  "verified_against": "openaccess.thecvf.com ICCV2023 page; DOI 10.1109/ICCV51070.2023.00684. Title and first author (Tiankai Hang) match."
+ },
+ {
+  "key": "qin2023unicontrol",
+  "type": "inproceedings",
+  "authors": [
+   "Can Qin",
+   "Shu Zhang",
+   "Ning Yu",
+   "Yihao Feng",
+   "Xinyi Yang",
+   "Yingbo Zhou",
+   "Huan Wang",
+   "Juan Carlos Niebles",
+   "Caiming Xiong",
+   "Silvio Savarese",
+   "Stefano Ermon",
+   "Yun Fu",
+   "Ran Xu"
+  ],
+  "title": "UniControl: A Unified Diffusion Model for Controllable Visual Generation In the Wild",
+  "booktitle": "Advances in Neural Information Processing Systems",
+  "volume": "36",
+  "year": "2023",
+  "url": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/862f45ccecb2275851bc8acebb8b4d65-Abstract-Conference.html",
+  "verified_against": "neurips.cc/virtual/2023/poster/70123; proceedings.neurips.cc paper page; openreview.net/forum?id=v54eUIayFh. Title and first author (Can Qin) match."
+ },
+ {
+  "key": "zhao2023controlnet",
+  "type": "inproceedings",
+  "authors": [
+   "Shihao Zhao",
+   "Dongdong Chen",
+   "Yen-Chun Chen",
+   "Jianmin Bao",
+   "Shaozhe Hao",
+   "Lu Yuan",
+   "Kwan-Yee K. Wong"
+  ],
+  "title": "Uni-ControlNet: All-in-One Control to Text-to-Image Diffusion Models",
+  "booktitle": "Advances in Neural Information Processing Systems",
+  "volume": "36",
+  "year": "2023",
+  "url": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/2468f84a13ff8bb6767a67518fb596eb-Abstract-Conference.html",
+  "verified_against": "neurips.cc/virtual/2023/poster/71446; proceedings.neurips.cc paper page; openreview.net/forum?id=VgQw8zXrH8. Title and first author (Shihao Zhao) match. NOTE: bib key says 'controlnet' but the actual paper is Uni-ControlNet (a distinct method from Zhang's ControlNet)."
+ },
+ {
+  "key": "podell2023sdxl",
+  "type": "inproceedings",
+  "authors": [
+   "Dustin Podell",
+   "Zion English",
+   "Kyle Lacey",
+   "Andreas Blattmann",
+   "Tim Dockhorn",
+   "Jonas Müller",
+   "Joe Penna",
+   "Robin Rombach"
+  ],
+  "title": "SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis",
+  "booktitle": "International Conference on Learning Representations (ICLR)",
+  "year": "2024",
+  "url": "https://openreview.net/forum?id=di52zR8xgf",
+  "verified_against": "iclr.cc/virtual/2024/poster/18250; openreview.net/forum?id=di52zR8xgf. Title and first author (Dustin Podell) match. (ICLR: no DOI/volume/pages.) The arXiv record says 2023, the venue 2024; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "si2023freeu",
+  "type": "inproceedings",
+  "authors": [
+   "Chenyang Si",
+   "Ziqi Huang",
+   "Yuming Jiang",
+   "Ziwei Liu"
+  ],
+  "title": "FreeU: Free Lunch in Diffusion U-Net",
+  "booktitle": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "pages": "4733--4743",
+  "year": "2024",
+  "url": "https://openaccess.thecvf.com/content/CVPR2024/html/Si_FreeU_Free_Lunch_in_Diffusion_U-Net_CVPR_2024_paper.html",
+  "verified_against": "openaccess.thecvf.com CVPR2024 page (bibtex: Si_2024_CVPR, pages 4733-4743). Title and first author (Chenyang Si) match. No DOI found on CVF page. The arXiv record says 2023, the venue 2024; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "zavadski2023controlnet",
+  "type": "inproceedings",
+  "authors": [
+   "Denis Zavadski",
+   "Johann-Friedrich Feiden",
+   "Carsten Rother"
+  ],
+  "title": "ControlNet-XS: Rethinking the Control of Text-to-Image Diffusion Models as Feedback-Control Systems",
+  "booktitle": "Computer Vision -- ECCV 2024",
+  "year": "2024",
+  "doi": "10.1007/978-3-031-73223-2_20",
+  "url": "https://link.springer.com/chapter/10.1007/978-3-031-73223-2_20",
+  "verified_against": "link.springer.com chapter page; DOI 10.1007/978-3-031-73223-2_20 (Lecture Notes in Computer Science, vol 15146). Title and first author (Denis Zavadski) match. The arXiv record says 2023, the venue 2024; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "esser2024scaling",
+  "type": "inproceedings",
+  "authors": [
+   "Patrick Esser",
+   "Sumith Kulal",
+   "Andreas Blattmann",
+   "Rahim Entezari",
+   "Jonas Müller",
+   "Harry Saini",
+   "Yam Levi",
+   "Dominik Lorenz",
+   "Axel Sauer",
+   "Frederic Boesel",
+   "Dustin Podell",
+   "Tim Dockhorn",
+   "Zion English",
+   "Kyle Lacey",
+   "Alex Goodwin",
+   "Yannik Marek",
+   "Robin Rombach"
+  ],
+  "title": "Scaling Rectified Flow Transformers for High-Resolution Image Synthesis",
+  "booktitle": "Proceedings of the International Conference on Machine Learning (ICML)",
+  "volume": "235",
+  "pages": "12606--12633",
+  "year": "2024",
+  "url": "https://proceedings.mlr.press/v235/esser24a.html",
+  "verified_against": "Direct fetch of proceedings.mlr.press/v235/esser24a.html (Volume 235, pages 12606-12633); dblp.org/rec/conf/icml/EsserKBEMSLLSBP24. Title and first author (Patrick Esser) match. No DOI for PMLR papers."
+ },
+ {
+  "key": "li2024controlnet",
+  "type": "inproceedings",
+  "authors": [
+   "Ming Li",
+   "Taojiannan Yang",
+   "Huafeng Kuang",
+   "Jie Wu",
+   "Zhaoning Wang",
+   "Xuefeng Xiao",
+   "Chen Chen"
+  ],
+  "title": "ControlNet++: Improving Conditional Controls with Efficient Consistency Feedback",
+  "booktitle": "Computer Vision -- ECCV 2024",
+  "year": "2024",
+  "doi": "10.1007/978-3-031-72667-5_8",
+  "url": "https://link.springer.com/chapter/10.1007/978-3-031-72667-5_8",
+  "verified_against": "link.springer.com chapter page; DOI 10.1007/978-3-031-72667-5_8; dblp ECCV 2024 Part VII listing. Title and first author (Ming Li) match."
+ },
+ {
+  "key": "xu2024ctrlora",
+  "type": "inproceedings",
+  "authors": [
+   "Yifeng Xu",
+   "Zhenliang He",
+   "Shiguang Shan",
+   "Xilin Chen"
+  ],
+  "title": "CtrLoRA: An Extensible and Efficient Framework for Controllable Image Generation",
+  "booktitle": "International Conference on Learning Representations (ICLR)",
+  "year": "2025",
+  "url": "https://openreview.net/forum?id=AFdXzklaSH",
+  "verified_against": "GitHub xyfJASON/ctrlora repo tagged '[ICLR 2025]'; openreview.net/forum?id=AFdXzklaSH (revision history at openreview.net/revisions?id=AFdXzklaSH); mlanthology.org/iclr/2025/xu2025iclr-ctrlora. Title and first author (Yifeng Xu) match. (ICLR: no DOI/volume/pages.) The arXiv record says 2024, the venue 2025; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "tan2024ominicontrol",
+  "type": "inproceedings",
+  "authors": [
+   "Zhenxiong Tan",
+   "Songhua Liu",
+   "Xingyi Yang",
+   "Qiaochu Xue",
+   "Xinchao Wang"
+  ],
+  "title": "OminiControl: Minimal and Universal Control for Diffusion Transformer",
+  "booktitle": "Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)",
+  "pages": "14940--14950",
+  "year": "2025",
+  "url": "https://openaccess.thecvf.com/content/ICCV2025/html/Tan_OminiControl_Minimal_and_Universal_Control_for_Diffusion_Transformer_ICCV_2025_paper.html",
+  "verified_against": "openaccess.thecvf.com ICCV2025 page (bibtex: Tan_2025_ICCV, pages 14940-14950); GitHub tagged '[ICCV 2025 Highlight]'. Title and first author (Zhenxiong Tan) match. The arXiv record says 2024, the venue 2025; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "zhang2025easycontrol",
+  "type": "inproceedings",
+  "authors": [
+   "Yuxuan Zhang",
+   "Yirui Yuan",
+   "Yiren Song",
+   "Haofan Wang",
+   "Jiaming Liu"
+  ],
+  "title": "EasyControl: Adding Efficient and Flexible Control for Diffusion Transformer",
+  "booktitle": "Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)",
+  "pages": "19513--19524",
+  "year": "2025",
+  "url": "https://openaccess.thecvf.com/content/ICCV2025/html/Zhang_EasyControl_Adding_Efficient_and_Flexible_Control_for_Diffusion_Transformer_ICCV_2025_paper.html",
+  "verified_against": "openaccess.thecvf.com ICCV2025 page (bibtex: Zhang_2025_ICCV, pages 19513-19524). Title and first author (Yuxuan Zhang) match."
+ },
+ {
+  "key": "tjio2025focus",
+  "type": "article",
+  "authors": [
+   "Gabriel Tjio",
+   "Jie Zhang",
+   "Xulei Yang",
+   "Yun Xing",
+   "Nhat Chung",
+   "Xiaofeng Cao",
+   "Ivor W. Tsang",
+   "Chee Keong Kwoh",
+   "Qing Guo"
+  ],
+  "title": "FOCUS: Frequency-Optimized Conditioning of DiffUSion Models for mitigating catastrophic forgetting during Test-Time Adaptation",
+  "journal": "Machine Vision and Applications",
+  "volume": "37",
+  "number": "2",
+  "year": "2026",
+  "doi": "10.1007/s00138-026-01786-0",
+  "url": "https://doi.org/10.1007/s00138-026-01786-0",
+  "verified_against": "Crossref record for DOI 10.1007/s00138-026-01786-0 (title 'FOCUS: Frequency-Optimized Conditioning of diffUSion models for mitigating catastrophic forgetting during test-time adaptation', container-title 'Machine Vision and Applications', volume 37, issue 2, published 2026-02-19). Title and first author (Gabriel Tjio) match (capitalization of 'DiffUSion'/'diffUSion' differs only stylistically). The arXiv record says 2025, the venue 2026; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "huang2025laytrol",
+  "type": "inproceedings",
+  "authors": [
+   "Sida Huang",
+   "Siqi Huang",
+   "Ping Luo",
+   "Hongyuan Zhang"
+  ],
+  "title": "Laytrol: Preserving Pretrained Knowledge in Layout Control for Multimodal Diffusion Transformers",
+  "booktitle": "Proceedings of the AAAI Conference on Artificial Intelligence",
+  "volume": "40",
+  "pages": "5113--5121",
+  "year": "2026",
+  "doi": "10.1609/aaai.v40i7.37425",
+  "url": "https://ojs.aaai.org/index.php/AAAI/article/view/37425",
+  "verified_against": "Direct fetch of ojs.aaai.org/index.php/AAAI/article/view/37425 (Vol. 40 No. 7: AAAI-26 Technical Tracks 7, pages 5113-5121, DOI 10.1609/aaai.v40i7.37425). Title and first author (Sida Huang) confirmed. The arXiv record says 2025, the venue 2026; the venue year is used and the citation key is left unchanged. Issue number dropped: eg-alpha-doi does not take volume and number together in @inproceedings."
+ },
+ {
+  "key": "yin2025fera",
+  "type": "inproceedings",
+  "authors": [
+   "Bo Yin",
+   "Xiaobin Hu",
+   "Xingyu Zhou",
+   "Yu He",
+   "Peng-Tao Jiang",
+   "Yue Liao",
+   "Junwei Zhu",
+   "Jiangning Zhang",
+   "Ying Tai",
+   "Shuicheng Yan"
+  ],
+  "title": "FeRA: Frequency-Energy Constrained Routing for Effective Diffusion Adaptation Fine-Tuning",
+  "booktitle": "Proceedings of the 43rd International Conference on Machine Learning (ICML)",
+  "year": "2026",
+  "url": "https://icml.cc/virtual/2026/poster/64490",
+  "verified_against": "icml.cc/virtual/2026/poster/64490; GitHub YinBo0927/FeRA repo tagged '[ICML 2026]'. Title and first author (Bo Yin) match. PMLR volume/page numbers for ICML 2026 proceedings could not be confirmed as of this check, so they are omitted rather than guessed. The arXiv record says 2025, the venue 2026; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "ma2025deco",
+  "type": "inproceedings",
+  "authors": [
+   "Zehong Ma",
+   "Longhui Wei",
+   "Shuai Wang",
+   "Shiliang Zhang",
+   "Qi Tian"
+  ],
+  "title": "DeCo: Frequency-Decoupled Pixel Diffusion for End-to-End Image Generation",
+  "booktitle": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "pages": "43600--43610",
+  "year": "2026",
+  "url": "https://openaccess.thecvf.com/content/CVPR2026/html/Ma_DeCo_Frequency-Decoupled_Pixel_Diffusion_for_End-to-End_Image_Generation_CVPR_2026_paper.html",
+  "verified_against": "Direct fetch of openaccess.thecvf.com CVPR2026 page (bibtex: Ma_2026_CVPR, pages 43600-43610). Title and full author list (Zehong Ma, Longhui Wei, Shuai Wang, Shiliang Zhang, Qi Tian) match exactly; GitHub tagged '[CVPR2026 Highlight]'. The arXiv record says 2025, the venue 2026; the venue year is used and the citation key is left unchanged."
+ },
+ {
+  "key": "he2026structdiff",
+  "type": "article",
+  "authors": [
+   "Yinxi He",
+   "Kang Liao",
+   "Chunyu Lin",
+   "Tianyi Wei",
+   "Yao Zhao"
+  ],
+  "title": "StructDiff: A Structure-Preserving and Spatially Controllable Diffusion Model for Single-Image Generation",
+  "journal": "IEEE Transactions on Multimedia",
+  "pages": "1--12",
+  "year": "2026",
+  "doi": "10.1109/tmm.2026.3716757",
+  "url": "https://doi.org/10.1109/tmm.2026.3716757",
+  "verified_against": "Crossref record for DOI 10.1109/tmm.2026.3716757 (title 'StructDiff: A Structure-Preserving and Spatially Controllable Diffusion Model for Single-Image Generation', container-title 'IEEE Transactions on Multimedia', first author affiliation Beijing Jiaotong University, published 2026). Title and first author (Yinxi He) match exactly. NOTE: this is an early-access/online-first record; Crossref lists pages '1-12' with no volume/issue assigned yet, so those fields are omitted."
  }
 ]

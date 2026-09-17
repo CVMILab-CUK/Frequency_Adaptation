@@ -32,8 +32,14 @@ def esc(s):
     return s.replace("&", r"\&").replace("%", r"\%").replace("_", r"\_").replace("#", r"\#")
 
 out, index = [], {}
+# Keys that also appear in refs_nonarxiv.json are cited from their published
+# version, written by the second loop; key() still runs for every arXiv record
+# so that the generated keys do not shift.
+PUBLISHED = {e["key"] for e in extra}
 for i, g in sorted(v.items(), key=lambda kv: kv[1]["published"]):
     k = key(g)
+    if k in PUBLISHED:
+        continue
     index[k] = {"id": g["id"], "title": g["title"], "url": g["url"],
                 "year": g["published"][:4], "first_author": g["authors"][0]}
     authors = " and ".join(g["authors"])
