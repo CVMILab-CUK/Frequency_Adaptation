@@ -48,9 +48,12 @@ $r{=}1$ almost nothing is left: measured on \energyN{} FFHQ test images, a
 cutoff of $0.05$ already discards \acRemovedZeroFive\,\% of the spectral
 energy outside the constant term. Training draws $r$ per sample, so one
 set of weights sees the whole range, and $r$ becomes an inference-time
-parameter. Trained this way, how tightly an output follows its structure is set
-by the condition while the weights stay fixed, and scaling the adapter's
-strength turns out to be a different control (Sec.~\ref{sec:strength}).
+parameter. At a fixed seed, raising $r$ leaves the face layout in place while
+background detail thins and clothing and colour drift from the reference
+(Figure~\ref{fig:dial}). Lowering the adapter's strength is a different
+control: at low strength pose and framing change, and FID rises
+(Sec.~\ref{sec:strength}).
+% <<AUTHOR-INPUT A12: (선택) 레이아웃이 왜 남는지 저자 말로 한 문장 -- r=0.3에서 남은 대역이 얼굴의 어느 부분을 담는지(Figure~\ref{fig:mask}). 쓰지 않으면 이 주석 줄을 지운다>>
 
 Our contributions are:
 
