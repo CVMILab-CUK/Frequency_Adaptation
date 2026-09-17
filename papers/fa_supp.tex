@@ -1,3 +1,6 @@
+% Supplementary material for the anonymous EG 2027 Full Papers submission.
+% The prologue below is fa_eg.tex's, up to \input{numbers}, so the two PDFs
+% cannot disagree on a macro or a style file.
 % Frequency Adaptation -- Eurographics 2027 Full Papers submission.
 %
 % SRMv2 EG_2027 Instruction: use EGauthorGuidelines-conf-sub.tex. The prologue
@@ -53,30 +56,22 @@
 \setcounter{secnumdepth}{2}
 \input{numbers}
 \usepackage{xr}
-\externaldocument{fa_supp}
+\externaldocument{fa_eg}
 % xr imports every label of the other document, including LastPage, which
 % would fight this document's own page count in the footer. Drop it here,
 % before \begin{document} reads the local .aux.
 \makeatletter
 \expandafter\let\csname r@LastPage\endcsname\@undefined
 \makeatother
+\renewcommand{\thetable}{S\arabic{table}}
+% fa_appendix.inc uses the placeholder macro that fa_body.inc defines; this
+% document does not input fa_body.inc, so it declares it the same way.
+\providecommand{\AUTHORINPUT}[1]{\textbf{[AUTHOR-INPUT #1]}}
 
-% ACM CCS 2012 categories, printed inside the abstract.
-\newcommand{\CCSblock}{\input{ccs_eg.inc}}
-
-\title[A Frequency Dial for Structure-Conditioned Diffusion]%
-      {A Frequency Dial for Structure-Conditioned Diffusion}
-
-% anonymous submission: the submission ID replaces the author block
+\title[Supplementary material]{Supplementary material for: A Frequency Dial for Structure-Conditioned Diffusion}
 \author[SUBMISSION ID]{SUBMISSION ID}
 
 \begin{document}
 \maketitle
-\input{fa_body.inc}
-\FloatBarrier
-
-\bibliographystyle{eg-alpha-doi}
-\bibliography{refs}
-
-
+\input{fa_appendix.inc}
 \end{document}

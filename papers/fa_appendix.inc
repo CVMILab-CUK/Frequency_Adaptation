@@ -226,35 +226,3 @@ Figure~\ref{fig:sketch} (\sketchFaceSC{} there). No specialist was run on
 sketches.}
 \label{tab:sketchspec}
 \end{table}
-
-\section{Reproducibility}
-\label{sec:repro}
-
-\begin{table}[!tbp]\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}lp{0.70\columnwidth}@{}}
-\toprule
-Item & Setting \\
-\midrule
-Base model        & \texttt{stable-diffusion-v1-5/}\allowbreak\texttt{stable-diffusion-v1-5}, frozen \\
-Condition encoder & seven $3{\times}3$ convolutions, SiLU, three with stride 2 and group normalisation, 32 to 128 channels, 4 output channels \\
-Trainable params  & \ourParams{} (main); skip only \paramsSkipOnly{}; attention only \paramsAttnOnly{} \\
-Data              & FFHQ-512, \nTrain{} / \nValid{} / \nTest{}, seeded shuffle (seed 2026); the validation split only monitors training on four images \\
-Sketch data       & CUHK Face Sketch database, \AUTHORINPUT{A28}; \texttt{rhfeiyang/}\allowbreak\texttt{photo-sketch-pair-500}, \AUTHORINPUT{A29} \\
-Optimiser         & AdamW, lr $10^{-4}$, $\beta{=}(0.9,0.999)$, weight decay 0.01, cosine, 500 warm-up steps \\
-Batch / precision & 32 / bf16, gradient clipping 1.0, 12 epochs, Min-SNR $\gamma{=}5$, one H200 \\
-% <<AUTHOR-INPUT A33: 실행 로그에서 확인한 값으로 채운다 -- "training X h per run on one H200 (peak Y GB); sampling Z s per image with the adapter and W s without (DDIM 50, CFG 7.5, batch 1, 512 px); V GPU-hours for all runs in this paper">>
-Compute           & \AUTHORINPUT{A33} \\
-EMA               & decay 0.9999 every 10 steps; evaluation uses the raw weights \\
-Dropout           & text 0.1, structure condition 0.05 \\
-Training seeds    & main model 2026, 2027, 2028; specialists, ablations and skip only 2026 \\
-Sampling          & DDIM, 50 steps, CFG 7.5, seed 2026; Diversity seeds $2026{+}10^5{+}i$ for image $i$ \\
-Evaluation        & first 500 of the \nTest{} test images; clean-FID, clean mode, 512 px; LPIPS AlexNet against the reference; CLIP ViT-B/32 (OpenAI weights), $100\times$ cosine \\
-Baselines         & \texttt{lllyasviel/}\allowbreak\texttt{sd-controlnet-canny}, \texttt{lllyasviel/}\allowbreak\texttt{sd-controlnet-hed}, \texttt{TencentARC/}\allowbreak\texttt{t2iadapter\_}\allowbreak\texttt{canny\_sd15v2}; Canny 100/200 for all; conditioning scale 1.0; default PNDM sampler, 50 steps, CFG 7.5, seed 2026 \\
-Software          & Python 3.12.3, PyTorch 2.10 (NGC 25.11), diffusers 0.32.2, clean-fid 0.1.35, lpips 0.1.4, open\_clip 2.30.0 \\
-\bottomrule
-\end{tabular}
-\caption{Settings behind every table, read from the run manifests and
-evaluation scripts.}
-\label{tab:repro}
-\end{table}

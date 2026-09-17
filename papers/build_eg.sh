@@ -9,8 +9,12 @@ export TEXINPUTS=".:./egstyle//:" BSTINPUTS=".:./egstyle//:" BIBINPUTS=".:./egst
 if [ -f ../scripts/paper_numbers.py ]; then (cd .. && python scripts/paper_numbers.py); else echo "WARN: scripts/paper_numbers.py not found; using existing numbers.tex" >&2; fi
 pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
 bibtex fa_eg >/dev/null
+# the supplementary carries the appendix; the two documents cite each other's
+# table numbers through xr, so each is compiled twice around the other
+pdflatex -interaction=nonstopmode fa_supp.tex >/dev/null
 pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
 pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
-# a third pass settles float numbers once the appendix moves after the references
+pdflatex -interaction=nonstopmode fa_supp.tex >/dev/null
 pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
 echo "fa_eg.pdf  ($(grep -aci undefined fa_eg.log) undefined, $(grep -aci overfull fa_eg.log) overfull)"
+echo "fa_supp.pdf  ($(grep -aci undefined fa_supp.log) undefined)"
