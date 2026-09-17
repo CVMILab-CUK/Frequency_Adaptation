@@ -520,13 +520,14 @@ condition it falls from \oodOodFZeroFive{} to \oodOodFThreeZero{} out of domain
 and from \oodIndFZeroFive{} to \oodIndFThreeZero{} in domain. The dial carries
 out of domain. With the adapter off, the out-of-domain images score
 \oodOffOneZero{} against the input photograph at $r{=}0.1$, against
-\oodOodOneZero{} with it on, so the residual structure comes from the condition
-and not from the backbone.
+\oodOodOneZero{} with it on.
 
 Image quality does not transfer: FID, each run measured against its own input
 photographs, rises from \oodIndFidOneZero{} in domain to \oodOodFidOneZero{}
-out of it at $r{=}0.1$. The control survives the domain shift; the generative
-quality does not.
+out of it at $r{=}0.1$. Against the filtered condition, the same two runs score
+\oodIndFOneZero{} and \oodOodFOneZero{}, and they stay this close at every
+cutoff.
+% <<AUTHOR-INPUT A20: 한 문장 -- 도메인과 무관하게 vs-filtered 값이 거의 같다는 것이 무엇을 뜻하는지(조건 추종과 이미지 품질이 따로 움직인다는 뜻인가), r=0.3 값(\oodIndFThreeZero, \oodOodFThreeZero)이 신뢰할 바닥값보다 위인지>>
 
 \subsection{Hand-drawn sketches}
 \begin{figure}[t]
