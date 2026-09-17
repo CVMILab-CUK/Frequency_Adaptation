@@ -311,12 +311,13 @@ structure consistency falls at every step while FID stays between
 \fidMainZeroFive{} and \fidMainOneZero{}, and sample diversity rises alongside.
 Going from $r{=}0$ to $r{=}0.05$ structure
 consistency \emph{rises} by \riseDelta{} ($z = \riseZ{}$ with the unpaired
-standard error over the 500 images), so the sweep is not monotone at its left end; the same rise appears
-in Edge-F1 (\edgeMainZero{} to \edgeMainZeroFive{}), so it is model behaviour
-rather than an artefact of the SC instrument. And at the right end $r{=}0.5$ and
-$r{=}0.7$ are not separable across seeds (paired $t = \tailT{}$, $df=2$,
-critical \tailCrit{}). FID stays between \fidMainZero{} and
-\fidMainOneHundred{} across the entire sweep.
+standard error over the 500 images), so the sweep is not monotone at its left
+end. Edge-F1 moves the same way, from \edgeMainZero{} to \edgeMainZeroFive{},
+but we have no uncertainty for that change, so it does not separate model
+behaviour from an artefact of the SC instrument.
+% <<AUTHOR-INPUT A15: 가설 한 문장 -- r=0(colourisation 과제, Sec. 1)의 샘플은 r=0.05 샘플이 지키는 무엇을 잃는가. 예상했던 결과인가>>
+At the right end $r{=}0.5$ and $r{=}0.7$ are not separable across seeds
+(paired $t = \tailT{}$, $df=2$, critical \tailCrit{}).
 
 Figure~\ref{fig:dial} holds the seed and the caption fixed and varies only $r$.
 Because the caption is derived from the reference, it could be carrying part of
