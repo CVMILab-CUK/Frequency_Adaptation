@@ -156,7 +156,9 @@ $r$ & specialist & mean & sd & difference & diff.\,/\,sd \\
 \caption{Per-cutoff specialists (one training run each, seed 2026) against the
 single randomised-$r$ model averaged over training seeds 2026--2028, each at its
 own cutoff. Difference is specialist minus the three-seed mean; the last column
-divides it by the three-seed standard deviation, as in Sec.~\ref{sec:spec}. A
+divides it by the three-seed standard deviation and is compared with the
+threshold \tailCrit{} of Sec.~\ref{sec:spec}, which is looser than a
+prediction interval for one new run. A
 positive difference favours the specialist. The specialist wins at $r{=}0.1$,
 the single model wins at $r{=}0.3$, and neither separates at $r{=}0.5$ or
 $0.7$; what the single model gives that no specialist can is the rest of the
