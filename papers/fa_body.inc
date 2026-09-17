@@ -327,7 +327,7 @@ script from the per-run result files.
     at ($(d.north west)!{(\i*390+192)/3504}!(d.north east)$) {\lab};
 \draw[black!60, line width=0.4pt]
   ($(d.north west)!{(6*390)/3504}!(d.north east)+(0,4mm)$) -- ($(d.north east)+(0,4mm)$)
-  node[font=\scriptsize, anchor=south east, inner sep=1pt] {beyond the claimed range};
+  node[font=\scriptsize, anchor=south east, inner sep=1pt] {$r > 0.3$};
 \end{tikzpicture}
 \caption{The main model (training seed 2026) with sampling seed
 2026 and each reference's BLIP caption; along a row only $r$ changes. The rows
@@ -381,7 +381,7 @@ $r$ & SC $\pm$ SEM & seed sd & Edge-F1 & Diversity & FID \\
 0.20 & \scMainTwoZero\,$\pm$\,\semMainTwoZero     & \sSdTwoZero    & \edgeMainTwoZero   & \divMainTwoZero   & \fidMainTwoZero \\
 0.30 & \scMainThreeZero\,$\pm$\,\semMainThreeZero & \sSdThreeZero  & \edgeMainThreeZero & \divMainThreeZero & \fidMainThreeZero \\
 \midrule
-\multicolumn{6}{l}{\itshape beyond the range we claim} \\
+\multicolumn{6}{l}{\itshape $r > 0.3$} \\
 0.50 & \scMainFiveZero\,$\pm$\,\semMainFiveZero   & \sSdFiveZero   & \edgeMainFiveZero  & \divMainFiveZero  & \fidMainFiveZero \\
 0.70 & \scMainSevenZero\,$\pm$\,\semMainSevenZero & \sSdSevenZero  & \edgeMainSevenZero & \divMainSevenZero & \fidMainSevenZero \\
 1.00 & \scMainOneHundred\,$\pm$\,\semMainOneHundred & \sSdOneHundred & \edgeMainOneHundred & \divMainOneHundred & \fidMainOneHundred \\

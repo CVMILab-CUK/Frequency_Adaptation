@@ -208,7 +208,7 @@ $r$ & vs.\ original & $\pm$ SEM & vs.\ filtered & vs.\ original & vs.\ filtered 
 0.20 & \sdialTwoZero    & \sdialSemTwoZero    & \sdialFTwoZero    & \oodIndTwoZero   & \oodIndFTwoZero \\
 0.30 & \sdialThreeZero  & \sdialSemThreeZero  & \sdialFThreeZero  & \oodIndThreeZero & \oodIndFThreeZero \\
 \midrule
-\multicolumn{6}{l}{\itshape beyond the range we claim} \\
+\multicolumn{6}{l}{\itshape $r > 0.3$} \\
 0.50 & \sdialFiveZero   & \sdialSemFiveZero   & \sdialFFiveZero   & --- & --- \\
 0.70 & \sdialSevenZero  & \sdialSemSevenZero  & \sdialFSevenZero  & --- & --- \\
 1.00 & \sdialOneHundred & \sdialSemOneHundred & \sdialFOneHundred & --- & --- \\
