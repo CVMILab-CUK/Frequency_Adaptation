@@ -587,6 +587,7 @@ correlation with the original drawing falls from \sdialZero{} at $r{=}0$ to
 \sdialOneZero{} at $r{=}0.1$, \sdialThreeZero{} at $r{=}0.3$ and
 \sdialOneHundred{} at $r{=}1$; $r{=}0.5$ and $r{=}0.7$ lie within a standard
 error (\sdialSemFiveZero{}) of each other.
+% <<AUTHOR-INPUT A27: 사용 시나리오 2문장(측정이 아니라 의도된 용도로 표기) -- 아티스트가 어떤 편집 과제에서 r=0.05와 r=0.3을 고르나; r을 한 번 바꿀 때 재생성 한 장에 걸리는 시간(T27 Compute 행의 추론 시간 값을 그대로 쓴다). 영어 문장으로 이 자리에 넣는다>>
 
 Against the filtered drawing the model was actually given, the same generations
 score \sdialFZeroFive{} at $r{=}0.05$, \sdialFOneZero{} at $r{=}0.1$ and
