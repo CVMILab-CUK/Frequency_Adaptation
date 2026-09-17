@@ -584,9 +584,10 @@ score \sdialFZeroFive{} at $r{=}0.05$, \sdialFOneZero{} at $r{=}0.1$ and
 \sdialFThreeZero{} at $r{=}0.3$. Scored by the same script, \oodN{} FFHQ test
 photographs prompted with ``a high-quality photo'' reach \oodIndFZeroFive{},
 \oodIndFOneZero{} and \oodIndFThreeZero{} (Sec.~\ref{sec:ood}), so a filtered
-drawing is followed less closely than a filtered photograph at every cutoff, by
-less than half at $r{=}0.3$, though the prompts and set sizes differ
-(Table~\ref{tab:sketchspec}).
+drawing is followed less closely than a filtered photograph at every cutoff; at
+$r{=}0.3$ the drawing reaches less than half the photograph's score
+(\sdialFThreeZero{} against \oodIndFThreeZero{}), though the prompts and set
+sizes differ (Table~\ref{tab:sketchspec}).
 
 \section{What the design needs}
 \label{sec:design}
