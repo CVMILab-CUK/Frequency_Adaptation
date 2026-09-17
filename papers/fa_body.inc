@@ -817,14 +817,18 @@ condition and data would be the like-for-like control, and we did not train
 one. We do not compare against a sketch-reliability control~\cite{yang2020deep}
 or against noise-level editing~\cite{meng2022sdedit}; both act on different
 inputs and would need their own protocol.
+% <<AUTHOR-CITE C1/C4: T13/T22/T23에서 채택된 경우에만 위 문장의 비교 대상에 "training-free filter guidance~\cite{C1KEY}"와 "geometry--appearance face editing~\cite{C4KEY}"를 덧붙인다. 채택하지 않았으면 이 주석 줄을 지운다>>
 
 The adapter trains \ourParams{} parameters, fewer than ControlNet and more than
 recent lightweight control modules: Simple-ControlNet~\cite{feng2025simplifying}
 reports under 3M parameters on SD1.5, ControlNet-XS~\cite{zavadski2023controlnet}
 ships much smaller control networks than ControlNet, and the DiT modules above
 use a fraction of our count. We make no efficiency claim. We evaluate the dial
-with image metrics only; whether equal steps in $r$ are perceived as equal
-changes, and whether artists find the control useful, is not measured here.
+with image metrics only, and neither SC nor Edge-F1 separates layout from
+appearance, so the observation that layout holds while appearance changes
+rests on the samples in Figures~\ref{fig:dial} and~\ref{fig:strength}. Whether
+equal steps in $r$ are perceived as equal changes, and whether artists find
+the control useful, is not measured here.
 
 \section{Conclusion}
 
