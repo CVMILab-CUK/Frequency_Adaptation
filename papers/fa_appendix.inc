@@ -243,6 +243,8 @@ Data              & FFHQ-512, \nTrain{} / \nValid{} / \nTest{}, seeded shuffle (
 Sketch data       & CUHK Face Sketch database, \AUTHORINPUT{A28}; \texttt{rhfeiyang/}\allowbreak\texttt{photo-sketch-pair-500}, \AUTHORINPUT{A29} \\
 Optimiser         & AdamW, lr $10^{-4}$, $\beta{=}(0.9,0.999)$, weight decay 0.01, cosine, 500 warm-up steps \\
 Batch / precision & 32 / bf16, gradient clipping 1.0, 12 epochs, Min-SNR $\gamma{=}5$, one H200 \\
+% <<AUTHOR-INPUT A33: 실행 로그에서 확인한 값으로 채운다 -- "training X h per run on one H200 (peak Y GB); sampling Z s per image with the adapter and W s without (DDIM 50, CFG 7.5, batch 1, 512 px); V GPU-hours for all runs in this paper">>
+Compute           & \AUTHORINPUT{A33} \\
 EMA               & decay 0.9999 every 10 steps; evaluation uses the raw weights \\
 Dropout           & text 0.1, structure condition 0.05 \\
 Training seeds    & main model 2026, 2027, 2028; specialists, ablations and skip only 2026 \\
