@@ -5,7 +5,7 @@
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
-\begin{axis}[draft, xlabel={cutoff $r$}, ylabel={score},
+\begin{axis}[draft, xlabel={cutoff $r$}, ylabel={SC / diversity (LPIPS)},
              xmin=-0.03, xmax=1.03, ymin=0, ymax=0.8,
              legend pos=north east]
   \addplot[mark=square*, black] table[x=r, y=sc] {curve.dat};
@@ -21,22 +21,30 @@
 \begin{axis}[draft, height=38mm,
              xlabel={structure consistency}, ylabel={FID},
              xmin=-0.03, xmax=0.8, ymin=45, ymax=112,
-             legend pos=north east]
-  \addplot[mark=square*, black] table[x=sc, y=fid] {curve.dat};
-  \addlegendentry{cutoff $r$}
+             legend columns=2,
+             legend style={at={(0.5,-0.42)}, anchor=north}]
+  \addplot[mark=square*, black, restrict expr to domain={\thisrow{r}}{0.04:0.31}] table[x=sc, y=fid] {curve.dat};
+  \addlegendentry{cutoff, own instrument}
+  \addplot[only marks, mark=square, black!45, y filter/.expression={(\thisrow{r}>0.04 && \thisrow{r}<0.31) ? nan : y}] table[x=sc, y=fid] {curve.dat};
+  \addlegendentry{cutoff outside $[0.05, 0.3]$}
+  \addplot[mark=diamond*, black, densely dotted] coordinates {(\fixInstZeroFive,\fidMainZeroFive) (\fixInstOneZero,\fidMainOneZero) (\fixInstTwoZero,\fidMainTwoZero) (\fixInstThreeZero,\fidMainThreeZero)};
+  \addlegendentry{cutoff, instrument $r_m{=}0.1$}
   \addplot[mark=o, black, densely dashed] table[x=sc, y=fid] {scale.dat};
   \addlegendentry{randomised-$r$ at $r{=}0.1$, scaled}
   \addplot[mark=triangle, black!55, dotted] coordinates {(\sscSCQuarter,\sscFidQuarter) (\sscSCHalf,\sscFidHalf) (\sscSCThreeQ,\sscFidThreeQ) (\sscSCOne,\sscFidOne)};
   \addlegendentry{fixed-$r{=}0.1$ adapter, scaled}
 \end{axis}
 \end{tikzpicture}
-\caption{\textbf{Top:} structure consistency falls and sample diversity rises
-as the cutoff grows. \textbf{Bottom:} the cutoff sweep of Table~\ref{tab:main}
-and the two scaled adapters of Table~\ref{tab:strength} in the
-structure-consistency / FID plane. Narrowing the condition's bandwidth lowers
-structure consistency within a narrow FID band; weakening either adapter lowers
-it while FID rises. Scaled points are scored at $r_m{=}0.1$, cutoff points at
-their own cutoff. Both panels are plotted directly from the evaluation
-outputs.}
+\caption{\textbf{Top:} structure consistency and sample diversity against the
+cutoff (values of Table~\ref{tab:main}, which gives SEM and seed sd).
+\textbf{Bottom:} FID against structure consistency, one FID estimate per point.
+Filled squares: the cutoff sweep scored at its own cutoff on $r \in [0.05, 0.3]$;
+open grey squares: the same sweep outside that range. Diamonds: the same
+generations re-scored with the instrument fixed at $r_m{=}0.1$. Circles and
+triangles: the randomised-$r$ and fixed-$r{=}0.1$ adapters scaled at
+$r{=}0.1$, which already use $r_m{=}0.1$. On that one instrument the cutoff
+$r{=}0.3$ reaches \fixInstThreeZero{} at FID \fidMainThreeZero{}, while scale
+0.50 reaches \fixInstHalfScale{} at FID \fidHalfScale{}. Both panels are
+plotted directly from the evaluation outputs.}
 \label{fig:curve}
 \end{figure}
