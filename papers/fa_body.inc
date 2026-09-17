@@ -187,6 +187,7 @@ invert, and min--max normalise to $[0,1]$. The normalisation is deliberate: it
 removes the absolute scale of the filter response, so the model has to infer
 structure density from spatial statistics. We hypothesise that this is what
 lets a hand drawing, which carries no $r$, be used at test time.
+% <<AUTHOR-INPUT A23: 필터 선택 근거 2문장 -- 왜 low-pass/band-pass가 아니라 high-pass인가, 왜 Gaussian roll-off가 아니라 ideal radial mask인가(ringing을 확인했는가, SC에 영향이 있었나), 인용한 edge-preserving/Laplacian 분해 대신 FFT disc를 고른 이유. 영어 문장으로 이 주석 자리에 넣는다>>
 Figure~\ref{fig:mask} shows the mask, spectrum and condition at each cutoff.
 
 \input{fig_mask}
