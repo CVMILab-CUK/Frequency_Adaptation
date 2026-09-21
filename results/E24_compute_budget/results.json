@@ -3,12 +3,15 @@
   "train_hours_source": "TensorBoard train/loss span for the main run; checkpoint timestamps for the per-run totals",
   "sampling_source": "results/E23_sampling_cost (measured) x images generated",
   "gpu": "NVIDIA H200",
-  "n_runs": 27
+  "n_runs": 26,
+  "runs_not_reported": {
+   "FA_SD15_r0-1_prefix_residual_bug": 7.611
+  }
  },
  "train_hours_main": 5.707,
  "train_peak_gb": 61.32,
  "train_images_per_sec": 38.9,
- "train_hours_total": 163.4,
+ "train_hours_total": 155.8,
  "train_hours_per_run": {
   "E10a_capacity128": 5.659,
   "E10b_skip_inject": 5.739,
@@ -35,13 +38,12 @@
   "E3h_zero_init_gate": 6.672,
   "E9a_conv_encoder": 5.585,
   "E9b_source256": 6.618,
-  "FA_SD15_r0-1": 7.251,
-  "FA_SD15_r0-1_prefix_residual_bug": 7.611
+  "FA_SD15_r0-1": 7.251
  },
  "sampling_seconds_per_image": 1.881,
  "sampling_peak_gb": 2.94,
  "generated_images_saved": 137560,
  "diversity_samples_unsaved": 48600,
  "sampling_hours_total_est": 97.3,
- "gpu_hours_total_est": 261.0
+ "gpu_hours_total_est": 253.0
 }

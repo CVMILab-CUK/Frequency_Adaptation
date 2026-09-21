@@ -45,12 +45,28 @@ def ckpt_span(run):
     if len(steps) < 2 or not os.path.isdir(fin): return None
     return (os.path.getmtime(fin) - steps[0] + (steps[1] - steps[0])) / 3600
 
-runs, train_hours = {}, 0.0
+def reported_runs():
+    """Checkpoints that some results.json was generated from. A run whose output
+    the paper never reports -- a development run, or one discarded for a bug --
+    is not part of what the paper cost to produce."""
+    out = set()
+    for f in glob.glob("results/*/results.json"):
+        try: d = json.load(open(f))
+        except Exception: continue
+        ad = d.get("provenance", {}).get("adapter")
+        if ad: out.add(os.path.basename(os.path.dirname(os.path.dirname(ad))))
+    return out
+
+reported = reported_runs()
+runs, train_hours, skipped = {}, 0.0, {}
 for run in sorted(os.listdir("ckpt_dir")):
     if not os.path.isdir(os.path.join("ckpt_dir", run)): continue
     h = ckpt_span(run)
     if h is None: continue
-    runs[run] = round(h, 3); train_hours += h
+    if run in reported:
+        runs[run] = round(h, 3); train_hours += h
+    else:
+        skipped[run] = round(h, 3)
 
 tb = tb_span(MAIN)
 bench = json.load(open("results/E23_sampling_cost/results.json"))
@@ -77,6 +93,7 @@ out = {
         "sampling_source": "results/E23_sampling_cost (measured) x images generated",
         "gpu": bench["provenance"]["gpu"],
         "n_runs": len(runs),
+        "runs_not_reported": skipped,
     },
     "train_hours_main": round(tb[0], 3) if tb else runs.get(MAIN),
     "train_peak_gb": round(tb[1], 2) if tb else None,
