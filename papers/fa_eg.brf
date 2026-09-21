@@ -5,6 +5,7 @@
 \backcite {mou2023adapter,zhao2023controlnet,qin2023unicontrol,li2024controlnet}{{1}{1}{section.1}}
 \backcite {farbman2008edge,paris2011local}{{1}{1}{section.1}}
 \backcite {ho2020denoising,song2020denoising,rombach2021high,nichol2021glide,saharia2022photorealistic}{{1}{2}{section*.1}}
+\backcite {po2024state}{{1}{2}{section*.1}}
 \backcite {zhang2023adding}{{1}{2}{section*.1}}
 \backcite {mou2023adapter}{{1}{2}{section*.1}}
 \backcite {ye2023adapter}{{1}{2}{section*.1}}
@@ -12,7 +13,7 @@
 \backcite {zhao2023controlnet}{{1}{2}{section*.1}}
 \backcite {qin2023unicontrol}{{1}{2}{section*.1}}
 \backcite {li2024controlnet}{{1}{2}{section*.1}}
-\backcite {zavadski2023controlnet}{{1}{2}{section*.1}}
+\backcite {zavadski2023controlnet}{{2}{2}{section*.1}}
 \backcite {xu2024ctrlora}{{2}{2}{section*.1}}
 \backcite {feng2025simplifying}{{2}{2}{section*.1}}
 \backcite {peebles2022scalable,esser2024scaling}{{2}{2}{section*.2}}
@@ -34,6 +35,7 @@
 \backcite {gao2024frequency}{{2}{2}{section*.3}}
 \backcite {gao2024fbsdiff}{{2}{2}{section*.3}}
 \backcite {choi2021ilvr}{{2}{2}{section*.3}}
+\backcite {gu2024filter}{{2}{2}{section*.3}}
 \backcite {prasain2026beyond}{{2}{2}{section*.3}}
 \backcite {podell2023sdxl}{{2}{2}{section*.3}}
 \backcite {saharia2022photorealistic}{{2}{2}{section*.3}}
@@ -44,6 +46,7 @@
 \backcite {meng2022sdedit}{{2}{2}{section*.4}}
 \backcite {winnemoller2012xdog}{{2}{2}{section*.4}}
 \backcite {he2026structdiff}{{2}{2}{section*.4}}
+\backcite {bae2006two,farbman2008edge}{{2}{3}{section*.5}}
 \backcite {rombach2021high}{{3}{3}{section*.7}}
 \backcite {rombach2021high}{{3}{3}{section*.8}}
 \backcite {karras2018style}{{3}{3}{section*.8}}
@@ -56,13 +59,17 @@
 \backcite {feng2025simplifying}{{5}{4.3}{subsection.4.3}}
 \backcite {zhang2023adding}{{6}{4.5}{subsection.4.5}}
 \backcite {mou2023adapter}{{6}{4.5}{subsection.4.5}}
-\backcite {wang2009face}{{8}{4.7}{figure.6}}
-\backcite {ye2023adapter}{{8}{5.1}{figure.7}}
+\backcite {wang2009face,zhang2011coupled}{{8}{4.7}{figure.6}}
+\backcite {chen2021deepfaceediting}{{8}{4.7}{figure.6}}
+\backcite {xiao2024customsketching}{{8}{4.7}{figure.6}}
+\backcite {ye2023adapter}{{9}{5.1}{figure.7}}
 \backcite {podell2023sdxl}{{10}{6}{section.6}}
 \backcite {esser2024scaling}{{10}{6}{section.6}}
 \backcite {hu2021lora}{{10}{6}{section.6}}
 \backcite {tan2024ominicontrol,zhang2025easycontrol,liu2025nanocontrol}{{10}{6}{section.6}}
 \backcite {yang2020deep}{{10}{6}{section.6}}
 \backcite {meng2022sdedit}{{10}{6}{section.6}}
+\backcite {gu2024filter}{{10}{6}{section.6}}
+\backcite {chen2021deepfaceediting}{{10}{6}{section.6}}
 \backcite {feng2025simplifying}{{10}{6}{section.6}}
 \backcite {zavadski2023controlnet}{{10}{6}{section.6}}

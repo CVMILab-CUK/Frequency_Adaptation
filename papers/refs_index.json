@@ -376,5 +376,47 @@
   "url": "https://doi.org/10.1109/tmm.2026.3716757",
   "year": "2026",
   "first_author": "Yinxi He"
+ },
+ "gu2024filter": {
+  "id": "10.1145/3641519.3657489",
+  "title": "Filter-Guided Diffusion for Controllable Image Generation",
+  "url": "https://doi.org/10.1145/3641519.3657489",
+  "year": "2024",
+  "first_author": "Zeqi Gu"
+ },
+ "bae2006two": {
+  "id": "10.1145/1141911.1141935",
+  "title": "Two-scale tone management for photographic look",
+  "url": "https://doi.org/10.1145/1141911.1141935",
+  "year": "2006",
+  "first_author": "Soonmin Bae"
+ },
+ "po2024state": {
+  "id": "10.1111/cgf.15063",
+  "title": "State of the Art on Diffusion Models for Visual Computing",
+  "url": "https://doi.org/10.1111/cgf.15063",
+  "year": "2024",
+  "first_author": "R. Po"
+ },
+ "chen2021deepfaceediting": {
+  "id": "10.1145/3450626.3459760",
+  "title": "DeepFaceEditing: Deep Face Generation and Editing with Disentangled Geometry and Appearance Control",
+  "url": "https://doi.org/10.1145/3450626.3459760",
+  "year": "2021",
+  "first_author": "Shu-Yu Chen"
+ },
+ "xiao2024customsketching": {
+  "id": "10.1111/cgf.15247",
+  "title": "CustomSketching: Sketch Concept Extraction for Sketch-based Image Synthesis and Editing",
+  "url": "https://doi.org/10.1111/cgf.15247",
+  "year": "2024",
+  "first_author": "Chufeng Xiao"
+ },
+ "zhang2011coupled": {
+  "id": "10.1109/CVPR.2011.5995324",
+  "title": "Coupled information-theoretic encoding for face photo-sketch recognition",
+  "url": "https://doi.org/10.1109/CVPR.2011.5995324",
+  "year": "2011",
+  "first_author": "Wei Zhang"
  }
 }

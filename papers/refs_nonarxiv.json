@@ -864,5 +864,127 @@
   "doi": "10.1109/tmm.2026.3716757",
   "url": "https://doi.org/10.1109/tmm.2026.3716757",
   "verified_against": "Crossref record for DOI 10.1109/tmm.2026.3716757 (title 'StructDiff: A Structure-Preserving and Spatially Controllable Diffusion Model for Single-Image Generation', container-title 'IEEE Transactions on Multimedia', first author affiliation Beijing Jiaotong University, published 2026). Title and first author (Yinxi He) match exactly. NOTE: this is an early-access/online-first record; Crossref lists pages '1-12' with no volume/issue assigned yet, so those fields are omitted."
+ },
+ {
+  "key": "gu2024filter",
+  "type": "inproceedings",
+  "authors": [
+   "Zeqi Gu",
+   "Ethan Yang",
+   "Abe Davis"
+  ],
+  "title": "Filter-Guided Diffusion for Controllable Image Generation",
+  "booktitle": "ACM SIGGRAPH 2024 Conference Papers",
+  "pages": "1--10",
+  "year": "2024",
+  "doi": "10.1145/3641519.3657489",
+  "url": "https://doi.org/10.1145/3641519.3657489",
+  "verified_against": "Crossref record for the DOI: type proceedings-article, title and three authors (Zeqi Gu, Ethan Yang, Abe Davis) match, event 'SIGGRAPH '24', pages 1-10."
+ },
+ {
+  "key": "bae2006two",
+  "type": "article",
+  "authors": [
+   "Soonmin Bae",
+   "Sylvain Paris",
+   "Fr{\\'e}do Durand"
+  ],
+  "title": "Two-scale tone management for photographic look",
+  "journal": "ACM Transactions on Graphics",
+  "volume": "25",
+  "number": "3",
+  "pages": "637--645",
+  "year": "2006",
+  "doi": "10.1145/1141911.1141935",
+  "url": "https://doi.org/10.1145/1141911.1141935",
+  "verified_against": "Crossref record for the DOI: ACM Transactions on Graphics 25(3):637-645, 2006; title and three authors match."
+ },
+ {
+  "key": "po2024state",
+  "type": "article",
+  "authors": [
+   "R. Po",
+   "W. Yifan",
+   "V. Golyanik",
+   "K. Aberman",
+   "J. T. Barron",
+   "A. Bermano",
+   "E. Chan",
+   "T. Dekel",
+   "A. Holynski",
+   "A. Kanazawa",
+   "C. K. Liu",
+   "L. Liu",
+   "B. Mildenhall",
+   "M. Nie{\\ss}ner",
+   "B. Ommer",
+   "C. Theobalt",
+   "P. Wonka",
+   "G. Wetzstein"
+  ],
+  "title": "State of the Art on Diffusion Models for Visual Computing",
+  "journal": "Computer Graphics Forum",
+  "volume": "43",
+  "number": "2",
+  "pages": "e15063",
+  "year": "2024",
+  "doi": "10.1111/cgf.15063",
+  "url": "https://doi.org/10.1111/cgf.15063",
+  "verified_against": "Crossref record for the DOI: Computer Graphics Forum 43(2), article e15063, 2024; title and 18 authors match."
+ },
+ {
+  "key": "chen2021deepfaceediting",
+  "type": "article",
+  "authors": [
+   "Shu-Yu Chen",
+   "Feng-Lin Liu",
+   "Yu-Kun Lai",
+   "Paul L. Rosin",
+   "Chunpeng Li",
+   "Hongbo Fu",
+   "Lin Gao"
+  ],
+  "title": "DeepFaceEditing: Deep Face Generation and Editing with Disentangled Geometry and Appearance Control",
+  "journal": "ACM Transactions on Graphics",
+  "volume": "40",
+  "number": "4",
+  "pages": "1--15",
+  "year": "2021",
+  "doi": "10.1145/3450626.3459760",
+  "url": "https://doi.org/10.1145/3450626.3459760",
+  "verified_against": "Crossref record for the DOI gives ACM Transactions on Graphics 40(4):1-15, 2021 and the seven authors; Crossref stores the title as 'DeepFaceEditing' only, so the subtitle is taken from arxiv.org/abs/2105.08935, whose title and author list match the Crossref record."
+ },
+ {
+  "key": "xiao2024customsketching",
+  "type": "article",
+  "authors": [
+   "Chufeng Xiao",
+   "Hongbo Fu"
+  ],
+  "title": "CustomSketching: Sketch Concept Extraction for Sketch-based Image Synthesis and Editing",
+  "journal": "Computer Graphics Forum",
+  "volume": "43",
+  "number": "7",
+  "pages": "e15247",
+  "year": "2024",
+  "doi": "10.1111/cgf.15247",
+  "url": "https://doi.org/10.1111/cgf.15247",
+  "verified_against": "Crossref record for the DOI: Computer Graphics Forum 43(7), article e15247, 2024; both authors match. Crossref marks up the title with italics; the markup is stripped and the en-dash hyphen normalised."
+ },
+ {
+  "key": "zhang2011coupled",
+  "type": "inproceedings",
+  "authors": [
+   "Wei Zhang",
+   "Xiaogang Wang",
+   "Xiaoou Tang"
+  ],
+  "title": "Coupled information-theoretic encoding for face photo-sketch recognition",
+  "booktitle": "IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "pages": "513--520",
+  "year": "2011",
+  "doi": "10.1109/CVPR.2011.5995324",
+  "url": "https://doi.org/10.1109/CVPR.2011.5995324",
+  "verified_against": "Crossref record for the DOI: CVPR 2011, pp. 513-520; title and three authors match. Cited because mmlab.ie.cuhk.edu.hk/archive/cufsf/ asks for this paper alongside Wang and Tang 2009 for the CUFSF database."
  }
 ]

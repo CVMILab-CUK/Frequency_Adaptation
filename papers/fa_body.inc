@@ -78,7 +78,8 @@ Our contributions are:
 \section{Related work}
 
 \paragraph{Conditional control.} Text-to-image diffusion
-\cite{ho2020denoising,song2020denoising,rombach2021high,nichol2021glide,saharia2022photorealistic}
+\cite{ho2020denoising,song2020denoising,rombach2021high,nichol2021glide,saharia2022photorealistic},
+surveyed for visual computing by Po et al.~\cite{po2024state},
 became spatially controllable with ControlNet~\cite{zhang2023adding}, which
 reads the condition image with a small convolutional network, duplicates the
 encoder and injects residuals through zero convolutions.
@@ -139,9 +140,10 @@ switches among frequency control branches, FBSDiff~\cite{gao2024fbsdiff} sets
 the guiding intensity of a reference through the bandwidth of a substituted band
 without training, and ILVR~\cite{choi2021ilvr} conditions a pretrained DDPM on a
 reference at a chosen downsampling factor without further learning.
-% <<AUTHOR-CITE C1: Gu, Yang, Davis 2024, "Filter-Guided Diffusion for Controllable Image Generation", SIGGRAPH Conference Papers '24, doi:10.1145/3641519.3657489 -- 저자가 읽고 채택을 확정하면 refs.bib 항목을 추가하고 아래 주석 두 줄의 %를 지우고 C1KEY를 실제 키로 바꾼다. 서술이 논문 내용과 맞는지 저자가 확인한다. 채택하지 않으면 두 줄을 지운다>>
-% Filter-guided diffusion~\cite{C1KEY} applies a spatial filter to the denoised estimate at inference and exposes its scale and the guidance strength as separate controls without training;
-% our band is instead part of what the adapter is trained to read.
+Filter-guided diffusion~\cite{gu2024filter} applies a spatial filter to the
+denoised estimate at inference and exposes its scale and the guidance strength
+as separate controls without training; our band is instead part of what the
+adapter is trained to read.
 Prasain~\cite{prasain2026beyond} conditions on wavelet bands instead of edge
 maps for map-to-satellite synthesis. None of them randomises the condition's
 \emph{bandwidth} during training so that the band becomes a control at
@@ -172,8 +174,10 @@ the information content of the condition, set by a frequency cutoff, on one
 adapter whose response we measure separately from its strength. Because the
 condition is a continuum and not a fixed extractor, a single adapter can expose
 it as a dial. StructDiff~\cite{he2026structdiff} targets structure-preserving,
-spatially controllable single-image generation; \AUTHORINPUT{A26}.
-% <<AUTHOR-INPUT A26: StructDiff가 고정하거나 바꾸는 것 중 우리 cutoff가 하지 않는 것, 한 절(영어)>>
+spatially controllable single-image generation, varying samples within one
+source image's own statistics while keeping its layout; we hold an external
+condition instead, and the cutoff sets how much of it the output has to
+reproduce.
 
 \section{Method}
 
@@ -185,11 +189,14 @@ structure density from spatial statistics. We hypothesise that this is what
 lets a hand drawing, which carries no $r$, be used at test time.
 The filter is a high-pass because the point is to keep shape and hand the rest
 to the prior: edges and texture sit in the high band, tone and colour in the
-low one, so a low-pass or band-pass condition would give the model the part we
-want it to invent. Taking shape from the high frequencies is the classical
-reading of an edge map, and what we add is that the boundary between the two is
-a parameter rather than a fixed extractor.
-% <<AUTHOR-INPUT A23b: 남은 절반 -- ideal radial mask를 쓴 이유(Gaussian roll-off를 시도했는지, ringing을 확인했는지). Figure~\ref{fig:mask} 3-4행의 $r\ge0.1$ 타일에 동심원 무늬가 보인다>>
+low one, the split two-scale tone and detail
+editing~\cite{bae2006two,farbman2008edge} works with, so a low-pass or
+band-pass condition would give the model the part we want it to invent. What we
+add is that the boundary is a parameter rather than a fixed extractor. The mask
+is an ideal disc rather than a smooth roll-off so that $r$ names exactly which
+frequencies are gone, at the cost of the ringing visible in
+Figure~\ref{fig:mask}, which the model is trained on and which we did not
+measure separately.
 Figure~\ref{fig:mask} shows the mask, spectrum and condition at each cutoff.
 
 \input{fig_mask}
@@ -231,10 +238,10 @@ weighting~\cite{hang2023efficient}, $\gamma=5$. Text conditioning is dropped
 with probability 0.1 for classifier-free guidance~\cite{ho2022classifier} and
 the structure condition independently with probability
 The condition is grayscale so that the filter reads one channel and a cutoff
-means the same thing in every image, which leaves colour to the prior; the
-colour-condition row of Table~\ref{tab:abl} is the control for that choice, as
-the no-dropout row is for the structure-condition dropout of 0.05. Training
-stops at 12 epochs, where the validation curve has flattened.
+means the same thing in every image, leaving colour to the prior;
+Table~\ref{tab:abl} keeps a colour-condition row as the control for that
+choice, and a no-dropout row for the structure-condition dropout of 0.05.
+Training stops at 12 epochs, where the validation curve has flattened.
 0.05. AdamW uses the PyTorch default weight decay of 0.01. An EMA of the
 adapter (decay 0.9999) is kept with a 10-step interval; evaluation uses the
 raw weights. $r$ is drawn uniformly from $[0,1]$ per sample, so one adapter
@@ -255,10 +262,10 @@ Base model        & \texttt{stable-diffusion-v1-5/}\allowbreak\texttt{stable-dif
 Condition encoder & seven $3{\times}3$ convolutions, SiLU, three with stride 2 and group normalisation, 32 to 128 channels, 4 output channels \\
 Trainable params  & \ourParams{} (main); skip only \paramsSkipOnly{}; attention only \paramsAttnOnly{} \\
 Data              & FFHQ-512, \nTrain{} / \nValid{} / \nTest{}, seeded shuffle (seed 2026); the validation split only monitors training on four images \\
-Sketch data       & \texttt{a573p/}\allowbreak\texttt{Face-Sketches40} (all \sketchFaceN{}; its card calls them CUHK Face Sketch database images and states no licence); \texttt{rhfeiyang/}\allowbreak\texttt{photo-sketch-pair-500} (no licence stated) \\
+Sketch data       & \texttt{a573p/}\allowbreak\texttt{Face-Sketches40}, all \sketchFaceN{}, and \texttt{rhfeiyang/}\allowbreak\texttt{photo-sketch-pair-500}; neither card states a licence \\
 Optimiser         & AdamW, lr $10^{-4}$, $\beta{=}(0.9,0.999)$, weight decay 0.01, cosine, 500 warm-up steps \\
 Batch / precision & 32 / bf16, gradient clipping 1.0, 12 epochs, Min-SNR $\gamma{=}5$, one H200 \\
-Compute           & \trainHoursMain{} h per training run on one H200 at \trainImgSec{} images/s, peak \trainPeakGb{} GB; \sampleSecImg{} s per sampled image (DDIM 50, CFG 7.5, batch 1, 512 px), peak \samplePeakGb{} GB. The \nTrainRuns{} training runs behind this paper took \trainHoursAll{} GPU-hours; the \sampleImages{} images generated for the tables add about \sampleHoursAll{} more at the measured rate, \gpuHoursAll{} in total \\
+Compute           & \trainHoursMain{} h per training run on one H200 at \trainImgSec{} images/s, peak \trainPeakGb{} GB; \sampleSecImg{} s per sampled image (DDIM 50, CFG 7.5, batch 1, 512 px), peak \samplePeakGb{} GB; \trainHoursAll{} GPU-hours over \nTrainRuns{} training runs and about \sampleHoursAll{} more for the \sampleImages{} images generated, at the measured rate, \gpuHoursAll{} in all \\
 EMA               & decay 0.9999 every 10 steps; evaluation uses the raw weights \\
 Dropout           & text 0.1, structure condition 0.05 \\
 Training seeds    & main model 2026, 2027, 2028; specialists, ablations and skip only 2026 \\
@@ -325,11 +332,10 @@ $r_m{=}0.1$ throughout. This reads the saved 8-bit images, so at $r{=}0.1$ it
 gives \fixInstOneZero{} where Table~\ref{tab:main}, computed before
 quantisation, gives \scMainOneZero{}.
 
-% <<AUTHOR-INPUT A34b: 제출 시 익명 저장소 URL을 아래 문장에 넣는다(비익명 저장소 URL 금지)>>
 \paragraph{Code and data.} Code, configuration files, the per-run result files
-and the main model's checkpoints are in an anonymous repository linked from the
-supplementary material, and every number in the paper is generated by one
-script from the per-run result files.
+and the main model's checkpoints are in an anonymous repository,
+\url{https://anonymous.4open.science/w/Frequency_Adaptation-3125/}, and every
+number in the paper is generated by one script from those result files.
 
 \begin{figure*}[t]
 \centering
@@ -365,11 +371,10 @@ standard error over the 500 images), so the sweep is not monotone at its left
 end. Edge-F1 moves the same way, from \edgeMainZero{} to \edgeMainZeroFive{},
 but we have no uncertainty for that change, so it does not separate model
 behaviour from an artefact of the SC instrument.
-We read the rise as the condition at $r{=}0$ carrying too much of the
-low-frequency field: it is the whole grayscale image, and that field competes
-with the edges the adapter is asked to reproduce, so cutting a small disc out
-of it leaves the shape easier to follow rather than harder. We did not measure
-this.
+We read the rise as the $r{=}0$ condition, the whole grayscale image, carrying
+so much of the low-frequency field that it competes with the edges the adapter
+must reproduce; cutting a small disc out leaves the shape easier to follow. We
+did not measure this.
 At the right end $r{=}0.5$ and $r{=}0.7$ are not separable across seeds
 (paired $t = \tailT{}$, $df=2$, critical \tailCrit{}).
 
@@ -478,13 +483,13 @@ the cutoff $r{=}0.3$, which reads \fixInstThreeZero{} at FID
 \fidMainThreeZero{}, each scored at $r{=}0.1$: scale \swFVal{} gives
 \swFSc{} at FID \swFFid{}, and scale \swEVal{} gives \swESc{} at FID
 \swEFid{}.
-We read the cost as a train--test mismatch rather than a weaker condition. The
-adapter is only ever trained at scale 1.00, so turning it down at inference
-puts the UNet in a state it never saw, while $r$ was drawn per sample and moving
-the cutoff stays inside the training distribution. Figure~\ref{fig:strength}
-is consistent with that: at scale 0.25 both adapters still write the grayscale
-condition through their scaled skip path, weakly enough that the model does not
-complete it, and the second row comes out grey under either one. We did not measure this.
+We read the cost as a train--test mismatch rather than a weaker condition: the
+adapter is only ever trained at scale 1.00, so turning it down puts the UNet in
+a state it never saw, while $r$ was drawn per sample and moving the cutoff stays
+inside the training distribution. Figure~\ref{fig:strength} agrees: at scale
+0.25 both adapters still write the grayscale condition through their scaled
+skip path, too weakly for the model to complete it, and the second row comes
+out grey under either one. We did not measure this.
 At full strength the fixed-$r{=}0.1$ adapter reaches FID \sscFidOne{} against
 \fidMainOneZero{} for the randomised-$r$ adapter at the same cutoff.
 Figure~\ref{fig:strength} shows what the scaled settings produce for the first
@@ -606,12 +611,11 @@ out of it at $r{=}0.1$. Against the filtered condition, the same two runs score
 \oodIndFOneZero{} and \oodOodFOneZero{}, and they stay this close at every
 cutoff. Both are far above chance: scored against a different input's filtered
 condition the same generations reach \oodFloorIndOneZero{} and
-\oodFloorOodOneZero{} at $r{=}0.1$ and \oodFloorIndThreeZero{} and
-\oodFloorOodThreeZero{} at $r{=}0.3$, and no reading in either run is fewer
-than \oodFloorMinSem{} standard errors above its own floor. Condition
-following and image quality therefore come apart: on the range we claim the
-dial holds structure about as closely outside the training domain as inside it,
-while FID does not transfer.
+\oodFloorOodOneZero{} at $r{=}0.1$, and no reading in either run is fewer than
+\oodFloorMinSem{} standard errors above its own floor. Condition following and
+image quality therefore come apart: on the range we claim, the dial holds
+structure about as closely outside the training domain as inside it, while FID
+does not transfer.
 
 \subsection{Hand-drawn sketches}
 \begin{figure}[t]
@@ -652,8 +656,10 @@ what the score is measuring.}
 Figure~\ref{fig:sketch} shows the transfer. On all \sketchFaceN{} real face
 drawings of the public Hugging Face set
 \texttt{a573p/}\allowbreak\texttt{Face-Sketches40}, which its card describes as
-images of the CUHK Face Sketch database~\cite{wang2009face} and for which it
-states no licence, and which the
+images of the CUHK Face Sketch database and for which it states no licence.
+Every scan is stamped with a FERET filename, so they are from the FERET-based
+CUFSF set~\cite{wang2009face,zhang2011coupled} rather than the photographic
+subsets of CUFS. The drawings, which the
 model was never trained on, prompted with ``a high-quality photo of a face'', the
 grayscale output correlates with the input drawing at \sketchFaceSC{} and CLIP score is
 \sketchFaceClip{}. FID is not reported: \sketchFaceN{} images is too few for a
@@ -664,6 +670,12 @@ far outside the training domain and with the same face prompt, where
 that correlation falls to \sketchSceneSC{} and FID against FFHQ is
 \sketchSceneFid{}: the model follows the drawing but does not produce a face.
 It was trained on nothing else.
+
+Sketch-based face editing has divided a drawing's role before, taking geometry
+from the sketch and appearance from a reference~\cite{chen2021deepfaceediting},
+or splitting it into separately applicable sketch
+concepts~\cite{xiao2024customsketching}. The cutoff divides it by frequency and
+needs no reference image.
 
 A drawing arrives without a cutoff, but the artist can give it one: filter the
 drawing at $r$ and hand the model the result, the operation every training
@@ -731,8 +743,7 @@ two paths combine also changes with the cutoff: at $r{=}0$ their gains over the
 control roughly add up, while at $r{=}0.3$ the two together exceed that sum. We
 read this as the paths carrying the same information when the condition is
 dense and different information when it is sparse, the skip residuals placing
-local detail at each resolution and cross-attention saying where it goes, so
-that at $r{=}0.3$ neither recovers much alone. We did not measure this.
+local detail and cross-attention saying where it goes. We did not measure this.
 
 Within the attention-only design, a 128-channel stem raises SC at $r{=}0.05$
 from \scEaZeroFive{} to \scEcapZeroFive{}, and a 256-channel stem reaches
@@ -911,9 +922,10 @@ attention-only injection. The sketch results have no adapter-off control. The
 ControlNet comparison is between operating points; a ControlNet trained on our
 condition and data would be the like-for-like control, and we did not train
 one. We do not compare against a sketch-reliability control~\cite{yang2020deep}
-or against noise-level editing~\cite{meng2022sdedit}; both act on different
-inputs and would need their own protocol.
-% <<AUTHOR-CITE C1/C4: T13/T22/T23에서 채택된 경우에만 위 문장의 비교 대상에 "training-free filter guidance~\cite{C1KEY}"와 "geometry--appearance face editing~\cite{C4KEY}"를 덧붙인다. 채택하지 않았으면 이 주석 줄을 지운다>>
+or against noise-level editing~\cite{meng2022sdedit}, training-free filter
+guidance~\cite{gu2024filter} or geometry--appearance face
+editing~\cite{chen2021deepfaceediting}; they act on different inputs and would
+need their own protocol.
 
 The adapter trains \ourParams{} parameters, fewer than ControlNet and more than
 recent lightweight control modules: Simple-ControlNet~\cite{feng2025simplifying}
