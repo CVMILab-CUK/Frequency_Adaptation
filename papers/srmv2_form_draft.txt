@@ -5,12 +5,20 @@ Title (keep unchanged): A Frequency Dial for Structure-Conditioned Diffusion
 Abstract: paste abstract_srmv2.txt (T05).
 
 Authors, order, on-site presenter (fixed after 2026-09-25):
-  1. 이제영  -- first author, corresponding author, on-site presenter in Lucca,
-                and the name for the senior-author reviewer-recommendation field
-  2. 안재관  -- joint second author
-  3. 심재승  -- joint second author
+  1. Jeyoung Lee (이제영), affiliations 1 and 2
+     -- first author, corresponding author, on-site presenter in Lucca
+  2. Jaekwan Ahn (안재관), affiliation 2   -- joint second author
+  3. Jaeseung Sim (심재승), affiliation 2  -- joint second author
   (안재관 and 심재승 contributed equally as second authors.)
-  <<AUTHOR-INPUT A09b: 세 저자의 영문 표기와 소속(기관명·부서·국가). 폼은 영문 표기를 요구한다>>
+
+  1  School of Computer Science and Engineering, Soongsil University,
+     369 Sangdo-ro, Dongjak-gu, Seoul 06978, Republic of Korea
+  2  Sweetndata Inc., Seoul 06224, Republic of Korea
+
+  <<AUTHOR-INPUT A09c: senior author 리뷰어 추천 필드에 넣을 이름을 확정할 것.
+  참고: 2026-09-21에 받은 저자 블록에는 Hochul Kang(가톨릭대 디지털미디어학과)이 교신저자로,
+  공동기여 표시(dagger)가 Jeyoung Lee+Jaekwan Ahn에 붙어 있었으나, 저자 지시로 Kang을 제외하고
+  교신은 Jeyoung Lee, 공동 2저자는 안재관+심재승으로 확정했다. 세 번째 소속(가톨릭대)도 함께 뺐다>>
 
 Topics / keywords (pick the exact spellings from the SRMv2 dropdown; the list
 below is what the paper supports, ordered by weight):

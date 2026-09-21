@@ -48,20 +48,20 @@
 
 \begin{abstract}
 \noindent
-구조 조건부 확산 어댑터는 하나의 동작점에서 학습된다. Canny 엣지, 깊이 맵,
-스케치는 각각 출력이 조건을 얼마나 따를지를 고정하며, 그 균형을 옮기려면 다시
-학습하거나 추론 시 어댑터 세기를 줄여야 한다. 우리는 고주파 통과 필터를 거친 이미지
-조건으로 어댑터 하나를 학습하되 차단 반경 $r$을 샘플마다 뽑는다. 그래서 학습 중 조건의
-정보량이 달라지고, 추론 시 $r$은 다이얼이 된다. 이렇게 학습하면 출력이 구조를 얼마나
-따를지는 가중치를 고정한 채 조건이 정한다. FFHQ-512에서 어댑터 하나는 구조 순응도를
-각 출력을 자기 차단 반경으로 채점할 때 $r{=}0.05$의 \scMainZeroFive{}에서 $r{=}0.3$의
-\scMainThreeZero{}로, 계측기를 $r_m{=}0.1$로 고정하면 \fixInstZeroFive{}에서
-\fixInstThreeZero{}로 옮기며, $r \in [0.05, 0.3]$에서 FID는 \fidMainZeroFive{}와
-\fidMainOneZero{} 사이에 머문다. 대신 이 어댑터의 세기를 줄이면 낮아진 구조 순응도의
-대가를 FID로 치른다. 같은 고정 계측기로 읽으면 세기 0.50은 \fixInstHalfScale{}에
-이르고(차단 반경 $r{=}0.3$은 \fixInstThreeZero{}) 다양성은 늘지만, FID가
-\fidMainThreeZero{} 대신 \fidHalfScale{}로 오른다. $r$로 거른 손그림에서도 출력과
-그림의 상관은 $r$이 커질수록 떨어진다.
+구조 조건부 확산 어댑터는 하나의 동작점에서 학습된다. 출력이 조건을 얼마나 가깝게
+따를지는 학습 시점에 고정되고, 나중에 느슨하게 하려면 다른 체크포인트를 쓰거나 어댑터
+세기를 낮춰야 한다. 우리는 그 선택을 조건 쪽으로 옮긴다. Stable Diffusion~1.5 위의 어댑터
+하나를 회색조 이미지에 방사형 고주파 통과 필터를 걸어 학습하되, 차단 반경 $r$을 샘플마다
+뽑는다. 추론 시 $r$은 다이얼이 되며, 이미지 편집 도구가 사용자에게 주파수 대역을 고르게
+하는 것과 같은 방식이다. FFHQ-512에서 $r$을 0.05에서 0.3으로 올리면 구조 순응도(학습 seed
+세 개의 평균)가 \seedMeanZeroFive{}에서 \seedMeanThreeZero{}로 낮아지고 FID는
+\fidMainZeroFive{}와 \fidMainOneZero{} 사이에 머문다. 우리 샘플에서는 얼굴 배치가
+유지되는 동안 배경·의복·색이 참조에서 멀어진다. 대신 어댑터 세기를 낮추면 느슨해진 구조의
+대가를 FID로 치른다. 세기 0.50에서 구조는 같은 고정 계측기 기준 $r{=}0.3$보다 느슨하고
+FID는 \fidMainThreeZero{} 대신 \fidHalfScale{}이다. $r{=}0.1$에서는 그 차단 반경만으로
+학습한 어댑터가 구조를 더 가깝게 따른다. UNet의 skip 텐서로 주입하는 경로가 구조의 대부분을
+나르며, 화가는 손그림에 같은 필터를 걸 수 있다. 그때도 출력과 그림의 상관은 $r$이 커질수록
+떨어진다.
 \end{abstract}
 
 \section{서론}
@@ -83,31 +83,31 @@
 $r{=}1$에서는 거의 남지 않는다. FFHQ 테스트 이미지 \energyN{}장에서 재면 차단 반경
 $0.05$만으로도 상수항을 제외한 스펙트럼 에너지의 \acRemovedZeroFive\,\%가 사라진다.
 학습은 $r$을 샘플마다 뽑으므로 가중치 하나가 전 구간을 보고, $r$은 추론 시 파라미터가
-된다. 이렇게 학습하면 출력이 구조를 얼마나 따를지는 가중치를 고정한 채 조건이 정하며,
-어댑터 세기를 줄이는 것은 다른 제어로 드러난다(\ref{sec:strength}절).
+된다. seed를 고정한 채 $r$을 올리면 얼굴 배치는 그대로 두고 배경 디테일이 얇아지며
+의복과 색이 참조에서 멀어진다(그림~\ref{fig:dial}). 어댑터 세기를 낮추는 것은 다른
+제어다. 세기가 낮아지면 자세와 구도가 바뀌고 FID가 오른다(\ref{sec:strength}절).
 
 기여는 다음과 같다.
 
 \begin{itemize}\itemsep2pt
-\item 제어 다이얼. 어댑터 하나가 $r \in [0.05, 0.3]$에서 구조 순응도
-      \scMainZeroFive{}부터 \scMainThreeZero{}까지를 담당하며 FID는
-      \fidMainZeroFive{}와 \fidMainOneZero{} 사이다(\ref{sec:dial}절).
-\item 다이얼과 어댑터 세기는 FID에서 갈린다. 둘 다 $r_m{=}0.1$ 고정 계측기로 읽으면
-      세기 0.50은 구조 순응도를 \fixInstHalfScale{}로 낮추고 다양성은 늘지만 FID가
-      \fidHalfScale{}이고, 차단 반경 $r{=}0.3$은 FID \fidMainThreeZero{}에서
-      \fixInstThreeZero{}에 이른다(\ref{sec:strength}, \ref{sec:fixedinst}절).
-\item 두 설계 선택의 근거가 된 측정(\ref{sec:design}절). 동결 VAE의 인코딩--디코딩
-      왕복은 $r{=}0.3$에서 고주파 조건과의 상관 \vaeNativeThreeZero{}를 남긴다
-      (\ref{sec:vae}절). SD1.5에서 skip 경로만 \paramsSkipOnly{}개 파라미터로 학습하면
-      $r{=}0.1$에서 구조 순응도 \skipOnlyOneZero{}에 이르고, 파라미터
-      \paramsCapb{}개의 어텐션 단독 설계는 \scEcapbOneZero{}에 그친다
-      (\ref{sec:where}, \ref{sec:skiponly}절).
+\item 조건 위의 주파수 다이얼. 학습 중 고주파 차단 반경을 무작위로 뽑으면 어댑터
+      하나가 $r \in [0.05, 0.3]$에서 구조 순응도를 추론 시에 조절할 수 있게 되고 FID는
+      한 대역에 머문다(\ref{sec:dial}절). $r{=}0.1$에서는 차단 반경별 특화 모델에
+      뒤지고 $r{=}0.3$에서는 앞선다(\ref{sec:spec}절).
+\item 다이얼은 어댑터 세기가 아니다. 하나의 고정 계측기로 보면, 차단 반경이 내는
+      구조 순응도 근처의 세기 설정들은 더 높은 FID에 놓이고 자세와 구도를 바꾼다
+      (\ref{sec:strength}, \ref{sec:fixedinst}절).
+\item 조건이 UNet의 어디로 들어가야 하는가(\ref{sec:design}절). SD1.5에서 skip 텐서
+      경로가 교차 어텐션만으로는 나르지 못하는 구조의 대부분을 나르며
+      (\ref{sec:where}, \ref{sec:skiponly}절), 어텐션 단독 주입에서는 합성곱 인코더가
+      동결 VAE보다 조건을 잘 읽는다(표~\ref{tab:where}).
 \end{itemize}
 
 \section{관련 연구}
 
 \paragraph{조건부 제어.} 텍스트-이미지 확산 모델
-\cite{ho2020denoising,song2020denoising,rombach2021high,nichol2021glide,saharia2022photorealistic}은
+\cite{ho2020denoising,song2020denoising,rombach2021high,nichol2021glide,saharia2022photorealistic}은,
+Po 등~\cite{po2024state}이 비주얼 컴퓨팅 관점에서 정리했듯,
 ControlNet~\cite{zhang2023adding}으로 공간 제어가 가능해졌다. 작은 합성곱 네트워크로 조건
 이미지를 읽고, 인코더를 복제하며, 0 합성곱으로 잔차를 주입한다.
 T2I-Adapter~\cite{mou2023adapter}는 작은 특징 추출기로 같은 일을 하고,
@@ -149,11 +149,14 @@ skip 잔차가 교차 어텐션보다 더 많은 구조를 나른다.
 주파수 대역을 스케일하며, DeCo~\cite{ma2025deco}는 픽셀 공간 확산에서 주파수를 분리하고,
 FeRA~\cite{yin2025fera}는 주파수 에너지로 적응을 라우팅한다. FOCUS~\cite{tjio2025focus}는
 테스트 시 적응을 위해 학습된 주파수 사전으로 역과정을 조건화한다. 제어 대상의 선택에서
-가장 가까운 것은 주파수 대역을 이미지-이미지 유도의 손잡이로 쓰는 연구다.
+가장 가까운 것은 주파수 대역을 이미지-이미지 유도의 제어로 쓰는 연구다.
 FCDiffusion~\cite{gao2024frequency}은 소스 특징의 DCT 대역을 뽑아 주파수 제어 분기를
 바꿔 가며 쓰고, FBSDiff~\cite{gao2024fbsdiff}는 학습 없이 대체 대역의 대역폭으로 참조의
 유도 강도를 정하며, ILVR~\cite{choi2021ilvr}은 추가 학습 없이 선택한 다운샘플링 배율에서
-참조로 사전학습 DDPM을 조건화한다. \citet{prasain2026beyond}는 지도-위성 합성에서 엣지 맵
+참조로 사전학습 DDPM을 조건화한다. 필터 유도 확산~\cite{gu2024filter}은 추론 시
+디노이즈 추정값에 공간 필터를 걸고 그 스케일과 유도 강도를 학습 없이 별개의 제어로
+노출한다. 우리의 대역은 그와 달리 어댑터가 읽도록 학습되는 대상의 일부다.
+\citet{prasain2026beyond}는 지도-위성 합성에서 엣지 맵
 대신 웨이블릿 대역으로 조건화한다. 그러나 어느 연구도 학습 중 조건의
 \textbf{대역폭}을 무작위화해 그 대역이 추론 시 제어가 되게 하지는 않는다. 조건 파라미터를
 학습 중 무작위화하고 추론 시 노출하는 것 자체는 새롭지 않다. SDXL~\cite{podell2023sdxl}은
@@ -169,18 +172,15 @@ Imagen~\cite{saharia2022photorealistic}은 저해상도 조건의 증강 수준�
 충실도 수준을 사용자가 정하게 한다~\cite{cheng2023adaptively}. 사전학습 확산 모델에서는 전용
 인코더 대신 작은 잠재 유도 예측기로 추론 시 스케치 유도를 걸 수 있고~\cite{voynov2023sketch},
 디노이징 전에 더하는 노이즈가 학습 없이 입력 충실도와 사실성의 균형을
-잡는다~\cite{meng2022sdedit}. 확장된 가우시안 차 연산 하나로 사진을 연필 음영부터 해칭,
-목판화까지의 그림 스타일로 렌더링하기도 한다~\cite{winnemoller2012xdog}. 우리 제어는 바꾸는
-대상이 다르다. 주파수 차단 반경이 정하는 조건의 정보량을, 세기와 따로 반응을 측정하는 어댑터
+잡는다~\cite{meng2022sdedit}. XDoG~\cite{winnemoller2012xdog}는 필터 한 족의
+파라미터를 바꿔 사진을 연필 음영에서 해칭, 목판화로 옮긴다. 우리의 차단 반경도 같은 종류의
+필터 파라미터이며, 조건 위에 설정되고 나머지는 생성 사전분포가 채우도록 남긴다. 우리 제어는
+바꾸는 대상이 다르다. 주파수 차단 반경이 정하는 조건의 정보량을, 세기와 따로 반응을 측정하는 어댑터
 하나에서 바꾼다. 조건이 고정된 추출기가 아니라 연속체이므로 어댑터 하나가 그것을 다이얼로
-노출할 수 있다. StructDiff~\cite{he2026structdiff}는 구조를 보존하는 공간 제어형 단일 이미지
-생성을 목표로 하고, 스케치 조건 파이프라인은 오래전부터 엣지 맵을 구조 전달자로 써 왔다.
-
-\paragraph{학습과 평가.} 분류자 없는 유도~\cite{ho2022classifier} 드롭아웃과 Min-SNR
-손실 가중~\cite{hang2023efficient}으로 학습하고, FID~\cite{heusel2017gans}를 clean-FID
-프로토콜~\cite{parmar2021aliased}로, LPIPS~\cite{zhang2018unreasonable}와 CLIP
-점수~\cite{radford2021learning}를 BLIP~\cite{li2022blip} 캡션이 달린
-FFHQ~\cite{karras2018style}에서 평가한다.
+노출할 수 있다. StructDiff~\cite{he2026structdiff}는 구조를 보존하는 공간 제어형 단일
+이미지 생성을 목표로 하며, 소스 이미지 한 장의 내부 통계 안에서 샘플을 다양화하면서 그
+배치를 유지한다. 우리는 그 대신 외부 조건을 쥐고, 차단 반경이 그중 얼마를 출력이 재현해야
+하는지를 정한다.
 
 \section{방법}
 
@@ -188,7 +188,14 @@ FFHQ~\cite{karras2018style}에서 평가한다.
 $r \cdot \min(H,W)/2$ 원판 안의 모든 주파수를 0으로 만들고 역변환한 다음 $[0,1]$로
 최소--최대 정규화한다. 정규화는 의도적이다. 필터 응답의 절대 크기를 없애 모델이 공간
 통계만으로 구조 밀도를 추론하게 만든다. $r$을 갖지 않는 손그림을 추론 시 쓸 수 있는
-이유가 여기에 있다고 가정한다. 그림~\ref{fig:mask}는 차단 반경별 마스크, 스펙트럼, 조건을
+이유가 여기에 있다고 가정한다. 필터를 고주파 통과로 둔 것은 형태만 남기고 나머지를 사전
+분포에 넘기려는 것이다. 엣지와 질감은 고대역에, 톤과 색은 저대역에 있으며 이는 두 스케일
+톤·디테일 편집~\cite{bae2006two,farbman2008edge}이 다루는 구분이다. 저주파 통과나 대역 통과
+조건이라면 우리가 모델에게 만들어내라고 맡기려는 부분을 오히려 넘겨주게 된다. 우리가 더하는
+것은 그 경계가 고정된 추출기가 아니라 파라미터라는 점이다. 마스크를 부드러운 감쇠가 아니라
+이상적 원판으로 둔 것은 $r$이 어떤 주파수가 사라졌는지를 정확히 지칭하게 하기 위해서이며,
+대가는 그림~\ref{fig:mask}의 조건에 보이는 링잉이다. 모델은 그 링잉을 포함해 학습되며 우리는
+이를 따로 측정하지 않았다. 그림~\ref{fig:mask}는 차단 반경별 마스크, 스펙트럼, 조건을
 보여준다.
 
 \input{fig_mask_ko}
@@ -218,11 +225,18 @@ softmax가 한 위치에 대해서만 계산되어 이 지점이 게이트 달�
 70,000장을 시드 2026으로 섞어 학습 \nTrain{} / 검증 \nValid{} / 테스트 \nTest{}로
 나눈다(테스트 5\%, 검증 2\%). AdamW, 학습률 $10^{-4}$, $\beta=(0.9,0.999)$, 500스텝 웜업의
 코사인 스케줄, 기울기 클리핑 1.0, 배치 32, bf16, H200 한 장에서 12에폭. 손실은 $\epsilon$
-예측에 Min-SNR 가중~\cite{hang2023efficient} $\gamma=5$를 적용한다. 텍스트 조건은 확률
-0.1로, 구조 조건은 독립적으로 확률 0.05로 드롭한다. AdamW의 가중치 감쇠는 PyTorch 기본값
-0.01이다. 어댑터의 EMA(감쇠 0.9999)를 10스텝 간격으로 유지하되 평가에는 원래 가중치를 쓴다.
-$r$은 샘플마다 $[0,1]$ 균등분포에서 뽑지만 다이얼은 $r \in [0.05, 0.3]$에서만 주장한다.
-나머지 설정은 부록~\ref{sec:repro}에 있다.
+예측에 Min-SNR 가중~\cite{hang2023efficient} $\gamma=5$를 적용한다. 텍스트 조건은 분류자
+없는 유도~\cite{ho2022classifier}를 위해 확률 0.1로, 구조 조건은 독립적으로 확률 0.05로
+드롭한다. 조건을 회색조로 둔 것은 필터가 한 채널만 읽어 차단 반경의 의미가 모든 이미지에서
+같아지도록 하기 위해서이며, 색은 사전분포에 남긴다. 표~\ref{tab:abl}은 그 선택의 대조군으로
+컬러 조건 행을, 구조 조건 드롭아웃 0.05의 대조군으로 드롭아웃 없는 행을 둔다. 학습은
+12에폭에서 멈추는데, 그 지점에서 검증 곡선이 평평해진다. AdamW의 가중치 감쇠는 PyTorch
+기본값 0.01이다. 어댑터의 EMA(감쇠 0.9999)를 10스텝 간격으로 유지하되 평가에는 원래
+가중치를 쓴다. $r$은 샘플마다 $[0,1]$ 균등분포에서 뽑으므로 어댑터 하나가 전 구간을 본다.
+결과를 $r \in [0.05, 0.3]$에서 보고하는 것은 그 구간이 제어가 쓸 만한 곳이기 때문이다.
+왼쪽 끝에서는 sweep이 단조가 아니고 오른쪽 끝에서는 seed 간에 구분되지 않는다
+(\ref{sec:dial}절). 더 좁은 학습 구간은 시도하지 않았다. 나머지 설정은
+부록~\ref{sec:repro}에 있다.
 
 \section{실험}
 
@@ -231,8 +245,8 @@ $r$은 샘플마다 $[0,1]$ 균등분포에서 뽑지만 다이얼은 $r \in [0.
 
 보류한 \nTest{}장 중 500장에서 DDIM 샘플러 50스텝, CFG 7.5, 시드 2026으로 평가한다.
 
-\paragraph{구조 순응도.} SC는 생성 이미지를 회색조로 바꾸고, 모델에 준 것과
-\textbf{같은} 차단 반경으로 \textbf{같은} 고주파 필터를 적용한 뒤, 주어진 조건과의 Pearson
+\paragraph{구조 순응도.} SC는 생성 이미지를 회색조로 바꾸고, 모델에 준 것과 같은 차단
+반경으로 같은 고주파 필터를 적용한 뒤, 주어진 조건과의 Pearson
 상관을 편 픽셀 벡터에 대해 이미지별로 계산해 평균한다. 두 신호 모두 이미지별 최소--최대
 정규화된 필터 출력이므로 상관은 스케일에 무관하다. 두 앵커가 범위를 묶는다. 정답 이미지를
 그대로 넣으면 모든 $r$에서 정확히 1.000이고, 생성물을 다른 테스트 이미지의 조건과 비교하면
@@ -254,7 +268,7 @@ LPIPS(AlexNet)다. 높을수록 조건이 덜 구속한다. 아래에서 정의�
 
 \paragraph{FID, LPIPS, CLIP.} clean-FID~\cite{heusel2017gans,parmar2021aliased}(clean
 모드, 512픽셀)를 생성 500장과 같은 참조 500장 사이에서 잰다. LPIPS 열은 각 생성물과 자기
-참조 사이의 AlexNet LPIPS를 이미지 평균한 값이다. CLIP 점수는
+참조 사이의 AlexNet LPIPS~\cite{zhang2018unreasonable}를 이미지 평균한 값이다. CLIP 점수는
 ViT-B/32~\cite{radford2021learning}로 이미지와 자기 캡션을 임베딩한 코사인 유사도의
 100배다.
 
@@ -273,15 +287,20 @@ ViT-B/32~\cite{radford2021learning}로 이미지와 자기 캡션을 임베딩�
     at ($(d.north west)!{(\i*390+192)/3504}!(d.north east)$) {\lab};
 \draw[black!60, line width=0.4pt]
   ($(d.north west)!{(6*390)/3504}!(d.north east)+(0,4mm)$) -- ($(d.north east)+(0,4mm)$)
-  node[font=\scriptsize, anchor=south east, inner sep=1pt] {주장하는 구간 밖};
+  node[font=\scriptsize, anchor=south east, inner sep=1pt] {$r > 0.3$};
 \end{tikzpicture}
-\caption{행마다 시드와 캡션을 하나로 고정하고 $r$만 바꿨다. 행은 테스트 이미지의 처음 세
-장을 생성 순서대로 실은 것이다. $r$이 커질수록 배경의 세부가 옅어지고 옷과 색이 참조에서
-멀어지지만 얼굴 배치는 유지된다. $r{=}1$에서는 둘째 행의 자세도 바뀐다. 참조 이미지는
-모델에 주어지지 않는다. $r{=}0.3$보다 큰 열은 주장하는 구간 밖이며, $r{=}1$에서는 첫 행에
-색 인공물이 나타난다.}
+\caption{주 모델(학습 시드 2026)을 샘플링 시드 2026과 각 참조의 BLIP 캡션으로 돌린
+것이며, 한 행 안에서는 $r$만 바뀐다. 행은 테스트 이미지의 처음 세 장을 생성 순서대로 실은
+것이고, 타일은 표~\ref{tab:main}에서 채점된 바로 그 저장된 생성물이다. 참조 이미지는 모델에
+주어지지 않는다. $r$이 커질수록 배경의 세부가 옅어지고 옷과 색이 참조에서 멀어지지만 얼굴
+배치는 유지되며, $r{=}1$에서는 첫 행에 색 인공물이 나타난다.
+모든 출력은 이 논문이 다루는 모델이 생성한 것이다.}
 \label{fig:dial}
 \end{figure*}
+
+\paragraph{코드와 데이터.} 코드, 설정 파일, 실행별 결과 파일, 주 모델의 체크포인트는 익명
+저장소 \url{https://anonymous.4open.science/w/Frequency_Adaptation-3125/}에 있으며, 논문의
+모든 수치는 그 결과 파일에서 스크립트 하나로 생성된다.
 
 \subsection{다이얼}
 \label{sec:dial}
@@ -290,10 +309,12 @@ ViT-B/32~\cite{radford2021learning}로 이미지와 자기 캡션을 임베딩�
 감소하는 동안 FID는 \fidMainZeroFive{}와 \fidMainOneZero{} 사이에 머물고, 표본 다양성은
 함께 오른다. $r{=}0$에서 $r{=}0.05$로 갈 때 구조 순응도는 \riseDelta{}만큼
 \textbf{상승}하며($z = \riseZ{}$, 500장에 대한 비대응 표준오차) 스윕은 왼쪽 끝에서 단조가
-아니다. 같은 상승이 Edge-F1에서도 나타나므로(\edgeMainZero{} → \edgeMainZeroFive{}) SC
-계측기의 인공물이 아니라 모델 거동이다. 오른쪽 끝에서는 $r{=}0.5$와 $r{=}0.7$이 시드 간에
-구별되지 않는다(대응 $t = \tailT{}$, $df=2$, 임계 \tailCrit{}). FID는 전 구간에서
-\fidMainZero{}과 \fidMainOneHundred{} 사이에 머문다.
+아니다. Edge-F1도 같은 방향으로 움직이지만(\edgeMainZero{} → \edgeMainZeroFive{}) 그
+변화에는 불확실도가 없어서, 모델 거동인지 SC 계측기의 인공물인지를 가르지 못한다. 우리는 이
+상승을 $r{=}0$의 조건, 곧 회색조 이미지 전체가 저주파 성분을 너무 많이 담아 어댑터가
+재현해야 할 엣지와 경합하기 때문으로 읽는다. 작은 원판을 도려내면 형태를 따라가기가 오히려
+쉬워진다. 이는 측정한 것이 아니다. 오른쪽 끝에서는 $r{=}0.5$와 $r{=}0.7$이 시드 간에
+구별되지 않는다(대응 $t = \tailT{}$, $df=2$, 임계 \tailCrit{}).
 
 그림~\ref{fig:dial}은 시드와 캡션을 고정하고 $r$만 바꾼 것이다. 캡션이 참조에서
 유도되므로 구조의 일부를 캡션이 나르고 있을 수 있다. 그래서 모든 이미지에 일반 캡션
@@ -318,14 +339,15 @@ $r$ & SC $\pm$ SEM & 시드 sd & Edge-F1 & 다양성 & FID \\
 0.20 & \scMainTwoZero\,$\pm$\,\semMainTwoZero     & \sSdTwoZero    & \edgeMainTwoZero   & \divMainTwoZero   & \fidMainTwoZero \\
 0.30 & \scMainThreeZero\,$\pm$\,\semMainThreeZero & \sSdThreeZero  & \edgeMainThreeZero & \divMainThreeZero & \fidMainThreeZero \\
 \midrule
-\multicolumn{6}{l}{\bfseries 주장하는 구간 밖} \\
+\multicolumn{6}{l}{\itshape $r > 0.3$} \\
 0.50 & \scMainFiveZero\,$\pm$\,\semMainFiveZero   & \sSdFiveZero   & \edgeMainFiveZero  & \divMainFiveZero  & \fidMainFiveZero \\
 0.70 & \scMainSevenZero\,$\pm$\,\semMainSevenZero & \sSdSevenZero  & \edgeMainSevenZero & \divMainSevenZero & \fidMainSevenZero \\
 1.00 & \scMainOneHundred\,$\pm$\,\semMainOneHundred & \sSdOneHundred & \edgeMainOneHundred & \divMainOneHundred & \fidMainOneHundred \\
 \bottomrule
 \end{tabular}
-\caption{동작 곡선. 테스트 \nTest{}장 중 500장. SEM은 그 500장에 대한 값이고, 시드 sd는
-학습 시드 3개에 대한 값이다. Edge-F1은 같은 실행을 차단 반경과 무관하게 읽은 것이며,
+\caption{동작 곡선. 테스트 \nTest{}장 중 500장. 시드 sd를 뺀 모든 열은 학습 시드 2026에서
+나온 값이고, 시드 sd는 학습 시드 2026--2028에 대한 표준편차이며, SEM은 그 500장에 대한
+값이다. Edge-F1은 같은 실행을 차단 반경과 무관하게 읽은 것이며,
 SC가 모델에 준 것과 같은 차단 반경으로 재추출하기 때문에 함께 싣는다(\ref{sec:metrics}절).
 FID는 칸마다 추정값이 하나뿐이고 분산이 없으므로 행 간의 작은 차이를 효과로 읽지 않는다.}
 \label{tab:main}
@@ -337,15 +359,14 @@ FID는 칸마다 추정값이 하나뿐이고 분산이 없으므로 행 간의 
 
 \ref{sec:fixedinst}절의 고정 계측기로 다시 채점해도 곡선은 내려간다. $r{=}0.05$에서
 \fixInstZeroFive{}, $r{=}0.1$에서 \fixInstOneZero{}, $r{=}0.3$에서 \fixInstThreeZero{}다.
-계측기를 고정하면 당연히 범위가 압축되지만 하락은 남으므로, 하락은 지표가 아니라 생성물에서
-온다.
+계측기를 고정하면 당연히 범위가 압축되지만 하락은 남는다.
 
 \subsection{대안 손잡이로서의 어댑터 세기}
 \label{sec:strength}
 당연한 대안은 하나의 차단 반경으로 학습하고 추론 시 어댑터 기여를 줄이는 것으로, 경량
 제어 모듈이 제공하는 손잡이이기도 하다~\cite{feng2025simplifying}. 고정 $r{=}0.1$로 학습한
 어댑터(\ref{sec:spec}절)에서 두 주입 경로를 함께 스케일해 이를 수행했고, 확인용으로
-무작위-$r$ 모델도 같은 차단 반경에서 스케일했다(표~\ref{tab:strength}; 표~\ref{tab:strengthfull}은
+무작위-$r$ 어댑터도 같은 차단 반경에서 스케일했다(표~\ref{tab:strength}; 표~\ref{tab:strengthfull}은
 더 촘촘한 스윕).
 
 \begin{table}[t]\centering\small
@@ -377,9 +398,7 @@ $r{=}0.3$  & \fixInstThreeZero & \divMainThreeZero & \fidMainThreeZero \\
 \end{tabular}
 \caption{세기와 차단 반경. 스케일한 행은 모두 $r{=}0.1$에서 생성하고 채점했으므로 이미
 계측기 $r_m{=}0.1$을 쓴다. 차단 반경을 옮긴 행은 각자의 차단 반경으로 채점했고, 마지막
-블록은 같은 생성물을 $r_m{=}0.1$로 다시 채점한 것이다(\ref{sec:fixedinst}절). 그 한 계측기로
-보면 무작위-$r$ 어댑터의 세기 0.50은 FID \fidHalfScale{}에서 \fixInstHalfScale{}에, 차단
-반경 $r{=}0.3$은 FID \fidMainThreeZero{}에서 \fixInstThreeZero{}에 이른다. 고정-$r$
+블록은 같은 생성물을 $r_m{=}0.1$로 다시 채점한 것이다(\ref{sec:fixedinst}절). 고정-$r$
 어댑터의 세기 1.00은 \ref{sec:spec}절 특화 모델을 따로 추론한 것이다(거기서는
 \specOneZero{}).}
 \label{tab:strength}
@@ -388,11 +407,20 @@ $r{=}0.3$  & \fixInstThreeZero & \divMainThreeZero & \fidMainThreeZero \\
 두 스케일 곡선 모두 줄일수록 FFHQ 이미지 분포를 벗어난다. 세기 0.25에서 고정-$r$
 어댑터는 FID \sscFidQuarter{}, 다양성 \sscDivQuarter{}에 이르는데, 차단 반경은 전 구간에서
 FID가 \fidMainZero{}--\fidMainOneHundred{}에 머물고 다양성은 최대 \divMainOneHundred{}다.
-어댑터를 줄이면 FID가 오르면서 구조가 사라지고(세기 0.50에서 \fidHalfScale{}), 조건의
-대역을 좁히면 주장하는 구간에서 FID가 \fidMainZeroFive{}와 \fidMainOneZero{} 사이에 머문
-채 구조가 사라진다. 전체 세기에서 고정 $r{=}0.1$ 어댑터의 FID는 \sscFidOne{}로, 같은 차단
-반경의 무작위 모델 \fidMainOneZero{}보다 낮다. 그림~\ref{fig:strength}는 스케일 설정이
-처음 두 테스트 이미지에서 무엇을 만드는지 보여준다.
+무작위-$r$ 어댑터를 줄이면 FID가 오르면서 구조가 사라진다(세기 0.50에서 \fidHalfScale{},
+고정-$r$ 어댑터는 \sscFidHalf{}). 표~\ref{tab:strengthfull}의 촘촘한 스윕은 차단 반경
+$r{=}0.3$을 양쪽에서 감싼다. 그 차단 반경은 FID \fidMainThreeZero{}에서
+\fixInstThreeZero{}를 내며, 모두 $r{=}0.1$에서 채점한 값이다. 세기 \swFVal{}은 FID
+\swFFid{}에서 \swFSc{}를, 세기 \swEVal{}은 FID \swEFid{}에서 \swESc{}를 낸다.
+우리는 이 대가를 조건이 약해진 탓이 아니라 학습--추론 불일치로 읽는다. 어댑터는 오직 세기
+1.00에서만 학습되므로 추론 시 이를 낮추면 UNet이 한 번도 본 적 없는 상태에 놓이는 반면,
+$r$은 샘플마다 뽑혔으므로 차단 반경을 옮기는 것은 학습 분포 안에 머문다.
+그림~\ref{fig:strength}도 이와 맞는다. 세기 0.25에서 두 어댑터 모두 스케일된 skip 경로로
+회색조 조건을 여전히 써 넣지만 모델이 그것을 완성하기에는 너무 약해서, 어느 쪽에서든 둘째
+행이 회색으로 나온다. 이는 측정한 것이 아니다.
+전체 세기에서 고정 $r{=}0.1$ 어댑터의 FID는 \sscFidOne{}로, 같은 차단 반경의 무작위-$r$
+어댑터 \fidMainOneZero{}보다 낮다. 그림~\ref{fig:strength}는 스케일 설정이 처음 두 테스트
+이미지에서 무엇을 만드는지 보여준다.
 
 \begin{figure*}[t]
 \centering
@@ -401,59 +429,80 @@ FID가 \fidMainZero{}--\fidMainOneHundred{}에 머물고 다양성은 최대 \di
 \foreach \lab [count=\i from 0] in {참조, 1.00, 0.75, 0.50, 0.25, 0.50, 0.25, $r{=}0.1$, $r{=}0.3$}
   \node[font=\scriptsize, anchor=south, inner sep=1.5pt]
     at ($(s.north west)!{(\i*256+128)/2304}!(s.north east)$) {\lab};
-\foreach \a/\b/\lab in {1/5/{고정-$r{=}0.1$ 어댑터, 스케일}, 5/7/{무작위-$r$, $r{=}0.1$에서 스케일}, 7/9/{무작위-$r$, 차단 반경 이동}}
+\foreach \a/\b/\lab in {1/5/{고정-$r{=}0.1$ 어댑터, 스케일}, 5/7/{무작위-$r$, $r{=}0.1$에서 스케일}, 7/9/{무작위-$r$, 전체 세기}}
   \draw[black!60, line width=0.4pt]
     ($(s.north west)!{(\a*256+12)/2304}!(s.north east)+(0,4mm)$) --
     ($(s.north west)!{(\b*256-12)/2304}!(s.north east)+(0,4mm)$)
     node[midway, font=\scriptsize, anchor=south, inner sep=1pt] {\lab};
 \end{tikzpicture}
-\caption{처음 두 테스트 이미지에 대한 어댑터 세기와 차단 반경. 행마다 시드와 캡션은 하나이며
-표~\ref{tab:strength}의 실행에서 가져왔다. 세기 0.75의 고정-$r$ 어댑터는 여전히 참조를
-따른다. 어느 어댑터든 세기를 0.50으로 낮추면 배경과 색이 바뀌고 둘째 행은 자세도 바뀐다.
-0.25에서는 두 행 모두 자세와 구도가 바뀌고 둘째 행은 회색조가 된다. 차단 반경을
-$r{=}0.3$으로 옮기면 참조의 배치가 유지된다.}
+\caption{처음 두 테스트 이미지에 대한 어댑터 세기와 차단 반경. 샘플링 시드 2026과 BLIP
+캡션을 전체에 걸쳐 고정했다. 2--5열은 고정-$r{=}0.1$ 특화 모델을 세기 1.00에서 0.25까지
+스케일한 것이다(표~\ref{tab:strength}). 6--7열은 무작위-$r$ 어댑터를 $r{=}0.1$에서 0.50과
+0.25로 스케일한 것이다. 8--9열은 같은 어댑터를 전체 세기로 $r{=}0.1$(표~\ref{tab:main})과
+$r{=}0.3$에서 돌린 것으로, 그림~\ref{fig:dial}과 같은 생성물이다. 세기 0.75의 고정-$r$
+어댑터는 여전히 참조를 따른다. 어느 어댑터든 세기를 0.50으로 낮추면 배경과 색이 바뀌고 둘째
+행은 자세도 바뀐다. 0.25에서는 두 행 모두 자세와 구도가 바뀌고 둘째 행은 회색조가 된다.
+차단 반경을 $r{=}0.3$으로 옮기면 참조의 배치가 유지된다.
+모든 출력은 이 논문이 다루는 모델이 생성한 것이다.}
 \label{fig:strength}
 \end{figure*}
 
 \subsection{차단 반경별 특화 모델과의 비교}
 \label{sec:spec}
 
-고정 $r$로 어댑터 네 개를 학습해 각자의 차단 반경에서 무작위-$r$ 모델 하나와 비교했다.
-하나의 모델은 세 번 학습했으므로 각 격차를 실행 내 표준오차가 아니라 그 모델의 시드 3개
-표준편차로 나누고, 보수적인 규칙으로 그 비가 $df=2$의 양측 $t$ 임계값(\tailCrit{})보다
-작으면 구별되지 않는다고 본다. 결과는 엇갈린다. $r{=}0.1$에서는 특화 모델이 이기고
+고정 $r$로 어댑터 네 개를 한 번씩 학습해, 세 번 학습한 무작위-$r$ 어댑터와 각자의 차단
+반경에서 비교했다. 각 격차를 무작위-$r$ 어댑터의 시드 3개 표준편차로 나누고, 그 비가 $df=2$의
+양측 $t$ 임계값(\tailCrit{})보다 작으면 구별되지 않는다고 본다. 특화 모델은 각각 한 번의
+실행이므로 이 기준은 새 실행에 대한 예측구간보다 느슨하다. 결과는 엇갈린다. $r{=}0.1$에서는 특화 모델이 이기고
 (\specOneZero{} 대 \sMeanOneZero{}, $\Delta{=}\specDOneZero{}$, $\specROneZero{}$ sd),
-$r{=}0.3$에서는 하나의 모델이 이긴다(\sMeanThreeZero{} 대 \specThreeZero{},
+$r{=}0.3$에서는 무작위-$r$ 어댑터가 이긴다(\sMeanThreeZero{} 대 \specThreeZero{},
 $\specDThreeZero{}$, $\specRThreeZero{}$ sd). $r{=}0.5$($\specRFiveZero{}$ sd)와
 $r{=}0.7$($\specRSevenZero{}$ sd)은 구별되지 않는다(표~\ref{tab:specfull}).
 
-모델 하나가 넷을 압도하지는 않는다. 대신 특화 모델이 줄 수 없는 다이얼을 준다.
-$r{=}0.1$로 학습한 모델은 $r{=}0.3$을 본 적이 없으므로 그 곡선은 점 하나다.
+모델 하나가 넷을 압도하지는 않는다. $r{=}0.1$로 학습한 특화 모델은 $r{=}0.3$을 본 적이
+없으므로, $r$ 축 위에서는 동작점 하나만 제공하는 반면 무작위-$r$ 어댑터는 구간을 제공한다.
 
 \subsection{베이스라인}
 
-같은 테스트 이미지와 캡션에서 사전학습 ControlNet~\cite{zhang2023adding}과 비교했다. 모든
-베이스라인에 Canny 엣지(임계 100, 200)를 조건 스케일 1.0으로 주고, 파이프라인 기본 PNDM
-샘플러, 50스텝, CFG 7.5, 시드 2026을 썼다. ControlNet-Canny는 Edge-F1 \baseCannyEdge{},
-LPIPS \baseCannyLpips{}, FID \baseCannyFid{}이고 학습 파라미터는 \baseParams{}개다.
-ControlNet-HED 체크포인트는 HED 경계가 아니라 같은 Canny 엣지를 받았고
-\baseHedEdge{} / \baseHedLpips{} / \baseHedFid{}에 이른다. $r{=}0.1$에서 우리 어댑터는
-Edge-F1 \edgeMainOneZero{}, LPIPS \lpipsMainOneZero{}, FID \fidMainOneZero{}를
-\ourParams{}개 파라미터로 낸다. 두 가지 비대칭 때문에 이는 동일 조건 비교가 아니라 동작점
-비교다. 조건이 다르고(Canny 엣지 대 주파수 대역), 우리 어댑터는 FFHQ \nTrain{}장으로 학습한
-반면 ControlNet은 여기서 제로샷이며 FID도 FFHQ 통계 대비다. 텍스트 정합에서는
-ControlNet-Canny의 CLIP \baseCannyClip{}가 우리의 전 구간 최고값 \clipMainOneHundred{}보다
-높다(ControlNet-HED는 \baseHedClip{}). 복제 인코더가 아니라 \baseTParams{}개 파라미터의
-곁가지 네트워크라 우리 설계에 더 가까운 T2I-Adapter-Canny~\cite{mou2023adapter}는 같은
-프로토콜에서 Edge-F1 \baseTEdge{}, LPIPS \baseTLpips{}, FID \baseTFid{}, CLIP
-\baseTClip{}이다. 스케치 체크포인트는 PiDiNet 스케치를 입력으로 기대하므로 제외했다. Canny
-엣지를 넣으면 방법이 아니라 그 불일치를 재게 된다.
+같은 테스트 이미지와 캡션에서 사전학습 ControlNet~\cite{zhang2023adding}과
+T2I-Adapter-Canny~\cite{mou2023adapter}에 비교했다. 모든 베이스라인에 Canny 엣지(임계 100,
+200)를 조건 스케일 1.0으로 주고, 파이프라인 기본 PNDM 샘플러, 50스텝, CFG 7.5, 시드 2026을
+썼다. 표~\ref{tab:baselines}가 이를 DDIM으로 샘플링하는 $r{=}0.1$의 우리 어댑터와 나란히
+싣는다. ControlNet-HED 체크포인트는 HED 경계가 아니라 같은 Canny 엣지를 받았다.
+T2I-Adapter-Canny는 곁가지 네트워크라 복제 인코더보다 우리 설계에 가깝다. 두 가지 비대칭
+때문에 이는 동일 조건 비교가 아니라 동작점 비교다. 조건이 다르고(Canny 엣지 대 주파수 대역),
+우리 어댑터는 FFHQ \nTrain{}장으로 학습한 반면 ControlNet은 여기서 제로샷이며 FID도 FFHQ
+통계 대비다. 텍스트 정합에서는 ControlNet-Canny의 CLIP \baseCannyClip{}가 우리의 전 구간
+최고값 \clipMainOneHundred{}보다 높다. T2I-Adapter의 스케치 체크포인트는 PiDiNet 스케치를
+입력으로 기대하므로 제외했다. Canny 엣지를 넣으면 방법이 아니라 그 불일치를 재게 된다.
+
+\begin{table}[t]\centering\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrrrrr}
+\toprule
+방법 & 샘플러 & 파라미터 & Edge-F1 & LPIPS & FID & CLIP \\
+\midrule
+ControlNet-Canny            & PNDM & \baseParams  & \baseCannyEdge & \baseCannyLpips & \baseCannyFid & \baseCannyClip \\
+ControlNet-HED, Canny 입력  & PNDM & ---          & \baseHedEdge   & \baseHedLpips   & \baseHedFid   & \baseHedClip \\
+T2I-Adapter-Canny           & PNDM & \baseTParams & \baseTEdge     & \baseTLpips     & \baseTFid     & \baseTClip \\
+\midrule
+우리, $r{=}0.1$             & DDIM & \ourParams   & \edgeMainOneZero & \lpipsMainOneZero & \fidMainOneZero & \clipMainOneZero \\
+\bottomrule
+\end{tabular}}
+\caption{Canny 엣지를 받은 사전학습 베이스라인과 $r{=}0.1$의 우리 어댑터. 같은 테스트
+500장과 캡션, 50스텝, CFG 7.5, 시드 2026이다. 파라미터는 ControlNet-Canny와 우리는 학습
+파라미터, T2I-Adapter는 곁가지 네트워크 파라미터다. 샘플러가 다르므로 각 행은 동작점이며
+동일 조건 비교가 아니다.}
+\label{tab:baselines}
+\end{table}
 
 \subsection{학습 도메인 밖}
 \label{sec:ood}
 
 지금까지는 전부 FFHQ다. 다이얼이 얼굴에만 국한되는지 보려고 Hugging Face의 공개
-사진--스케치 세트 \texttt{rhfeiyang/photo-sketch-pair-500}에 있는 일반 장면 사진
+사진--스케치 세트 \texttt{rhfeiyang/photo-sketch-pair-500}(데이터셋 카드에 라이선스도
+원출처도 적혀 있지 않다)에 있는 일반 장면 사진
 \oodN{}장을 $512^2$로 가운데 잘라 스윕을 돌렸고, 같은 스크립트의 도메인 내 기준으로 FFHQ
 테스트 이미지 \oodN{}장에도 돌렸다. 둘 다 프롬프트는 ``a high-quality photo''다. 각
 생성물은 두 가지로 채점한다. 회색조 출력과 회색조 입력 사진의 상관, 그리고 회색조 출력과
@@ -465,30 +514,36 @@ ControlNet-Canny의 CLIP \baseCannyClip{}가 우리의 전 구간 최고값 \cli
 필터된 조건 대비로는 도메인 밖에서 \oodOodFZeroFive{}에서 \oodOodFThreeZero{}로, 도메인
 내에서 \oodIndFZeroFive{}에서 \oodIndFThreeZero{}로 떨어진다. 다이얼은 도메인 밖으로
 이어진다. 어댑터를 끄면 도메인 밖 이미지는 $r{=}0.1$에서 입력 사진 대비 \oodOffOneZero{}를
-기록하고(켜면 \oodOodOneZero{}), 따라서 남은 구조는 백본이 아니라 조건에서 온다.
+기록한다(켜면 \oodOodOneZero{}).
 
 화질은 전이되지 않는다. 각 실행을 자기 입력 사진에 대해 잰 FID가 $r{=}0.1$에서 도메인 내
-\oodIndFidOneZero{}에서 도메인 밖 \oodOodFidOneZero{}로 오른다. 제어는 도메인 변화를
-견디지만 생성 품질은 그렇지 않다.
+\oodIndFidOneZero{}에서 도메인 밖 \oodOodFidOneZero{}로 오른다. 필터된 조건 대비로는 같은
+두 실행이 \oodIndFOneZero{}와 \oodOodFOneZero{}를 기록하며, 모든 차단 반경에서 이만큼
+가깝게 붙어 있다. 둘 다 우연 수준을 크게 웃돈다. 같은 생성물을 다른 입력의 필터된 조건에
+대해 채점하면 $r{=}0.1$에서 \oodFloorIndOneZero{}와 \oodFloorOodOneZero{}에 그치고, 두
+실행의 어떤 판독도 자기 바닥값보다 \oodFloorMinSem{} 표준오차 이상 떨어져 있지 않은 경우가
+없다. 따라서 조건 추종과 화질은 따로 움직인다. 우리가 주장하는 구간에서 다이얼은 학습 도메인
+밖에서도 안에서와 비슷하게 구조를 붙잡는 반면 FID는 전이되지 않는다.
 
 \subsection{손으로 그린 스케치}
 \begin{figure}[t]
 \centering
 \setlength{\tabcolsep}{0pt}%
 \begin{tabular}{@{}r@{\hspace{2pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{\hspace{1pt}}c@{}}
-\rotatebox{90}{\scriptsize\hspace{3mm}그림} &
+\rotatebox{90}{\scriptsize\hspace{1mm}그림(입력)} &
 \includegraphics[width=0.235\columnwidth,trim={0 0 1792 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={512 0 1280 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1024 0 768 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1536 0 256 0},clip]{figures/sketch} \\[1pt]
-\rotatebox{90}{\scriptsize\hspace{3mm}출력} &
+\rotatebox{90}{\scriptsize\hspace{1mm}출력, 무보정} &
 \includegraphics[width=0.235\columnwidth,trim={256 0 1536 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={768 0 1024 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1280 0 512 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1792 0 0 0},clip]{figures/sketch}
 \end{tabular}
-\caption{손으로 그린 얼굴 스케치(윗줄)와 모델이 만든 결과(아랫줄), 제로샷. 그림에는 차단
-반경이 없으므로 모델이 그림 자체에서 구조 밀도를 읽어야 하며, 이미지별 최소--최대 정규화가
+\caption{얼굴 그림 \sketchFaceN{}장 중 파일 순서로 처음 네 장(윗줄)과, 주 모델이 그에
+대해 낸 무보정 제로샷 출력(아랫줄; 프롬프트 ``a high-quality photo of a face''). 그림에는
+차단 반경이 없으므로 모델이 그림 자체에서 구조 밀도를 읽어야 하며, 이미지별 최소--최대 정규화가
 이를 가능하게 한다. 스캔 대부분은 상단에 보관용 파일명이 찍혀 있고 모델은 그것까지 다시
 그린다. 주어진 조건을 문자 그대로 따른 것이다. 그 띠를 넉넉히 덮도록 프레임 상단
 \bandFrac{}\%(\bandRows{}행)를 통째로 제외하면 점수는 \bandSCcut{}이 된다(\bandDelta{},
@@ -496,9 +551,12 @@ ControlNet-Canny의 CLIP \baseCannyClip{}가 우리의 전 구간 최고값 \cli
 \label{fig:sketch}
 \end{figure}
 
-그림~\ref{fig:sketch}이 전이 결과다. 학습에 쓰인 적 없는 CUHK 얼굴 스케치
-데이터베이스~\cite{wang2009face}의 실제 얼굴 그림 \sketchFaceN{}장을 ``a high-quality photo
-of a face'' 프롬프트로 넣으면, 회색조 출력과 입력 그림의 상관은 \sketchFaceSC{}, CLIP 점수는
+그림~\ref{fig:sketch}이 전이 결과다. 공개 Hugging Face 세트
+\texttt{a573p/}\allowbreak\texttt{Face-Sketches40}의 실제 얼굴 그림 전부인 \sketchFaceN{}장을
+쓴다. 카드는 이를 CUHK 얼굴 스케치 데이터베이스의 이미지라고 설명하며 라이선스는 적지 않는다.
+스캔마다 FERET 파일명이 찍혀 있으므로, 이들은 CUFS의 사진 하위집합이 아니라 FERET 사진으로
+만든 CUFSF 세트~\cite{wang2009face,zhang2011coupled}에서 온 것이다. 학습에 쓰인 적 없는 이
+그림들을 ``a high-quality photo of a face'' 프롬프트로 넣으면, 회색조 출력과 입력 그림의 상관은 \sketchFaceSC{}, CLIP 점수는
 \sketchFaceClip{}이다. FID는 보고하지 않는다. \sketchFaceN{}장은 안정적인 추정에 부족하고,
 평가기가 값을 내는 대신 거부한다. 같은 Hugging Face 사진--스케치 세트
 \texttt{rhfeiyang/photo-sketch-pair-500}의 스케치 절반인 일반 장면 그림 \sketchSceneN{}장도
@@ -506,18 +564,27 @@ of a face'' 프롬프트로 넣으면, 회색조 출력과 입력 그림의 상�
 \sketchSceneSC{}로 떨어지고 FFHQ 대비 FID는 \sketchSceneFid{}다. 모델이 그림은 따르지만
 얼굴을 만들지 못한다. 얼굴만 학습했기 때문이다.
 
+스케치 기반 얼굴 편집은 이전에도 그림의 역할을 나눠 왔다. 기하는 스케치에서, 외양은
+참조에서 가져오거나~\cite{chen2021deepfaceediting}, 따로 적용할 수 있는 스케치 개념들로
+쪼갠다~\cite{xiao2024customsketching}. 차단 반경은 이를 주파수로 나누며 참조 이미지를
+필요로 하지 않는다.
+
 그림에는 차단 반경이 없지만 작가가 줄 수 있다. 그림을 $r$로 걸러 모델에 넣으면 되고, 이는
 모든 학습 조건이 거친 연산과 같다. 얼굴 그림 \sdialN{}장에서 회색조 출력과 원래 그림의
 상관은 $r{=}0$의 \sdialZero{}에서 $r{=}0.1$의 \sdialOneZero{}, $r{=}0.3$의
 \sdialThreeZero{}, $r{=}1$의 \sdialOneHundred{}로 떨어진다. $r{=}0.5$와 $r{=}0.7$은 서로
-표준오차(\sdialSemFiveZero{}) 안에 있다.
+표준오차(\sdialSemFiveZero{}) 안에 있다. 측정이 아니라 의도된 용도로 적자면, $r{=}0.05$는
+어댑터가 붙잡을 수 있는 만큼 얼굴을 그대로 붙잡고 싶을 때, $r{=}0.3$은 배치는 지키되 세부를
+다시 그리고 싶을 때, 그보다 위는 배치 자체를 놓아줄 때다. $r$을 한 번 바꾸는 비용은 재생성
+한 장, H200 한 장에서 \sampleSecImg{}초다(표~\ref{tab:repro}).
 
 실제로 받은 필터된 그림에 대해 채점하면 같은 생성물이 $r{=}0.05$에서 \sdialFZeroFive{},
 $r{=}0.1$에서 \sdialFOneZero{}, $r{=}0.3$에서 \sdialFThreeZero{}다. 같은 스크립트로
 ``a high-quality photo'' 프롬프트를 준 FFHQ 테스트 사진 \oodN{}장은 \oodIndFZeroFive{},
 \oodIndFOneZero{}, \oodIndFThreeZero{}에 이르므로(\ref{sec:ood}절), 필터된 그림은 모든
-차단 반경에서 필터된 사진보다 덜 충실하게 따라지며 $r{=}0.3$에서는 절반에 못 미친다. 다만
-프롬프트와 세트 크기가 다르다(표~\ref{tab:sketchspec}).
+차단 반경에서 필터된 사진보다 덜 충실하게 따라진다. $r{=}0.3$에서 그림의 점수는 사진의
+절반에 못 미친다(\sdialFThreeZero{} 대 \oodIndFThreeZero{}). 다만 프롬프트와 세트 크기가
+다르다(표~\ref{tab:sketchspec}).
 
 \section{설계에 필요한 것}
 \label{sec:design}
@@ -545,13 +612,16 @@ IP-Adapter~\cite{ye2023adapter} 같은 이미지 프롬프트 설계는 CLIP 이
 
 \input{fig_paths_ko}
 
-표~\ref{tab:where}는 절대 구성을 나열하며, 대조군 아래 각 행은 \textbf{conv / attn} 행과
-한 필드가 다르다. 그림~\ref{fig:paths}는 추론 시 경로를 꺼서 주 모델을 분해한다. 교차
+표~\ref{tab:where}는 절대 구성을 나열한다. 대조군 아래의 각 행은 \textbf{conv / attn}
+행에서 한 필드를 바꾼 것인데, 0초기화 게이트가 없는 동결 VAE 행만 두 필드를 바꾼다. 그림~\ref{fig:paths}는 추론 시 경로를 꺼서 주 모델을 분해한다. 교차
 어텐션만 남기면 $r{=}0$의 SC가 \pathBothZero{}에서 \pathAttnOnlyZero{}로 떨어지고, skip
 경로만 남기면 \pathSkipOnlyZero{}가 유지된다. 두 경로를 모두 끄면 SC \pathAllOffZero{},
-FID \pathFidAllOff{}로 떨어지며, 이것이 어댑터가 일을 하고 있다는 대조군이다. FID에서는 두
-단일 경로가 가깝다(\pathFidSkipOnly{} 대 \pathFidAttnOnly{}). 우리가 측정한 위치 효과는
-구조 충실도 효과이지 일반적인 화질 효과가 아니다.
+FID \pathFidAllOff{}로 떨어지며, 이것이 어댑터가 일을 하고 있다는 대조군이다. 두 단일
+경로는 FID에서는 가깝고(\pathFidSkipOnly{} 대 \pathFidAttnOnly{}) SC에서는 멀다. 두 경로가
+합쳐지는 방식도 차단 반경에 따라 달라진다. $r{=}0$에서는 각 경로의 대조군 대비 이득이 대체로
+더해지는 반면, $r{=}0.3$에서는 둘을 함께 켠 이득이 그 합을 넘는다. 우리는 이를 조건이 빽빽할
+때는 두 경로가 같은 정보를, 희박할 때는 서로 다른 정보를 나르기 때문으로 읽는다. skip 잔차가
+국소 디테일을 놓고 교차 어텐션이 그것이 어디로 갈지를 말한다. 이는 측정한 것이 아니다.
 
 어텐션 단독 설계 안에서 128채널 스템은 $r{=}0.05$의 SC를 \scEaZeroFive{}에서
 \scEcapZeroFive{}로 올리고, 256채널 스템은 학습 파라미터 \paramsCapb{}개로(스템이 없으면
@@ -577,7 +647,12 @@ $r{=}0$의 SC를 \ablLogZero{}로 올리고 FID를 \ablFidLogZero{}로 낮추지
 해상도를 작은 $r$ 쪽으로 옮기는 것이다. 위의 결과는 모두 균등 샘플러로 얻었다. $1{\times}1$과
 스템 변형이 표~\ref{tab:abl}의 여러 차단 반경에서 더 높은데도 주 모델이 $3{\times}3$ 창과 스템
 없음을 유지하는 것은, 이 단일 필드 어블레이션을 주 구성과 그 시드 3개를 확정한 뒤에
-학습했기 때문이다.
+학습했기 때문이다. $r{=}u^2$ 샘플러도 마찬가지다. 이 샘플러는 학습을 작은 $r$에 몰고,
+주장하는 구간의 측정된 모든 차단 반경에서 주 모델보다 높은 구조 순응도를 낸다
+(표~\ref{tab:abl}, \ref{tab:ablfull}). FID는 $r{=}0.1$에서 더 낮고 $r{=}0.05$와 $0.3$에서는
+단일 추정 잡음 안에 있다(표~\ref{tab:ablfid}). 우리는 이를 채택하지 않고 어블레이션으로
+둔다. 샘플러는 이 절이 바꿔 보는 필드 중 하나이고, 이 수치들을 보고 고르는 것은 테스트
+집합 위에서 고르는 일이 되기 때문이다.
 
 \begin{table}[t]\centering\footnotesize
 \setlength{\tabcolsep}{2pt}
@@ -648,7 +723,7 @@ $r{=}u^2$ 샘플러         & \ablSqrtZero & \ablSqrtZeroFive & \ablSqrtThreeZer
 
 $r{=}0.1$에서 SC \skipOnlyOneZero{}에 도달하며, 두 경로를 쓴 \scMainOneZero{}, 교차 어텐션
 단독 \pathAttnOnlyOneZero{}와 비교된다. FID는 \fidMainOneZero{} 대비 \skipOnlyFidOneZero{}다.
-단독으로 학습한 skip 경로는 결합 모델의 대부분을 회복하지만 전부는 아니므로, 어텐션 분기는
+단독으로 학습한 skip 경로는 주 모델의 대부분을 회복하지만 전부는 아니므로, 어텐션 분기는
 skip 경로가 주지 못하는 무언가를 더한다. skip 단독 모델의 학습 파라미터는 두 경로 모델의
 \ourParams{}개 대비 \paramsSkipOnly{}개이고, 256채널 스템을 쓴 어텐션 단독 설계는
 \paramsCapb{}개 파라미터로 $r{=}0.1$에서 \scEcapbOneZero{}에 이른다(표~\ref{tab:where}). 전체
@@ -691,34 +766,34 @@ skip 경로 주입은 UNet에 한정된다. MMDiT 백본~\cite{esser2024scaling}
 그림~\ref{fig:strength}의 표본은 눈에 띄게 망가지기보다 참조의 배치에서 벗어나므로, FID 상승은
 적어도 부분적으로 그 분포를 벗어난 것을 반영하며, 참조 없는 품질 지표는 보고하지 않는다.
 표~\ref{tab:abl}의 단일 필드 어블레이션은 단일 시드이고, 조건의 이미지별 정규화는 설계로
-정했을 뿐 어블레이션하지 않았다. $r{=}0.1$에서는 고정 차단 반경 특화 모델이 하나의 모델보다
+정했을 뿐 어블레이션하지 않았다. $r{=}0.1$에서는 고정 차단 반경 특화 모델이 무작위-$r$ 어댑터보다
 시드 sd의 $\specROneZero{}$배 앞선다(\ref{sec:spec}절). 동결 VAE를 skip 경로와 결합한 적이
 없으므로 표~\ref{tab:where}의 VAE 결과는 어텐션 단독 주입의 약함과 교락되어 있다. 스케치
 결과에는 어댑터를 끈 대조군이 없다. ControlNet 비교는 동작점 사이의 비교이며, 우리 조건과
 데이터로 학습한 ControlNet이 동일 조건 대조군이 되겠지만 학습하지 않았다. 스케치 신뢰도
-제어~\cite{yang2020deep}나 노이즈 수준 편집~\cite{meng2022sdedit}과도 비교하지 않았다. 둘은
-입력이 달라 별도의 프로토콜이 필요하다.
+제어~\cite{yang2020deep}, 노이즈 수준 편집~\cite{meng2022sdedit}, 학습 없는 필터
+유도~\cite{gu2024filter}, 기하--외양 얼굴 편집~\cite{chen2021deepfaceediting}과도 비교하지
+않았다. 이들은 입력이 달라 별도의 프로토콜이 필요하다.
 
 어댑터의 학습 파라미터는 \ourParams{}개로, ControlNet보다 적고 최근 경량 제어 모듈보다
 많다. Simple-ControlNet~\cite{feng2025simplifying}은 SD1.5에서 300만 미만을 보고하고,
 ControlNet-XS~\cite{zavadski2023controlnet}는 ControlNet보다 훨씬 작은 제어 네트워크를 쓰며,
 위의 DiT 모듈들은 우리의 몇 분의 일을 쓴다. 효율은 주장하지 않는다. 다이얼은 이미지 지표로만
 평가했다. $r$을 같은 폭으로 바꾸면 같은 변화로 지각되는지, 작가가 이 제어를 유용하다고
-느끼는지는 여기서 측정하지 않았다.
+느끼는지는 여기서 측정하지 않았다. 또한 SC도 Edge-F1도 배치와 외양을 분리하지 못하므로,
+배치는 유지되고 외양이 변한다는 관찰은 그림~\ref{fig:dial}과 \ref{fig:strength}의 샘플에
+근거한다.
 
 \section{결론}
 
 학습 중 구조 조건의 대역폭을 무작위화하면 차단 반경이 추론 시 제어가 되고, 그 제어는 이
-어댑터의 세기를 줄이는 것으로는 재현되지 않는다. 샘플마다 차단 반경을 뽑아 한 번 학습한
-어댑터 하나가, 각 출력을 자기 차단 반경으로 채점할 때 $r$이 0.05에서 0.3으로 가는 동안 구조
-순응도를 \scMainZeroFive{}에서 \scMainThreeZero{}로 옮긴다(표~\ref{tab:main}). 계측기를
-$r_m{=}0.1$로 고정해 읽으면 세기를 0.50으로 줄인 설정은 FID \fidHalfScale{}에서
-\fixInstHalfScale{}에 이르고, 차단 반경 $r{=}0.3$은 FID \fidMainThreeZero{}에서
-\fixInstThreeZero{}에 이른다(\ref{sec:strength}절). 설계는 조건을 동결 오토인코더가 아니라
+어댑터의 세기를 줄이는 것으로는 재현되지 않는다. 체크포인트 하나가 FID
+\fidMainZeroFive{}와 \fidMainOneZero{} 사이에서 $r \in [0.05, 0.3]$을 담당하며, 그 구간에서
+우리 샘플은 얼굴 배치를 유지한 채 배경·의복·색이 참조를 덜 따른다. 비슷한 느슨함을 세기로
+얻으려면 FID를 치러야 한다(\ref{sec:strength}절). 이 체크포인트는 $r{=}0.1$에서 특화 모델에
+뒤지고 $r{=}0.3$에서는 앞선다(\ref{sec:spec}절). 설계는 조건을 동결 오토인코더가 아니라
 합성곱 인코더로 읽고 UNet skip 텐서와 교차 어텐션으로 주입하며, 두 선택 모두 SD1.5에서
-측정했다. 체크포인트 하나가 FID \fidMainZeroFive{}와 \fidMainOneZero{} 사이에서 차단 반경
-구간 $r \in [0.05, 0.3]$을 담당하는데, \ref{sec:spec}절의 특화 모델은 동작점마다 어댑터가
-하나씩 필요하다.
+측정했다.
 
 \appendix
 \section{차단 반경별 전체 결과}
@@ -754,9 +829,11 @@ $r{=}u^2$ 샘플러     & \ablSqrtZero     & \ablSqrtZeroFive     & \ablSqrtOneZ
 VAE 조건              & --- & \scEbaseZeroFive & \scEbaseOneZero & \scEbaseThreeZero & --- \\
 \bottomrule
 \end{tabular}
-\caption{모든 단일 필드 어블레이션의 구조 순응도, 측정된 모든 차단 반경. 각 행은 주 모델에서
-한 필드만 바꾼 것이다. 마지막 블록은 논문이 채택하지 않은 두 설계다. 조건을 256에서 만들어
-업샘플한 것($r{=}0.1$에서 FID \fidEres{})과 동결 VAE로 읽은 것이다.}
+\caption{모든 단일 필드 어블레이션의 구조 순응도, 측정된 모든 차단 반경. 주 모델 아래 첫
+블록의 각 행은 주 모델에서 한 필드를 바꾼 것이다. 마지막 블록은 논문이 채택하지 않은 두
+설계다. 첫째는 조건을 동결 VAE로 읽는 것으로, 어텐션 단독 주입에 0초기화 게이트가 없다
+(표~\ref{tab:where}의 첫 동결 VAE 행). 둘째는 조건을 256에서 만들어 업샘플하는 것으로, 주입
+구성은 첫째와 같고 소스 해상도만 다르다($r{=}0.1$에서 FID \fidEres{}).}
 \label{tab:ablfull}
 \end{table}
 
@@ -866,7 +943,8 @@ $r$ & 특화 모델 & 평균 & sd & 차이 & 차이\,/\,sd \\
 \end{tabular}
 \caption{차단 반경별 특화 모델(각각 학습 한 번, 시드 2026)과 학습 시드 2026--2028 평균의
 무작위-$r$ 모델 하나를 각자의 차단 반경에서 비교했다. 차이는 특화 모델에서 시드 3개 평균을
-뺀 값이고, 마지막 열은 그것을 시드 3개 표준편차로 나눈 값이다(\ref{sec:spec}절). 양수는 특화
+뺀 값이고, 마지막 열은 그것을 시드 3개 표준편차로 나눈 뒤 \ref{sec:spec}절의 기준
+\tailCrit{}과 견준 값이다. 그 기준은 한 번의 새 실행에 대한 예측구간보다 느슨하다. 양수는 특화
 모델이 유리함을 뜻한다. $r{=}0.1$에서는 특화 모델이, $r{=}0.3$에서는 하나의 모델이 이기고,
 $r{=}0.5$와 $0.7$에서는 구별되지 않는다. 특화 모델이 줄 수 없는 것은 곡선의 나머지다.}
 \label{tab:specfull}
@@ -908,7 +986,7 @@ $r$ & 원본 대비 & $\pm$ SEM & 필터 대비 & 원본 대비 & 필터 대비 
 0.20 & \sdialTwoZero    & \sdialSemTwoZero    & \sdialFTwoZero    & \oodIndTwoZero   & \oodIndFTwoZero \\
 0.30 & \sdialThreeZero  & \sdialSemThreeZero  & \sdialFThreeZero  & \oodIndThreeZero & \oodIndFThreeZero \\
 \midrule
-\multicolumn{6}{l}{\bfseries 주장하는 구간 밖} \\
+\multicolumn{6}{l}{\itshape $r > 0.3$} \\
 0.50 & \sdialFiveZero   & \sdialSemFiveZero   & \sdialFFiveZero   & --- & --- \\
 0.70 & \sdialSevenZero  & \sdialSemSevenZero  & \sdialFSevenZero  & --- & --- \\
 1.00 & \sdialOneHundred & \sdialSemOneHundred & \sdialFOneHundred & --- & --- \\
@@ -937,8 +1015,10 @@ $r$ & 원본 대비 & $\pm$ SEM & 필터 대비 & 원본 대비 & 필터 대비 
 조건 인코더 & $3{\times}3$ 합성곱 7개, SiLU, 그중 3개는 스트라이드 2와 그룹 정규화, 32--128채널, 출력 4채널 \\
 학습 파라미터 & \ourParams{}(주 모델), skip 단독 \paramsSkipOnly{}, 어텐션 단독 \paramsAttnOnly{} \\
 데이터      & FFHQ-512, \nTrain{} / \nValid{} / \nTest{}, 시드 2026 셔플. 검증 세트는 이미지 4장으로 학습 모니터링에만 사용 \\
+스케치 데이터 & \texttt{a573p/}\allowbreak\texttt{Face-Sketches40} 전체 \sketchFaceN{}장과 \texttt{rhfeiyang/}\allowbreak\texttt{photo-sketch-pair-500}. 어느 카드에도 라이선스 표기가 없다 \\
 최적화      & AdamW, 학습률 $10^{-4}$, $\beta{=}(0.9,0.999)$, 가중치 감쇠 0.01, 코사인, 웜업 500스텝 \\
 배치/정밀도 & 32 / bf16, 기울기 클리핑 1.0, 12에폭, Min-SNR $\gamma{=}5$, H200 한 장 \\
+연산량      & H200 한 장에서 학습 1회 \trainHoursMain{}시간, 초당 \trainImgSec{}장, 최대 \trainPeakGb{}\,GB. 샘플링은 장당 \sampleSecImg{}초(DDIM 50, CFG 7.5, 배치 1, 512px), 최대 \samplePeakGb{}\,GB. 학습 \nTrainRuns{}회에 \trainHoursAll{} GPU-시간, 생성한 \sampleImages{}장에 측정 속도 기준 약 \sampleHoursAll{}시간을 더해 모두 \gpuHoursAll{}시간 \\
 EMA         & 감쇠 0.9999, 10스텝마다. 평가는 원래 가중치 \\
 드롭아웃    & 텍스트 0.1, 구조 조건 0.05 \\
 학습 시드   & 주 모델 2026, 2027, 2028. 특화 모델, 어블레이션, skip 단독은 2026 \\
