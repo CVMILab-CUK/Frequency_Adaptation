@@ -92,7 +92,6 @@ _e22 = json.load(open("results/E22_spectral_energy/results.json"))
 
 readme = f"""# A Frequency Dial for Structure-Conditioned Diffusion
 
-**School of Computer Science, Soongsil University**
 
 A structure-conditioned diffusion adapter is trained for one operating point.
 Canny edges, a depth map, a sketch: each fixes how tightly the output must
@@ -107,9 +106,6 @@ randomised — a high-pass filter whose cutoff `r` is drawn per sample — and r
 then r = 0, 0.05, 0.1, 0.3, 0.5, 0.7, 1.0. The background crowd thins, the
 eyewear drifts from the reference, the clothing colour detaches, while identity
 and pose survive. The reference is never shown to the model.</em></p>
-
-📄 [Paper (EN)](papers/fa_en.pdf) &nbsp;·&nbsp; [논문 (KO)](papers/fa_ko.pdf)
-&nbsp;·&nbsp; [Project page](docs/index.html)
 
 ---
 

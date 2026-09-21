@@ -45,3 +45,7 @@ papers/*.toc
 
 # --- internal peer review, kept local ---
 ai_review/
+
+# the SRMv2 form draft carries author names and affiliations; the anonymous
+# supplementary mirrors this repository, so it stays out of the tree
+papers/srmv2_form_draft.txt
