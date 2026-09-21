@@ -1,0 +1,37 @@
+{
+ "provenance": {
+  "adapter": "/home/work/model/Frequency_Adaptation/ckpt_dir/E10b_skip_inject/final/adapter.safetensors",
+  "config": "/home/work/model/Frequency_Adaptation/config/generated/E10b_skip_inject.yaml",
+  "gpu": "NVIDIA H200",
+  "torch": "2.10.0a0+b558c986e8.nv25.11",
+  "sampler": "DDIM",
+  "steps": 50,
+  "cfg_scale": 7.5,
+  "batch": 1,
+  "resolution": 512,
+  "cutoff": 0.1,
+  "n_timed": 8,
+  "warmup": 2,
+  "timestamp": "2026-09-21 15:18:19"
+ },
+ "adapter_on": {
+  "scale": 1.0,
+  "attn_sites": 16,
+  "seconds_per_image": {
+   "mean": 1.8812356633134186,
+   "min": 1.8644028417766094,
+   "max": 1.8923173397779465
+  },
+  "peak_gpu_gb": 2.9427968
+ },
+ "adapter_off": {
+  "scale": 0.0,
+  "attn_sites": 16,
+  "seconds_per_image": {
+   "mean": 1.8766596466302872,
+   "min": 1.8649398162961006,
+   "max": 1.8846973702311516
+  },
+  "peak_gpu_gb": 2.9427968
+ }
+}
