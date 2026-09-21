@@ -3,29 +3,77 @@
 % SRMv2 EG_2027 Instruction: use EGauthorGuidelines-conf-sub.tex. The prologue
 % below follows that file, wrapped around the same fa_body.inc that fa_en.tex
 % compiles, so the draft and the submission can never disagree on the text.
-% Branch A: style files in egstyle_eg2027/ (unmodified EG_2027 package).
-% Branch B (interim): conference-submission mode of egstyle/egpubl.cls.
+% The prologue below is copied verbatim from that file; style files live in
+% egstyle_eg2027/ and are the unmodified EG_2027 package (egpubl.cls v4.0,
+% 2027/05/25) plus comment.sty, lastpage.sty and placeins.sty, which the
+% package does not ship and this TeX Live install does not have.
 
 \documentclass{egpubl}
-\ConferenceSubmission % EG 2027 Full Papers (egstyle/egpubl.cls:1203)
-\ConfYear{2027}       % footer "submitted to EUROGRAPHICS 2027." -- check against the EG_2027 sample PDF
-% <<AUTHOR-INPUT A01: EG_2027 LaTeX 패키지 zip(SRMv2 EG_2027 Instruction의 LaTeX2e style file, fileID=20175, 로그인 필요)을 받아 egstyle_eg2027/에 풀어 둘 것 -- 없으면 conf-sub.tex의 실제 모드·연도 매크로와 submission 예시 PDF의 헤더·푸터를 대조할 수 없다>>
+\usepackage{eg2027}
+ 
+% --- for  Annual CONFERENCE
+\ConferenceSubmission   % uncomment for Conference submission
+% \ConferencePaper        % uncomment for (final) Conference Paper
+% \STAR                   % uncomment for STAR contribution
+% \Tutorial               % uncomment for Tutorial contribution
+% \ShortPresentation      % uncomment for (final) Short Conference Presentation
+% \Areas                  % uncomment for Areas contribution
+% \Education              % uncomment for Education contribution
+% \Poster                 % uncomment for Poster contribution
+% \DC                     % uncomment for Doctoral Consortium
+%
+% --- for  CGF Journal
+% \JournalSubmission    % uncomment for submission to Computer Graphics Forum
+% \JournalPaper         % uncomment for final version of Journal Paper
+%
+% --- for  CGF Journal: special issue
+% \SpecialIssueSubmission    % uncomment for submission to , special issue
+% \SpecialIssuePaper         % uncomment for final version of Computer Graphics Forum, special issue
+%                          % EuroVis, SGP, Rendering, PG
+% --- for  EG Workshop Proceedings
+% \WsSubmission      % uncomment for submission to EG Workshop
+% \WsPaper           % uncomment for final version of EG Workshop contribution
+% \WsSubmissionJoint % for joint events, for example ICAT-EGVE
+% \WsPaperJoint      % for joint events, for example ICAT-EGVE
+% \Expressive        % for SBIM, CAe, NPAR
+% \DigitalHeritagePaper
+% \PaperL2P          % for events EG only asks for License to Publish
+
+% --- for EuroVis 
+% for full papers use \SpecialIssuePaper
+% \STAREurovis   % for EuroVis additional material 
+% \EuroVisPoster % for EuroVis additional material 
+% \EuroVisShort  % for EuroVis additional material
+% \MedicalPrize  % uncomment for Medical Prize (Dirk Bartz) contribution, since 2021 part of EuroVis
+
+% Licences: for CGF Journal (EG conf. full papers and STARs, EuroVis conf. full papers and STARs, SR, SGP, PG)
+% please choose the correct license
+%\CGFStandardLicense
+%\CGFccby
+%\CGFccbync
+%\CGFccbyncnd
 
 % !! *please* don't change anything above
 % !! unless you REALLY know what you are doing
 % ------------------------------------------------------------------------
 \usepackage[T1]{fontenc}
-\usepackage{dfadobe}
+\usepackage{dfadobe}  
 
-\usepackage{cite}
+\usepackage{cite}  % comment out for biblatex with backend=biber
+% ---------------------------
+%\biberVersion
 \BibtexOrBiblatex
-
+%\usepackage[backend=biber,bibstyle=EG,citestyle=alphabetic,backref=true]{biblatex} 
+%\addbibresource{egbibsample.bib}
+% ---------------------------  
 \electronicVersion
 \PrintedOrElectronic
+% for including postscript figures
+% mind: package option 'draft' will replace PS figure by a filename within a frame
 \ifpdf \usepackage[pdftex]{graphicx} \pdfcompresslevel=9
 \else \usepackage[dvips]{graphicx} \fi
 
-\usepackage{egweblnk}
+\usepackage{egweblnk} 
 % end of prologue
 
 % ---- what this paper adds on top of the template ------------------------
@@ -78,6 +126,10 @@
 
 % anonymous submission: the submission ID replaces the author block
 \author[SUBMISSION ID]{SUBMISSION ID}
+
+% EGauthorGuidelines-conf-sub.tex turns line numbers on for the submission.
+\usepackage{lineno}
+\linenumbers
 
 \begin{document}
 \maketitle

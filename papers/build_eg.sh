@@ -1,11 +1,11 @@
 #!/bin/bash
 # Eurographics 2027 Full Papers submission build. The style package in
-# egstyle_eg2027/ (or egstyle/ until that exists) is unmodified, plus
-# comment.sty, lastpage.sty and placeins.sty (public domain, from CTAN) which
-# this TeX Live install does not ship.
+# egstyle_eg2027/ is the unmodified EG_2027 package, plus comment.sty,
+# lastpage.sty and placeins.sty (public domain, from CTAN) which neither the
+# package nor this TeX Live install ships.
 set -e
 cd "$(dirname "$0")"
-export TEXINPUTS=".:./egstyle//:" BSTINPUTS=".:./egstyle//:" BIBINPUTS=".:./egstyle//:"
+export TEXINPUTS=".:./egstyle_eg2027//:" BSTINPUTS=".:./egstyle_eg2027//:" BIBINPUTS=".:./egstyle_eg2027//:"
 if [ -f ../scripts/paper_numbers.py ]; then (cd .. && python scripts/paper_numbers.py); else echo "WARN: scripts/paper_numbers.py not found; using existing numbers.tex" >&2; fi
 pdflatex -interaction=nonstopmode fa_eg.tex >/dev/null
 bibtex fa_eg >/dev/null
