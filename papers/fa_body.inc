@@ -479,7 +479,13 @@ the cutoff $r{=}0.3$, which reads \fixInstThreeZero{} at FID
 \fidMainThreeZero{}, each scored at $r{=}0.1$: scale \swFVal{} gives
 \swFSc{} at FID \swFFid{}, and scale \swEVal{} gives \swESc{} at FID
 \swEFid{}.
-% <<AUTHOR-INPUT A17: 1-2문장 -- 이 어댑터에서 strength를 낮추면 왜 FID가 오르는가. Limitations는 샘플이 열화가 아니라 reference 배치를 떠난다고 쓴다. Figure~\ref{fig:strength} scale 0.25의 둘째 행 grayscale을 어떻게 보는가>>
+We read the cost as a train--test mismatch rather than a weaker condition. The
+adapter is only ever trained at scale 1.00, so turning it down at inference
+puts the UNet in a state it never saw, while $r$ was drawn per sample and moving
+the cutoff stays inside the training distribution. Figure~\ref{fig:strength}
+is consistent with that: at scale 0.25 both adapters still write the grayscale
+condition through their scaled skip path, weakly enough that the model does not
+complete it, and the second row comes out grey under either one. We did not measure this.
 At full strength the fixed-$r{=}0.1$ adapter reaches FID \sscFidOne{} against
 \fidMainOneZero{} for the randomised-$r$ adapter at the same cutoff.
 Figure~\ref{fig:strength} shows what the scaled settings produce for the first
