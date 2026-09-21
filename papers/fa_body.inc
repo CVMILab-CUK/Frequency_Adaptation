@@ -54,7 +54,6 @@ background detail thins and clothing and colour drift from the reference
 (Figure~\ref{fig:dial}). Lowering the adapter's strength is a different
 control: at low strength pose and framing change, and FID rises
 (Sec.~\ref{sec:strength}).
-% <<AUTHOR-INPUT A12: (선택) 레이아웃이 왜 남는지 저자 말로 한 문장 -- r=0.3에서 남은 대역이 얼굴의 어느 부분을 담는지(Figure~\ref{fig:mask}). 쓰지 않으면 이 주석 줄을 지운다>>
 
 Our contributions are:
 
@@ -727,7 +726,13 @@ cross-attention drops SC at $r{=}0$ from \pathBothZero{} to \pathAttnOnlyZero{};
 keeping only the skip path retains \pathSkipOnlyZero{}. With both paths off the
 model falls to \pathAllOffZero{} SC and FID \pathFidAllOff{}, the control that
 says the adapter is doing the work. The two single paths are close on FID
-(\pathFidSkipOnly{} against \pathFidAttnOnly{}) and far apart on SC.
+(\pathFidSkipOnly{} against \pathFidAttnOnly{}) and far apart on SC. How the
+two paths combine also changes with the cutoff: at $r{=}0$ their gains over the
+control roughly add up, while at $r{=}0.3$ the two together exceed that sum. We
+read this as the paths carrying the same information when the condition is
+dense and different information when it is sparse, the skip residuals placing
+local detail at each resolution and cross-attention saying where it goes, so
+that at $r{=}0.3$ neither recovers much alone. We did not measure this.
 
 Within the attention-only design, a 128-channel stem raises SC at $r{=}0.05$
 from \scEaZeroFive{} to \scEcapZeroFive{}, and a 256-channel stem reaches
@@ -934,6 +939,5 @@ leads one at $r{=}0.3$ (Sec.~\ref{sec:spec}). The design reads the condition
 with a convolutional encoder rather than the frozen autoencoder and injects it
 through the UNet skip tensors and cross-attention, both choices measured on
 SD1.5.
-% <<AUTHOR-INPUT A14: (선택) 편집 용도 마무리 한 문장 -- 어떤 과제에서 r을 정하는지(예: 초상의 배치를 두고 주변을 다시 그리기). 측정이 아니라 의도된 용도로 쓴다. 쓰지 않으면 이 주석 줄을 지운다>>
 
 \ifx\AppendixAfterReferences\undefined\input{fa_appendix.inc}\fi
