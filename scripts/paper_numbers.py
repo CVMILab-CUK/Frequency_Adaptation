@@ -336,6 +336,20 @@ for nm, run in [("SkipOnly", "E18_skip_only"), ("AttnOnly", "E9a_conv_encoder"),
     if os.path.exists(p):
         mac(f"params{nm}", f"{json.load(open(p))['trainable_params']:,}")
 
+# ---- E24: what the paper cost, from the training logs and a timed sampler
+d = load("E24_compute_budget")
+if d:
+    mac("trainHoursMain", d["train_hours_main"], "{:.1f}")
+    mac("trainPeakGb", d["train_peak_gb"], "{:.0f}")
+    mac("trainImgSec", d["train_images_per_sec"], "{:.0f}")
+    mac("trainHoursAll", d["train_hours_total"], "{:.0f}")
+    mac("nTrainRuns", d["provenance"]["n_runs"])
+    mac("sampleSecImg", d["sampling_seconds_per_image"], "{:.2f}")
+    mac("samplePeakGb", d["sampling_peak_gb"], "{:.1f}")
+    mac("sampleImages", f'{d["generated_images_saved"] + d["diversity_samples_unsaved"]:,}')
+    mac("sampleHoursAll", d["sampling_hours_total_est"], "{:.0f}")
+    mac("gpuHoursAll", d["gpu_hours_total_est"], "{:.0f}")
+
 # ---- E22: how fast the condition empties, measured instead of typed
 d = load("E22_spectral_energy")
 if d:

@@ -2,7 +2,6 @@
 % throughout -- one stroke weight for data flow, heavier for trained parts,
 % flat tint for frozen blocks, square corners. Every label matches a symbol in
 % models/attention_processor.py.
-% <<AUTHOR-INPUT A38: 네트워크의 decoder skip tensor head 수(models/attention_processor.py 또는 ControlNet 인터페이스 기준)>>
 \begin{figure*}[t]
 \centering
 \resizebox{\textwidth}{!}{%
@@ -111,7 +110,7 @@
 trainable convolutional encoder reads the result at full resolution, never
 through the VAE. Its features enter the frozen UNet twice: as zero-initialised
 residuals on each decoder skip tensor ($\oplus$; three resolution levels and the
-mid block are drawn, \AUTHORINPUT{A38} heads in the network), and through
+mid block are drawn, 12 skip heads and one mid head in the network), and through
 StandAlone attention at
 the 16 cross-attention sites. Stroke weight follows the measured split: at $r{=}0$, SC is
 \pathSkipOnlyZero{} with only the skip path active and \pathAttnOnlyZero{} with

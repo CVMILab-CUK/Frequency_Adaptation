@@ -36,14 +36,14 @@ no zero-init gate    & \ablNogateZero   & \ablNogateZeroFive   & \ablNogateOneZe
 VAE condition         & --- & \scEbaseZeroFive & \scEbaseOneZero & \scEbaseThreeZero & --- \\
 \bottomrule
 \end{tabular}
-% <<AUTHOR-INPUT A21: "256px source pipeline" 실행(\scEres*)의 주입 구성 -- attention only인지, zero-init gate 유무, skip 경로 유무>>
 \caption{Structure consistency for every one-field ablation, at every measured
 cutoff. Each row of the first block below the main model changes one field of
 the main model. The last block holds two designs the paper argues
 against. The first reads the condition through the frozen VAE, with
 attention-only injection and no zero-initialised gate (the first frozen-VAE row
 of Table~\ref{tab:where}). The second builds the condition at 256 and upsamples
-it (FID \fidEres{} at $r{=}0.1$; injection \AUTHORINPUT{A21}).}
+it, with that same injection; the source resolution is all that separates the
+two (FID \fidEres{} at $r{=}0.1$).}
 \label{tab:ablfull}
 \end{table}
 

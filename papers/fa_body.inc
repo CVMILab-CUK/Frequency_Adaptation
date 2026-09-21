@@ -243,11 +243,10 @@ Base model        & \texttt{stable-diffusion-v1-5/}\allowbreak\texttt{stable-dif
 Condition encoder & seven $3{\times}3$ convolutions, SiLU, three with stride 2 and group normalisation, 32 to 128 channels, 4 output channels \\
 Trainable params  & \ourParams{} (main); skip only \paramsSkipOnly{}; attention only \paramsAttnOnly{} \\
 Data              & FFHQ-512, \nTrain{} / \nValid{} / \nTest{}, seeded shuffle (seed 2026); the validation split only monitors training on four images \\
-Sketch data       & CUHK Face Sketch database, \AUTHORINPUT{A28}; \texttt{rhfeiyang/}\allowbreak\texttt{photo-sketch-pair-500}, \AUTHORINPUT{A29} \\
+Sketch data       & \texttt{a573p/}\allowbreak\texttt{Face-Sketches40} (all \sketchFaceN{}; its card calls them CUHK Face Sketch database images and states no licence); \texttt{rhfeiyang/}\allowbreak\texttt{photo-sketch-pair-500} (no licence stated) \\
 Optimiser         & AdamW, lr $10^{-4}$, $\beta{=}(0.9,0.999)$, weight decay 0.01, cosine, 500 warm-up steps \\
 Batch / precision & 32 / bf16, gradient clipping 1.0, 12 epochs, Min-SNR $\gamma{=}5$, one H200 \\
-% <<AUTHOR-INPUT A33: 실행 로그에서 확인한 값으로 채운다 -- "training X h per run on one H200 (peak Y GB); sampling Z s per image with the adapter and W s without (DDIM 50, CFG 7.5, batch 1, 512 px); V GPU-hours for all runs in this paper">>
-Compute           & \AUTHORINPUT{A33} \\
+Compute           & \trainHoursMain{} h per training run on one H200 at \trainImgSec{} images/s, peak \trainPeakGb{} GB; \sampleSecImg{} s per sampled image (DDIM 50, CFG 7.5, batch 1, 512 px), peak \samplePeakGb{} GB. The \nTrainRuns{} training runs behind this paper took \trainHoursAll{} GPU-hours; the \sampleImages{} images generated for the tables add about \sampleHoursAll{} more at the measured rate, \gpuHoursAll{} in total \\
 EMA               & decay 0.9999 every 10 steps; evaluation uses the raw weights \\
 Dropout           & text 0.1, structure condition 0.05 \\
 Training seeds    & main model 2026, 2027, 2028; specialists, ablations and skip only 2026 \\
@@ -388,9 +387,8 @@ $r$ & SC $\pm$ SEM & seed sd & Edge-F1 & Diversity & FID \\
 1.00 & \scMainOneHundred\,$\pm$\,\semMainOneHundred & \sSdOneHundred & \edgeMainOneHundred & \divMainOneHundred & \fidMainOneHundred \\
 \bottomrule
 \end{tabular}
-% <<AUTHOR-INPUT A22: Table 1의 SC/Edge-F1/Diversity/FID 열이 어느 학습 seed인지(2026 예상, Table 14 확인)>>
 \caption{Operating curve, 500 of the \nTest{} test images. All columns come from
-training seed \AUTHORINPUT{A22} except seed sd, which is the standard deviation
+training seed 2026 except seed sd, which is the standard deviation
 over training seeds 2026--2028; SEM is over the 500 images. Edge-F1 is a cutoff-independent
 reading of the same runs and is reported alongside SC because SC re-extracts at
 the same cutoff the model was given (Sec.~\ref{sec:metrics}). FID has a single
@@ -460,10 +458,9 @@ at \divMainOneHundred{}. Turning the randomised-$r$ adapter down removes
 structure while FID rises, to \fidHalfScale{} at scale 0.50 (\sscFidHalf{} for
 the fixed-$r$ adapter). The fine sweep of Table~\ref{tab:strengthfull} brackets
 the cutoff $r{=}0.3$, which reads \fixInstThreeZero{} at FID
-\fidMainThreeZero{} on the instrument $r_m{=}0.1$: scale \swFVal{} gives
+\fidMainThreeZero{}, each scored at $r{=}0.1$: scale \swFVal{} gives
 \swFSc{} at FID \swFFid{}, and scale \swEVal{} gives \swESc{} at FID
 \swEFid{}.
-% <<AUTHOR-INPUT A13: Table 10의 SC가 fixed-instrument 판독(저장된 8-bit 이미지)과 같은 기준인지. 다르면 "on the instrument $r_m{=}0.1$"을 지우고 "each scored at $r{=}0.1$"로 바꾼다>>
 % <<AUTHOR-INPUT A17: 1-2문장 -- 이 어댑터에서 strength를 낮추면 왜 FID가 오르는가. Limitations는 샘플이 열화가 아니라 reference 배치를 떠난다고 쓴다. Figure~\ref{fig:strength} scale 0.25의 둘째 행 grayscale을 어떻게 보는가>>
 At full strength the fixed-$r{=}0.1$ adapter reaches FID \sscFidOne{} against
 \fidMainOneZero{} for the randomised-$r$ adapter at the same cutoff.
@@ -560,10 +557,9 @@ operating points, not a like-for-like comparison.}
 \label{sec:ood}
 
 Everything above is FFHQ. To test whether the dial is specific to faces we ran
-% <<AUTHOR-INPUT A29: rhfeiyang/photo-sketch-pair-500의 dataset card 라이선스와 원출처(upstream). 아래 \AUTHORINPUT{A29}를 "released under <license>" 형태로 바꾼다>>
 the sweep on the \oodN{} general-scene photographs of the public
-photograph--sketch set \texttt{rhfeiyang/photo-sketch-pair-500} on Hugging Face
-(\AUTHORINPUT{A29}),
+photograph--sketch set \texttt{rhfeiyang/photo-sketch-pair-500} on Hugging Face,
+whose dataset card states neither a licence nor an upstream source,
 centre-cropped to $512^2$, and, as an in-domain reference under the identical
 script, on the \oodN{} FFHQ test images, both with the prompt ``a high-quality
 photo''. Each generation is scored in two ways: the grayscale output against
@@ -604,9 +600,8 @@ cutoff.
 \includegraphics[width=0.235\columnwidth,trim={1280 0 512 0},clip]{figures/sketch} &
 \includegraphics[width=0.235\columnwidth,trim={1792 0 0 0},clip]{figures/sketch}
 \end{tabular}
-% <<AUTHOR-INPUT A36: 40장 중 Fig.6에 보인 4장을 고른 규칙(예: 처음 4장, 점수 사분위 대표)>>
-\caption{Four of the \sketchFaceN{} CUHK face drawings, chosen by
-\AUTHORINPUT{A36} (top row), and the unedited zero-shot outputs of the main
+\caption{The first four of the \sketchFaceN{} face drawings in file order (top
+row), and the unedited zero-shot outputs of the main
 model for them (bottom row; prompt ``a high-quality photo of a face''). The
 drawings carry no cutoff; the model has to
 read structure density off the drawing itself, which the per-image min--max
@@ -620,11 +615,16 @@ what the score is measuring.}
 \end{figure}
 
 
-% <<AUTHOR-INPUT A28: CUHK Face Sketch database 40장이 속한 하위집합(CUHK student / AR / XM2VTS), 사용 조건(연구 목적 전용 등), 논문에 얼굴 드로잉을 게재해도 되는지. 게재 불가면 Fig.6 타일 교체가 필요하다>>
-% <<AUTHOR-INPUT A30: CUFS에서 40장을 고른 규칙>>
-Figure~\ref{fig:sketch} shows the transfer. On \sketchFaceN{} real face
-drawings from the CUHK Face Sketch database~\cite{wang2009face}
-(\AUTHORINPUT{A28}; selected by \AUTHORINPUT{A30}), which the
+% <<AUTHOR-INPUT A28: 이 40장이 CUFS인지 CUFSF인지 확정이 필요하다. 스캔에 찍힌 파일명이 40장 모두
+% 00001fb010_930831.jpg 형식(피험자번호 + fa/fb 정면 코드 + 촬영일 930831)으로 FERET 규약이며,
+% FERET 사진으로 만든 CUHK 스케치 DB는 CUFSF다. CUFSF라면 (a) 본문의 database 이름을 고치고
+% (b) CUFSF 페이지가 요구하는 Zhang, Wang & Tang, CVPR 2011을 AUTHOR-CITE 절차로 추가하며
+% (c) 게재 조건은 FERET을 따른다. 게재 불가로 판단되면 Fig.6 타일을 교체해야 한다>>
+Figure~\ref{fig:sketch} shows the transfer. On all \sketchFaceN{} real face
+drawings of the public Hugging Face set
+\texttt{a573p/}\allowbreak\texttt{Face-Sketches40}, which its card describes as
+images of the CUHK Face Sketch database~\cite{wang2009face} and for which it
+states no licence, and which the
 model was never trained on, prompted with ``a high-quality photo of a face'', the
 grayscale output correlates with the input drawing at \sketchFaceSC{} and CLIP score is
 \sketchFaceClip{}. FID is not reported: \sketchFaceN{} images is too few for a
