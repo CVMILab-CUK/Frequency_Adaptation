@@ -1,7 +1,4 @@
 
-% Placeholder for values only the authors can supply (FIX-INSTRUCTIONS 2026-09-16).
-% Remove this line once `grep -c 'AUTHORINPUT{' *.inc *.tex` is 0.
-\providecommand{\AUTHORINPUT}[1]{\textbf{[AUTHOR-INPUT #1]}}
 \begin{abstract}
 \noindent
 A structure-conditioned diffusion adapter is trained for one operating point.
@@ -648,11 +645,6 @@ what the score is measuring.}
 \end{figure}
 
 
-% <<AUTHOR-INPUT A28: 이 40장이 CUFS인지 CUFSF인지 확정이 필요하다. 스캔에 찍힌 파일명이 40장 모두
-% 00001fb010_930831.jpg 형식(피험자번호 + fa/fb 정면 코드 + 촬영일 930831)으로 FERET 규약이며,
-% FERET 사진으로 만든 CUHK 스케치 DB는 CUFSF다. CUFSF라면 (a) 본문의 database 이름을 고치고
-% (b) CUFSF 페이지가 요구하는 Zhang, Wang & Tang, CVPR 2011을 AUTHOR-CITE 절차로 추가하며
-% (c) 게재 조건은 FERET을 따른다. 게재 불가로 판단되면 Fig.6 타일을 교체해야 한다>>
 Figure~\ref{fig:sketch} shows the transfer. On all \sketchFaceN{} real face
 drawings of the public Hugging Face set
 \texttt{a573p/}\allowbreak\texttt{Face-Sketches40}, which its card describes as
