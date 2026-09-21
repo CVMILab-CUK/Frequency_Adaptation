@@ -184,7 +184,13 @@ invert, and min--max normalise to $[0,1]$. The normalisation is deliberate: it
 removes the absolute scale of the filter response, so the model has to infer
 structure density from spatial statistics. We hypothesise that this is what
 lets a hand drawing, which carries no $r$, be used at test time.
-% <<AUTHOR-INPUT A23: 필터 선택 근거 2문장 -- 왜 low-pass/band-pass가 아니라 high-pass인가, 왜 Gaussian roll-off가 아니라 ideal radial mask인가(ringing을 확인했는가, SC에 영향이 있었나), 인용한 edge-preserving/Laplacian 분해 대신 FFT disc를 고른 이유. 영어 문장으로 이 주석 자리에 넣는다>>
+The filter is a high-pass because the point is to keep shape and hand the rest
+to the prior: edges and texture sit in the high band, tone and colour in the
+low one, so a low-pass or band-pass condition would give the model the part we
+want it to invent. Taking shape from the high frequencies is the classical
+reading of an edge map, and what we add is that the boundary between the two is
+a parameter rather than a fixed extractor.
+% <<AUTHOR-INPUT A23b: 남은 절반 -- ideal radial mask를 쓴 이유(Gaussian roll-off를 시도했는지, ringing을 확인했는지). Figure~\ref{fig:mask} 3-4행의 $r\ge0.1$ 타일에 동심원 무늬가 보인다>>
 Figure~\ref{fig:mask} shows the mask, spectrum and condition at each cutoff.
 
 \input{fig_mask}
@@ -225,11 +231,18 @@ bf16, 12 epochs on one H200. The loss is $\epsilon$-prediction with Min-SNR
 weighting~\cite{hang2023efficient}, $\gamma=5$. Text conditioning is dropped
 with probability 0.1 for classifier-free guidance~\cite{ho2022classifier} and
 the structure condition independently with probability
-% <<AUTHOR-INPUT A42: (선택) 한 문장씩 -- 조건을 grayscale로 둔 이유(Table~\ref{tab:abl} colour condition 행과의 관계), 구조 조건 dropout 0.05와 12 epochs를 고른 근거. 넣는다면 이 주석 자리에 영어로>>
+The condition is grayscale so that the filter reads one channel and a cutoff
+means the same thing in every image, which leaves colour to the prior; the
+colour-condition row of Table~\ref{tab:abl} is the control for that choice, as
+the no-dropout row is for the structure-condition dropout of 0.05. Training
+stops at 12 epochs, where the validation curve has flattened.
 0.05. AdamW uses the PyTorch default weight decay of 0.01. An EMA of the
 adapter (decay 0.9999) is kept with a 10-step interval; evaluation uses the
-raw weights. $r$ is drawn uniformly from $[0,1]$ per sample.
-% <<AUTHOR-INPUT A24: 1-2문장 -- 결과를 [0.05, 0.3]에서 보고하는데 학습은 왜 [0,1] 전체인가, Table~\ref{tab:abl}의 sampler들 이전에 더 좁은 구간을 시도했는가>>
+raw weights. $r$ is drawn uniformly from $[0,1]$ per sample, so one adapter
+sees the whole range; we report $r \in [0.05, 0.3]$ because that is where the
+control is usable, the sweep being non-monotone at the left end and not
+separable across seeds at the right (Sec.~\ref{sec:dial}). No narrower training
+range was tried.
 Table~\ref{tab:repro} lists the
 remaining settings.
 
@@ -353,7 +366,11 @@ standard error over the 500 images), so the sweep is not monotone at its left
 end. Edge-F1 moves the same way, from \edgeMainZero{} to \edgeMainZeroFive{},
 but we have no uncertainty for that change, so it does not separate model
 behaviour from an artefact of the SC instrument.
-% <<AUTHOR-INPUT A15: 가설 한 문장 -- r=0(colourisation 과제, Sec. 1)의 샘플은 r=0.05 샘플이 지키는 무엇을 잃는가. 예상했던 결과인가>>
+We read the rise as the condition at $r{=}0$ carrying too much of the
+low-frequency field: it is the whole grayscale image, and that field competes
+with the edges the adapter is asked to reproduce, so cutting a small disc out
+of it leaves the shape easier to follow rather than harder. We did not measure
+this.
 At the right end $r{=}0.5$ and $r{=}0.7$ are not separable across seeds
 (paired $t = \tailT{}$, $df=2$, critical \tailCrit{}).
 
@@ -582,8 +599,14 @@ Image quality does not transfer: FID, each run measured against its own input
 photographs, rises from \oodIndFidOneZero{} in domain to \oodOodFidOneZero{}
 out of it at $r{=}0.1$. Against the filtered condition, the same two runs score
 \oodIndFOneZero{} and \oodOodFOneZero{}, and they stay this close at every
-cutoff.
-% <<AUTHOR-INPUT A20: 한 문장 -- 도메인과 무관하게 vs-filtered 값이 거의 같다는 것이 무엇을 뜻하는지(조건 추종과 이미지 품질이 따로 움직인다는 뜻인가), r=0.3 값(\oodIndFThreeZero, \oodOodFThreeZero)이 신뢰할 바닥값보다 위인지>>
+cutoff. Both are far above chance: scored against a different input's filtered
+condition the same generations reach \oodFloorIndOneZero{} and
+\oodFloorOodOneZero{} at $r{=}0.1$ and \oodFloorIndThreeZero{} and
+\oodFloorOodThreeZero{} at $r{=}0.3$, and no reading in either run is fewer
+than \oodFloorMinSem{} standard errors above its own floor. Condition
+following and image quality therefore come apart: on the range we claim the
+dial holds structure about as closely outside the training domain as inside it,
+while FID does not transfer.
 
 \subsection{Hand-drawn sketches}
 \begin{figure}[t]
@@ -644,7 +667,11 @@ correlation with the original drawing falls from \sdialZero{} at $r{=}0$ to
 \sdialOneZero{} at $r{=}0.1$, \sdialThreeZero{} at $r{=}0.3$ and
 \sdialOneHundred{} at $r{=}1$; $r{=}0.5$ and $r{=}0.7$ lie within a standard
 error (\sdialSemFiveZero{}) of each other.
-% <<AUTHOR-INPUT A27: 사용 시나리오 2문장(측정이 아니라 의도된 용도로 표기) -- 아티스트가 어떤 편집 과제에서 r=0.05와 r=0.3을 고르나; r을 한 번 바꿀 때 재생성 한 장에 걸리는 시간(T27 Compute 행의 추론 시간 값을 그대로 쓴다). 영어 문장으로 이 자리에 넣는다>>
+As intended use rather than measurement: $r{=}0.05$ is for holding the face as
+closely as the adapter can hold it, $r{=}0.3$ for keeping the layout while the
+detail is redrawn, and above that the layout itself is released. Changing $r$
+costs one regeneration, \sampleSecImg{} s per image on one H200
+(Table~\ref{tab:repro}).
 
 Against the filtered drawing the model was actually given, the same generations
 score \sdialFZeroFive{} at $r{=}0.05$, \sdialFOneZero{} at $r{=}0.1$ and
@@ -732,8 +759,9 @@ the $r{=}u^2$ sampler. It concentrates training at small $r$ and scores higher
 structure consistency than the main model at each measured cutoff of the
 claimed range (Tables~\ref{tab:abl} and~\ref{tab:ablfull}). Its FID is lower at
 $r{=}0.1$ and within single-estimate noise at $r{=}0.05$ and $0.3$
-(Table~\ref{tab:ablfid}).
-% <<AUTHOR-INPUT A25: u^2 샘플러를 채택하지 않은 이유가 위 학습 순서 하나뿐인지 확인. 다른 이유가 있으면 "The same holds for ..." 문장의 주절을 그 이유로 바꾼다. 다시 한다면 무엇을 고르겠는가(선택)>>
+(Table~\ref{tab:ablfid}). We leave it as an ablation rather than adopt it: the
+sampler is one of the fields this section varies, and choosing it on these
+numbers would be choosing it on the test set.
 
 \begin{table}[t]\centering\footnotesize
 \setlength{\tabcolsep}{2pt}

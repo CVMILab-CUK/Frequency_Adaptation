@@ -336,6 +336,17 @@ for nm, run in [("SkipOnly", "E18_skip_only"), ("AttnOnly", "E9a_conv_encoder"),
     if os.path.exists(p):
         mac(f"params{nm}", f"{json.load(open(p))['trainable_params']:,}")
 
+# ---- E25: is the out-of-domain condition-following above chance?
+f25 = os.path.join(R, "E25_ood_floor", "results.json")
+if os.path.exists(f25):
+    d = json.load(open(f25))
+    for run, tag in [("E21_indomain_photos", "Ind"), ("E21_ood_photos", "Ood")]:
+        for c, k in [("0.1", "OneZero"), ("0.3", "ThreeZero")]:
+            v = d.get(f"{run}/r{c}")
+            if v: mac(f"oodFloor{tag}{k}", v["SC_vs_filtered_floor"]["mean"])
+    sems = [v["above_floor_sems"] for k, v in d.items() if isinstance(v, dict) and "above_floor_sems" in v]
+    if sems: mac("oodFloorMinSem", min(sems), "{:.0f}")
+
 # ---- E24: what the paper cost, from the training logs and a timed sampler
 d = load("E24_compute_budget")
 if d:
