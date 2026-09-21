@@ -16,7 +16,7 @@
     every axis plot/.append style={line width=0.7pt, mark size=1.7pt},
   }}
 \begin{tikzpicture}
-\begin{axis}[draft, xlabel={차단 반경 $r$}, ylabel={점수},
+\begin{axis}[draft, xlabel={차단 반경 $r$}, ylabel={SC / 다양성 (LPIPS)},
              xmin=-0.03, xmax=1.03, ymin=0, ymax=0.8,
              legend pos=north east]
   \addplot[mark=square*, black] table[x=r, y=sc] {curve.dat};
@@ -29,22 +29,33 @@
 \vspace{2mm}
 
 \begin{tikzpicture}
-\begin{axis}[draft, height=38mm,
+\begin{axis}[draft, height=32mm,
              xlabel={구조 순응도}, ylabel={FID},
              xmin=-0.03, xmax=0.8, ymin=45, ymax=112,
-             legend pos=north east]
-  \addplot[mark=square*, black] table[x=sc, y=fid] {curve.dat};
-  \addlegendentry{차단 반경 $r$}
+             legend columns=2,
+             legend style={at={(0.5,-0.42)}, anchor=north}]
+  % curve.dat의 행 순서는 r = 0, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1이며 1--4행이
+  % 주장하는 구간이다. \thisrow{r} 표현식 필터가 pgfplots 파서를 통과하지 못해
+  % 행 인덱스로 나눈다.
+  \addplot[mark=square*, black, skip coords between index={0}{1}, skip coords between index={5}{8}] table[x=sc, y=fid] {curve.dat};
+  \addlegendentry{차단 반경, 자기 계측기}
+  \addplot[only marks, mark=square, black!45, skip coords between index={1}{5}] table[x=sc, y=fid] {curve.dat};
+  \addlegendentry{차단 반경 $r > 0.3$}
+  \addplot[mark=diamond*, black, densely dotted] coordinates {(\fixInstZeroFive,\fidMainZeroFive) (\fixInstOneZero,\fidMainOneZero) (\fixInstTwoZero,\fidMainTwoZero) (\fixInstThreeZero,\fidMainThreeZero)};
+  \addlegendentry{차단 반경, 계측기 $r_m{=}0.1$}
   \addplot[mark=o, black, densely dashed] table[x=sc, y=fid] {scale.dat};
   \addlegendentry{무작위-$r$, $r{=}0.1$에서 스케일}
   \addplot[mark=triangle, black!55, dotted] coordinates {(\sscSCQuarter,\sscFidQuarter) (\sscSCHalf,\sscFidHalf) (\sscSCThreeQ,\sscFidThreeQ) (\sscSCOne,\sscFidOne)};
   \addlegendentry{고정-$r{=}0.1$ 어댑터, 스케일}
 \end{axis}
 \end{tikzpicture}
-\caption{\textbf{위:} 차단 반경이 커질수록 구조 순응도는 내려가고 표본 다양성은
-올라간다. \textbf{아래:} 표~\ref{tab:main}의 차단 반경 스윕과 표~\ref{tab:strength}의 두 스케일
-어댑터를 구조 순응도/FID 평면에 놓은 것. 조건의 대역폭을 좁히면 좁은 FID 대역 안에서 구조
-순응도가 내려가고, 어느 어댑터든 약하게 하면 FID가 오르며 내려간다. 스케일한 점은
-$r_m{=}0.1$로, 차단 반경 점은 각자의 차단 반경으로 채점했다. 두 패널 모두 평가 출력에서 직접 그렸다.}
+\caption{\textbf{위:} 차단 반경에 대한 구조 순응도와 표본 다양성(표~\ref{tab:main}의
+값이며 SEM과 시드 sd도 거기에 있다). \textbf{아래:} 구조 순응도에 대한 FID, 점마다 FID 추정은
+하나다. 채운 사각형은 $r \in [0.05, 0.3]$에서 자기 차단 반경으로 채점한 스윕, 빈 회색 사각형은
+같은 스윕의 구간 밖이다. 마름모는 같은 생성물을 계측기 $r_m{=}0.1$로 다시 채점한 것이다. 원과
+삼각형은 무작위-$r$ 어댑터와 고정-$r{=}0.1$ 어댑터를 $r{=}0.1$에서 스케일한 것으로, 이미
+$r_m{=}0.1$을 쓴다. 그 한 계측기에서 차단 반경 $r{=}0.3$은 FID \fidMainThreeZero{}에서
+\fixInstThreeZero{}에, 세기 0.50은 FID \fidHalfScale{}에서 \fixInstHalfScale{}에 이른다.
+두 패널 모두 평가 출력에서 직접 그렸다.}
 \label{fig:curve}
 \end{figure}
