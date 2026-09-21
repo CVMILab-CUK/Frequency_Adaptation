@@ -3,30 +3,63 @@ SRMv2 EG_2027 Full Papers -- form draft (not part of the paper build)
 
 Title (keep unchanged): A Frequency Dial for Structure-Conditioned Diffusion
 Abstract: paste abstract_srmv2.txt (T05).
+
 Authors, order, on-site presenter (fixed after 2026-09-25):
-  <<AUTHOR-INPUT A09: 저자 목록·순서·소속, Lucca 현장 발표자 1인, senior author 리뷰어 추천 필드에 넣을 이름>>
-Topics / keywords (use the CfP topic spelling, e.g. image/video editing; generative AI; deep learning for graphics):
-  <<AUTHOR-INPUT A11: 폼의 토픽·키워드 선택 항목과 선택값>>
+  1. 이제영  -- first author, corresponding author, on-site presenter in Lucca,
+                and the name for the senior-author reviewer-recommendation field
+  2. 안재관  -- joint second author
+  3. 심재승  -- joint second author
+  (안재관 and 심재승 contributed equally as second authors.)
+  <<AUTHOR-INPUT A09b: 세 저자의 영문 표기와 소속(기관명·부서·국가). 폼은 영문 표기를 요구한다>>
+
+Topics / keywords (pick the exact spellings from the SRMv2 dropdown; the list
+below is what the paper supports, ordered by weight):
+  Primary topic   : generative models / generative AI
+  Secondary topics: image and video editing; deep learning for graphics;
+                    sketch-based interfaces and modelling
+  Keywords        : diffusion models; controllable generation; structure
+                    conditioning; frequency-domain conditioning; adapters;
+                    sketch-based image synthesis
+  These match the paper's ACM CCS concepts (ccs_eg.inc): Computing
+  methodologies~Image manipulation (500), ~Neural networks (300).
+
 Prior dissemination / dual submission:
-  <<AUTHOR-INPUT A10: 한국어판(fa_ko)·arXiv판의 공개·투고 이력. 타 venue 심사 후 리젝·철회 이력이 있으면 CfP 권장대로 커버레터를 Additional Attachments에 첨부. arXiv판에 "under review" 표기 금지>>
+  None. The work has not been submitted to or published at any other venue, and
+  no preprint has been posted. The Korean-language draft (fa_ko) is an internal
+  translation and has not been released. No cover letter is needed, since there
+  is no prior review history to declare.
+  The anonymous repository linked from Sec. 4.1 holds code, configurations,
+  per-run result files and the main model's checkpoints for review.
 
 AI Use Declaration Statement
 ----------------------------
 Delete items that did not happen; do not add uses that did not happen; do not
-delete an item that did happen. If any task of FIX-INSTRUCTIONS 2026-09-16 was
-applied, item (ii) happened.
+delete an item that did happen.
 
-<<AUTHOR-INPUT A08: tool name(s) and version(s), dates of use, and which of (i)-(iii) apply; confirm the sentence on figures, tables and datasets>>
-<TOOL(S) AND VERSION(S)> was used between <DATES> for the following purposes:
+Claude (Anthropic), model Claude Opus 5, used through the Claude Code CLI, was
+used between 2026-09-09 and 2026-09-21 for the following purposes:
 (i) checking grammar and wording of text written by the authors;
 (ii) an automated pre-submission review that flagged inconsistencies between
 text, tables and figures and proposed changes to the structure of the abstract,
 introduction and conclusion; the authors assessed each proposal and rewrote
 adopted passages;
-(iii) assistance with <code / LaTeX formatting / bibliography formatting>.
-The authors designed and ran all experiments, verified every number against the
+(iii) assistance with code, LaTeX formatting and bibliography formatting,
+including the evaluation and figure-generation scripts and the script that
+writes the bibliography from verified metadata;
+(iv) drafting and rewriting passages of the manuscript from the authors'
+own findings, explanations and decisions, each of which the authors reviewed,
+corrected where needed, and approved before it entered the paper.
+The research idea, the experimental design and the interpretations are the
+authors'. The authors ran the experiments, verified every number against the
 run outputs, and take full responsibility for the content.
 No generative AI tool was used to create, edit or retouch any figure, table or dataset.
+Every figure is produced by the authors' scripts from measured outputs or from
+the evaluation runs, and those scripts were written with the assistance
+declared in (iii).
 The face and scene images in the result figures are outputs of Stable
 Diffusion 1.5 with the adapter studied in the paper, produced by the authors'
 evaluation code as experimental results.
+
+  <<AUTHOR-INPUT A08b: 2026-09-09 이전(초기 코드·실험, 저장소 첫 커밋 2026-01-15, 실행 로그는 2026-08-30부터)에도
+  AI 도구를 썼다면 그 도구·버전·시기를 위 문장에 더한다. 저장소 이력으로는 확인되지 않는다 --
+  69개 커밋 중 68개가 2026-09-09 이후이고 전부 Claude 공동저자 트레일러를 달고 있다>>
