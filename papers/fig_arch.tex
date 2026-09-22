@@ -20,19 +20,37 @@
 ]
 
 % ==================== (a) system ====================
+% Laid out inside the same box the previous version occupied, x in [-0.4, 11.6]
+% and y in [1.55, -5.6], so \resizebox{\textwidth} produces the same height and
+% the body's page budget is unchanged by construction.
 \node[lbl, anchor=west] at (-0.4,1.55) {\textbf{(a)} condition path and the two injection sites};
 
-\node[blk] (img)  at (0.5,0.85) {image $x$};
-\node[blk] (gray) at (2.4,0.85) {gray};
-\node[blk] (fft)  at (4.0,0.85) {FFT};
-\node[draw, circle, minimum size=6.5mm, inner sep=0pt] (mask) at (5.5,0.85) {};
+% -- the dial, left to right: image, spectrum, mask, condition --------------
+% Six boxes have to fit between the panel's left edge (-0.4) and the elbow at
+% 7.5 that feeds both encoders. At the default 13mm they do not: image/gray end
+% up sharing an edge and gray/FFT overlap, and TikZ then draws those two arrows
+% backwards. 11mm boxes leave a 2.2mm gap at every step, which is where the
+% arrowheads go. The picture's extent does not change, so \resizebox produces
+% the same height as before.
+\node[blk, minimum width=11mm] (img)  at (0.15,0.85) {image $x$};
+\node[blk, minimum width=11mm] (gray) at (1.47,0.85) {gray};
+\node[blk, minimum width=11mm] (fft)  at (2.79,0.85) {FFT};
+\node[draw, circle, minimum size=6.5mm, inner sep=0pt] (mask) at (3.885,0.85) {};
 \fill[black!16] (mask.center) circle (1.6mm);
-\node[blk] (ifft) at (7.1,0.85) {IFFT};
-\node[train] (enc) at (9.3,0.85) {conv encoder};
-\foreach \a/\b in {img/gray, gray/fft, fft/mask, mask/ifft, ifft/enc} \draw[flow] (\a)--(\b);
+\node[blk, minimum width=11mm] (ifft) at (4.98,0.85) {IFFT};
+\node[blk, minimum width=15mm] (cond) at (6.50,0.85) {condition $c_r$};
+\foreach \a/\b in {img/gray, gray/fft, fft/mask, mask/ifft, ifft/cond} \draw[flow] (\a)--(\b);
 \node[tiny, below=0.6mm of mask] {radius $r$};
-\node[lbl, below left=0.6mm and -4mm of enc, align=right] {no VAE};
 
+% -- two trainable encoders, one per injection path ------------------------
+\node[train, minimum width=21mm] (enc) at (8.9,1.25) {cond encoder};
+\node[train, minimum width=21mm] (stem) at (8.9,0.35) {skip stem};
+\draw[flow] (cond.east) -- (7.5,0.85) |- (enc.west);
+\draw[flow] (7.5,0.85) |- (stem.west);
+\node[tiny, right=0.8mm of enc, align=left] {$z_c$: 4\,ch, $64^2$};
+\node[tiny, right=0.8mm of stem, align=left] {own $8{\times}$\\reduction};
+
+% -- the frozen backbone ----------------------------------------------------
 \node[frozen] (e64) at (1.5,-0.6) {enc 64};
 \node[frozen] (e32) at (1.5,-1.7) {enc 32};
 \node[frozen] (e16) at (1.5,-2.8) {enc 16};
@@ -49,23 +67,41 @@
   \draw[skip] (e\lv)--(s\lv); \draw[skip,->] (s\lv)--(d\lv);}
 \node[sum] (smid) at (5.4,-3.7) {\tiny$+$};
 
-% path 1: skip residuals -- the dominant one
-\draw[line width=1.1pt] (enc.south) -- (9.3,0.12) -- (4.1,0.12);
+% -- path 1: the skip residuals, the dominant one --------------------------
+\draw[line width=1.1pt] (stem.south) -- (8.9,0.12) -- (4.1,0.12);
 \foreach \n in {s64,s32,s16} \draw[inj] (4.1,0.12) -- (\n.north);
 \draw[line width=1.1pt] (4.1,0.12) -- (4.1,-2.8);
-\draw[inj] (9.3,-3.7) -- (smid.east);
-\draw[line width=1.1pt] (9.3,0.12) -- (9.3,-5.15);
-\node[lbl, right=1mm, align=left] at (9.45,-1.0)
-  {\begin{minipage}{22mm}\raggedright zero-init $1{\times}1$ head\\per skip tensor\\[1pt]
-   skip path (dominant)\end{minipage}};
+\draw[inj] (8.9,-3.7) -- (smid.east);
+\draw[line width=1.1pt] (8.9,0.12) -- (8.9,-3.7);
+\node[lbl, right=1mm, align=left] at (9.05,-1.55)
+  {\begin{minipage}{21mm}\raggedright 12 zero-init $1{\times}1$ skip
+   heads and one mid head\\[1pt] skip path (dominant)\end{minipage}};
 
-% path 2: SA at the cross-attention sites -- the minor one
-\node[train, minimum width=30mm] (sa) at (4.1,-5.15) {SA at 16 cross-attn sites};
-\draw[minor] (9.3,-5.15) -- (sa.east);
+% -- path 2: StandAlone attention, the minor one ---------------------------
+\node[train, minimum width=30mm] (sa) at (4.1,-4.6) {SA at 16 cross-attn sites};
+% The attention path used to leave enc.east at y=1.25 and run down at x=10.9,
+% straight through the encoder annotation and the skip-path note. It now leaves
+% the top of the box and comes down at 11.45, right of every label in panel (a)
+% (the rightmost ends at 11.25) and left of panel (b)'s frame at 11.75.
+\draw[minor] (enc.north) -- (11.45,1.55) -- (11.45,-4.6) -- (sa.east);
 \draw[minor] (sa.north) -- (mid.south);
-\node[lbl, below=0.6mm of sa] {attention path \ (panel b)};
-\node[frozen, minimum width=15mm] (clip) at (0.9,-5.15) {CLIP text};
+\node[frozen, minimum width=15mm] (clip) at (0.9,-4.6) {CLIP text};
 \draw[flow] (clip) -- (sa.west);
+\node[tiny, above=0.6mm of clip] {$77{\times}768$};
+
+% -- the frozen autoencoder and the training loop --------------------------
+\node[frozen, minimum width=13mm] (vae) at (0.9,-5.4) {VAE enc};
+\node[blk, minimum width=17mm] (noise) at (3.0,-5.4) {$q(z_t\mid z_0)$};
+\node[blk, minimum width=19mm] (eps) at (5.6,-5.4) {$\epsilon$-prediction};
+\node[frozen, minimum width=13mm] (dec) at (8.0,-5.4) {VAE dec};
+\draw[flow] (vae)--(noise);
+\draw[flow] (noise)--(eps);
+\draw[flow] (eps)--(dec);
+\draw[flow] (noise.north) -- (3.0,-4.95) -- (1.5,-4.95) -- (e64.south-|1.5,-3.35) -- (1.5,-3.35);
+\draw[flow] (d64.south) -- (6.7,-5.05) -- (eps.north-|6.7,-5.15) -- (6.7,-5.15);
+\node[tiny, below=0.5mm of eps] {Min-SNR $\gamma{=}5$};
+\node[tiny, below=0.5mm of vae, align=center] {real image};
+\node[tiny, below=0.5mm of dec, align=center] {reconstruction};
 
 % ==================== (b) one SA site ====================
 \begin{scope}[xshift=12.2cm, yshift=0cm]
