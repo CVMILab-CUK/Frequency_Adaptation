@@ -221,6 +221,7 @@ exact no-ops: with them switched off the network reproduces stock
 Stable Diffusion~1.5~\cite{rombach2021high} bit for bit, which we assert before every training run.
 
 \input{fig_arch}
+\input{fig_sa}
 
 \paragraph{Training.} SD1.5~\cite{rombach2021high} stays frozen. We train
 \ourParams{} parameters on FFHQ-512~\cite{karras2018style} (images under their

@@ -1,133 +1,17 @@
-% Two panels: the system, and one StandAlone-attention site opened up. Drafted
-% throughout -- one stroke weight for data flow, heavier for trained parts,
-% flat tint for frozen blocks, square corners. Every label matches a symbol in
-% models/attention_processor.py.
+% 저자가 직접 그린 시스템 개요. 슬라이드(images/Frequency_Adapataion.pdf 6쪽)에서
+% 벡터로 내보내 잉크 경계로 잘랐다. 그림이 담지 않은 것 -- 두 번째 학습 인코더,
+% 헤드 개수, 무엇이 동결인지 -- 는 캡션에 있다.
 \begin{figure*}[t]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  font=\small, >=latex, line width=0.4pt,
-  blk/.style   ={draw, minimum height=6mm, minimum width=13mm, inner xsep=2pt, align=center},
-  frozen/.style={blk, fill=black!4, draw=black!50},
-  train/.style ={blk, line width=0.9pt},
-  lbl/.style   ={font=\scriptsize, inner sep=1.5pt},
-  tiny/.style  ={font=\scriptsize, inner sep=1pt},
-  flow/.style  ={->, line width=0.4pt},
-  inj/.style   ={->, line width=1.1pt},
-  minor/.style ={->, line width=0.55pt},
-  skip/.style  ={densely dashed, line width=0.35pt},
-  sum/.style   ={draw, circle, inner sep=0pt, minimum size=3.2mm, line width=0.9pt},
-]
-
-% ==================== (a) system ====================
-% 이전 판이 차지하던 것과 같은 상자 안에 배치했다, x in [-0.4, 11.6]
-% and y in [1.55, -5.6], so \resizebox{\textwidth} produces the same height and
-% the body's page budget is unchanged by construction.
-\node[lbl, anchor=west] at (-0.4,1.55) {\textbf{(a)} 조건 경로와 두 주입 지점};
-
-% -- the dial, left to right: image, spectrum, mask, condition --------------
-% Six boxes have to fit between the panel's left edge (-0.4) and the elbow at
-% 7.5 that feeds both encoders. At the default 13mm they do not: image/gray end
-% up sharing an edge and gray/FFT overlap, and TikZ then draws those two arrows
-% backwards. 11mm boxes leave a 2.2mm gap at every step, which is where the
-% arrowheads go. The picture's extent does not change, so \resizebox produces
-% the same height as before.
-\node[blk, minimum width=11mm] (img)  at (0.15,0.85) {이미지 $x$};
-\node[blk, minimum width=11mm] (gray) at (1.47,0.85) {회색조};
-\node[blk, minimum width=11mm] (fft)  at (2.79,0.85) {FFT};
-\node[draw, circle, minimum size=6.5mm, inner sep=0pt] (mask) at (3.885,0.85) {};
-\fill[black!16] (mask.center) circle (1.6mm);
-\node[blk, minimum width=11mm] (ifft) at (4.98,0.85) {IFFT};
-\node[blk, minimum width=15mm] (cond) at (6.50,0.85) {조건 $c_r$};
-\foreach \a/\b in {img/gray, gray/fft, fft/mask, mask/ifft, ifft/cond} \draw[flow] (\a)--(\b);
-\node[tiny, below=0.6mm of mask] {반경 $r$};
-
-% -- two trainable encoders, one per injection path ------------------------
-\node[train, minimum width=21mm] (enc) at (8.9,1.25) {조건 인코더};
-\node[train, minimum width=21mm] (stem) at (8.9,0.35) {skip stem};
-\draw[flow] (cond.east) -- (7.5,0.85) |- (enc.west);
-\draw[flow] (7.5,0.85) |- (stem.west);
-\node[tiny, right=0.8mm of enc, align=left] {$z_c$: 4채널, $64^2$};
-\node[tiny, right=0.8mm of stem, align=left] {자체 $8{\times}$\\축소};
-
-% -- the frozen backbone ----------------------------------------------------
-\node[frozen] (e64) at (1.5,-0.6) {enc 64};
-\node[frozen] (e32) at (1.5,-1.7) {enc 32};
-\node[frozen] (e16) at (1.5,-2.8) {enc 16};
-\node[frozen] (mid) at (4.1,-3.7) {mid 8};
-\node[frozen] (d16) at (6.7,-2.8) {dec 16};
-\node[frozen] (d32) at (6.7,-1.7) {dec 32};
-\node[frozen] (d64) at (6.7,-0.6) {dec 64};
-\foreach \a/\b in {e64/e32, e32/e16, d16/d32, d32/d64} \draw[flow] (\a)--(\b);
-\draw[flow] (e16) |- (mid);  \draw[flow] (mid) -| (d16);
-\node[lbl, left=1mm of e64, align=right] {동결\\SD1.5};
-
-\foreach \lv/\y in {64/-0.6, 32/-1.7, 16/-2.8}{
-  \node[sum] (s\lv) at (4.1,\y) {\tiny$+$};
-  \draw[skip] (e\lv)--(s\lv); \draw[skip,->] (s\lv)--(d\lv);}
-\node[sum] (smid) at (5.4,-3.7) {\tiny$+$};
-
-% -- path 1: the skip residuals, the dominant one --------------------------
-\draw[line width=1.1pt] (stem.south) -- (8.9,0.12) -- (4.1,0.12);
-\foreach \n in {s64,s32,s16} \draw[inj] (4.1,0.12) -- (\n.north);
-\draw[line width=1.1pt] (4.1,0.12) -- (4.1,-2.8);
-\draw[inj] (8.9,-3.7) -- (smid.east);
-\draw[line width=1.1pt] (8.9,0.12) -- (8.9,-3.7);
-\node[lbl, right=1mm, align=left] at (9.05,-1.55)
-  {\begin{minipage}{21mm}\raggedright 0초기화 $1{\times}1$ skip 헤드
-   12개와 mid 헤드 1개\\[1pt] skip 경로(지배적)\end{minipage}};
-
-% -- path 2: StandAlone attention, the minor one ---------------------------
-\node[train, minimum width=30mm] (sa) at (4.1,-4.6) {교차 어텐션 16곳의 SA};
-% The attention path used to leave enc.east at y=1.25 and run down at x=10.9,
-% straight through the encoder annotation and the skip-path note. It now leaves
-% the top of the box and comes down at 11.45, right of every label in panel (a)
-% (the rightmost ends at 11.25) and left of panel (b)'s frame at 11.75.
-\draw[minor] (enc.north) -- (11.45,1.55) -- (11.45,-4.6) -- (sa.east);
-\draw[minor] (sa.north) -- (mid.south);
-\node[frozen, minimum width=15mm] (clip) at (0.9,-4.6) {CLIP 텍스트};
-\draw[flow] (clip) -- (sa.west);
-\node[tiny, above=0.6mm of clip] {$77{\times}768$};
-
-% -- the frozen autoencoder and the training loop --------------------------
-\node[frozen, minimum width=13mm] (vae) at (0.9,-5.4) {VAE 인코더};
-\node[blk, minimum width=17mm] (noise) at (3.0,-5.4) {$q(z_t\mid z_0)$};
-\node[blk, minimum width=19mm] (eps) at (5.6,-5.4) {$\epsilon$ 예측};
-\node[frozen, minimum width=13mm] (dec) at (8.0,-5.4) {VAE 디코더};
-\draw[flow] (vae)--(noise);
-\draw[flow] (noise)--(eps);
-\draw[flow] (eps)--(dec);
-\draw[flow] (noise.north) -- (3.0,-4.95) -- (1.5,-4.95) -- (e64.south-|1.5,-3.35) -- (1.5,-3.35);
-\draw[flow] (d64.south) -- (6.7,-5.05) -- (eps.north-|6.7,-5.15) -- (6.7,-5.15);
-\node[tiny, below=0.5mm of eps] {Min-SNR $\gamma{=}5$};
-\node[tiny, below=0.5mm of vae, align=center] {실제 이미지};
-\node[tiny, below=0.5mm of dec, align=center] {재구성};
-
-% ==================== (b) one SA site ====================
-\begin{scope}[xshift=12.2cm, yshift=0cm]
-\node[lbl, anchor=west] at (-0.3,1.55) {\textbf{(b)} 한 지점의 내부}
-\draw[black!25, line width=0.35pt] (-0.45,-4.2) rectangle (5.6,1.3);
-
-\node[inner sep=0pt, anchor=north] at (2.575,0.95)
-  {\includegraphics[width=5.9cm]{figures/sa_adapter}};
-\node[lbl, anchor=north west, align=left] at (-0.35,-3.05)
-  {\begin{minipage}{58mm}\raggedright
-   softmax는 전체 맵이 아니라 그 9개 키에 대해 계산된다.\\[2pt]
-   \textbf{학습:} $W_K$, $W_V$ ($1{\times}1$)와 0초기화 출력 게이트.\quad
-   \textbf{동결:} $W_Q$, $W_O$.\end{minipage}};
-\end{scope}
-
-\end{tikzpicture}}
-\caption{\textbf{(a)} 반경 $r$의 원판을 스펙트럼에서 제거하고, 학습되는 합성곱
-인코더가 그 결과를 전체 해상도로 읽는다. VAE는 거치지 않는다. 그 특징은 동결 UNet에 두
-번 들어간다. 디코더로 가는 각 skip 텐서에 0으로 초기화된 잔차로($\oplus$; 그림에는 해상도
-세 단계와 mid block이 그려져 있고, 네트워크에는 skip 헤드 12개와 mid 헤드 하나가 있다),
-그리고 교차 어텐션 16곳의
-StandAlone 어텐션으로. 선 굵기는 측정된 분배를 따른다. $r{=}0$에서 skip 경로만 켜면 SC가
-\pathSkipOnlyZero{}, 어텐션만 켜면 \pathAttnOnlyZero{}다(\ref{sec:where}절).
-\textbf{(b)} StandAlone 한 지점. 쿼리는 UNet 자신의 latent에서 동결 $W_Q$를 거쳐 오고,
-키와 값은 조건에서 학습된 $1{\times}1$ 투영을 거쳐 온다. unfold로 각 위치가 전체 맵이 아니라
-자기 $3{\times}3$ 이웃만 참조한다. $1{\times}1$ 창도 적어도 그만큼 잘 작동한다(\ref{sec:where}절). 결과는 동결 출력 투영과 0초기화 채널별 게이트를 지나,
-latent에 더해져 아래의 텍스트 쿼리가 구조를 보게 하고, 층이 반환하는 값에도 더해진다.}
+\includegraphics[width=\textwidth]{figures/pipeline}
+\caption{반경 $r$의 원판을 스펙트럼에서 제거하고, 학습되는 합성곱 인코더가 그 결과를
+전체 해상도로 읽어 VAE를 거치지 않고 4채널 $64{\times}64$의 조건 $z_c$를 만든다. 이는
+동결 UNet의 교차 어텐션 16곳으로 들어가며, 그곳에서 학습되는 것은 $W_K$, $W_V$와
+0초기화 출력 게이트뿐이고 $W_Q$와 $W_O$는 동결이다(그림~\ref{fig:sa}). 같은 조건 경로의
+일부로 그려진 두 번째 학습 stem은 원본 조건을 읽어 디코더 skip 텐서 12곳과 mid block에
+0초기화 잔차를 더한다. 구조의 대부분은 그 경로가 나르며, 분배는 측정된 값이다.
+$r{=}0$에서 skip 경로만 켜면 SC가 \pathSkipOnlyZero{}, 어텐션만 켜면
+\pathAttnOnlyZero{}다(\ref{sec:where}절). 학습은 Min-SNR 가중의 $\epsilon$ 예측이고,
+동결 오토인코더를 지나는 루프는 표준 잠재 확산 그대로이며 학습되지 않는다.}
 \label{fig:arch}
 \end{figure*}

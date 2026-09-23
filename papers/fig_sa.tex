@@ -1,0 +1,15 @@
+% Panel (b) of the old Figure 2, now the author's own drawing of one
+% StandAlone-attention site (images/Frequency_Adapataion.pdf p.7).
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/sa_adapter}
+\caption{One StandAlone site. The query is one position of the UNet latent
+$z_t$; the keys and values are the $3{\times}3$ neighbourhood of the same
+position in the condition $z_c$, so the softmax runs over 9 entries rather than
+the whole map, and a $1{\times}1$ window performs at least as well
+(Sec.~\ref{sec:where}). $W_K$, $W_V$ and the zero-initialised per-channel gate
+are trained; $W_Q$ and the output projection stay frozen. The gated result is
+added both into the latent --- so the text query below sees structure --- and
+to what the layer returns.}
+\label{fig:sa}
+\end{figure}

@@ -1,139 +1,22 @@
-% Two panels: the system, and one StandAlone-attention site opened up. Drafted
-% throughout -- one stroke weight for data flow, heavier for trained parts,
-% flat tint for frozen blocks, square corners. Every label matches a symbol in
-% models/attention_processor.py.
+% The author's own schematic of the system, exported as vector from the slide
+% deck (images/Frequency_Adapataion.pdf p.6) and cropped to its ink box. The
+% labels the drawing does not carry -- the second trainable encoder, the head
+% counts, what is frozen -- are in the caption.
 \begin{figure*}[t]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  font=\small, >=latex, line width=0.4pt,
-  blk/.style   ={draw, minimum height=6mm, minimum width=13mm, inner xsep=2pt, align=center},
-  frozen/.style={blk, fill=black!4, draw=black!50},
-  train/.style ={blk, line width=0.9pt},
-  lbl/.style   ={font=\scriptsize, inner sep=1.5pt},
-  tiny/.style  ={font=\scriptsize, inner sep=1pt},
-  flow/.style  ={->, line width=0.4pt},
-  inj/.style   ={->, line width=1.1pt},
-  minor/.style ={->, line width=0.55pt},
-  skip/.style  ={densely dashed, line width=0.35pt},
-  sum/.style   ={draw, circle, inner sep=0pt, minimum size=3.2mm, line width=0.9pt},
-]
-
-% ==================== (a) system ====================
-% Laid out inside the same box the previous version occupied, x in [-0.4, 11.6]
-% and y in [1.55, -5.6], so \resizebox{\textwidth} produces the same height and
-% the body's page budget is unchanged by construction.
-\node[lbl, anchor=west] at (-0.4,1.55) {\textbf{(a)} condition path and the two injection sites};
-
-% -- the dial, left to right: image, spectrum, mask, condition --------------
-% Six boxes have to fit between the panel's left edge (-0.4) and the elbow at
-% 7.5 that feeds both encoders. At the default 13mm they do not: image/gray end
-% up sharing an edge and gray/FFT overlap, and TikZ then draws those two arrows
-% backwards. 11mm boxes leave a 2.2mm gap at every step, which is where the
-% arrowheads go. The picture's extent does not change, so \resizebox produces
-% the same height as before.
-\node[blk, minimum width=11mm] (img)  at (0.15,0.85) {image $x$};
-\node[blk, minimum width=11mm] (gray) at (1.47,0.85) {gray};
-\node[blk, minimum width=11mm] (fft)  at (2.79,0.85) {FFT};
-\node[draw, circle, minimum size=6.5mm, inner sep=0pt] (mask) at (3.885,0.85) {};
-\fill[black!16] (mask.center) circle (1.6mm);
-\node[blk, minimum width=11mm] (ifft) at (4.98,0.85) {IFFT};
-\node[blk, minimum width=15mm] (cond) at (6.50,0.85) {condition $c_r$};
-\foreach \a/\b in {img/gray, gray/fft, fft/mask, mask/ifft, ifft/cond} \draw[flow] (\a)--(\b);
-\node[tiny, below=0.6mm of mask] {radius $r$};
-
-% -- two trainable encoders, one per injection path ------------------------
-\node[train, minimum width=21mm] (enc) at (8.9,1.25) {cond encoder};
-\node[train, minimum width=21mm] (stem) at (8.9,0.35) {skip stem};
-\draw[flow] (cond.east) -- (7.5,0.85) |- (enc.west);
-\draw[flow] (7.5,0.85) |- (stem.west);
-\node[tiny, right=0.8mm of enc, align=left] {$z_c$: 4\,ch, $64^2$};
-\node[tiny, right=0.8mm of stem, align=left] {own $8{\times}$\\reduction};
-
-% -- the frozen backbone ----------------------------------------------------
-\node[frozen] (e64) at (1.5,-0.6) {enc 64};
-\node[frozen] (e32) at (1.5,-1.7) {enc 32};
-\node[frozen] (e16) at (1.5,-2.8) {enc 16};
-\node[frozen] (mid) at (4.1,-3.7) {mid 8};
-\node[frozen] (d16) at (6.7,-2.8) {dec 16};
-\node[frozen] (d32) at (6.7,-1.7) {dec 32};
-\node[frozen] (d64) at (6.7,-0.6) {dec 64};
-\foreach \a/\b in {e64/e32, e32/e16, d16/d32, d32/d64} \draw[flow] (\a)--(\b);
-\draw[flow] (e16) |- (mid);  \draw[flow] (mid) -| (d16);
-\node[lbl, left=1mm of e64, align=right] {frozen\\SD1.5};
-
-\foreach \lv/\y in {64/-0.6, 32/-1.7, 16/-2.8}{
-  \node[sum] (s\lv) at (4.1,\y) {\tiny$+$};
-  \draw[skip] (e\lv)--(s\lv); \draw[skip,->] (s\lv)--(d\lv);}
-\node[sum] (smid) at (5.4,-3.7) {\tiny$+$};
-
-% -- path 1: the skip residuals, the dominant one --------------------------
-\draw[line width=1.1pt] (stem.south) -- (8.9,0.12) -- (4.1,0.12);
-\foreach \n in {s64,s32,s16} \draw[inj] (4.1,0.12) -- (\n.north);
-\draw[line width=1.1pt] (4.1,0.12) -- (4.1,-2.8);
-\draw[inj] (8.9,-3.7) -- (smid.east);
-\draw[line width=1.1pt] (8.9,0.12) -- (8.9,-3.7);
-\node[lbl, right=1mm, align=left] at (9.05,-1.55)
-  {\begin{minipage}{21mm}\raggedright 12 zero-init $1{\times}1$ skip
-   heads and one mid head\\[1pt] skip path (dominant)\end{minipage}};
-
-% -- path 2: StandAlone attention, the minor one ---------------------------
-\node[train, minimum width=30mm] (sa) at (4.1,-4.6) {SA at 16 cross-attn sites};
-% The attention path used to leave enc.east at y=1.25 and run down at x=10.9,
-% straight through the encoder annotation and the skip-path note. It now leaves
-% the top of the box and comes down at 11.45, right of every label in panel (a)
-% (the rightmost ends at 11.25) and left of panel (b)'s frame at 11.75.
-\draw[minor] (enc.north) -- (11.45,1.55) -- (11.45,-4.6) -- (sa.east);
-\draw[minor] (sa.north) -- (mid.south);
-\node[frozen, minimum width=15mm] (clip) at (0.9,-4.6) {CLIP text};
-\draw[flow] (clip) -- (sa.west);
-\node[tiny, above=0.6mm of clip] {$77{\times}768$};
-
-% -- the frozen autoencoder and the training loop --------------------------
-\node[frozen, minimum width=13mm] (vae) at (0.9,-5.4) {VAE enc};
-\node[blk, minimum width=17mm] (noise) at (3.0,-5.4) {$q(z_t\mid z_0)$};
-\node[blk, minimum width=19mm] (eps) at (5.6,-5.4) {$\epsilon$-prediction};
-\node[frozen, minimum width=13mm] (dec) at (8.0,-5.4) {VAE dec};
-\draw[flow] (vae)--(noise);
-\draw[flow] (noise)--(eps);
-\draw[flow] (eps)--(dec);
-\draw[flow] (noise.north) -- (3.0,-4.95) -- (1.5,-4.95) -- (e64.south-|1.5,-3.35) -- (1.5,-3.35);
-\draw[flow] (d64.south) -- (6.7,-5.05) -- (eps.north-|6.7,-5.15) -- (6.7,-5.15);
-\node[tiny, below=0.5mm of eps] {Min-SNR $\gamma{=}5$};
-\node[tiny, below=0.5mm of vae, align=center] {real image};
-\node[tiny, below=0.5mm of dec, align=center] {reconstruction};
-
-% ==================== (b) one SA site ====================
-\begin{scope}[xshift=12.2cm, yshift=0cm]
-\node[lbl, anchor=west] at (-0.3,1.55) {\textbf{(b)} inside one site}
-\draw[black!25, line width=0.35pt] (-0.45,-4.2) rectangle (5.6,1.3);
-
-\node[inner sep=0pt, anchor=north] at (2.575,0.95)
-  {\includegraphics[width=5.9cm]{figures/sa_adapter}};
-\node[lbl, anchor=north west, align=left] at (-0.35,-3.05)
-  {\begin{minipage}{58mm}\raggedright
-   The softmax runs over those 9 keys, not over the whole map.\\[2pt]
-   \textbf{trained:} $W_K$, $W_V$ ($1{\times}1$) and the zero-initialised output
-   gate.\quad\textbf{frozen:} $W_Q$, $W_O$.\end{minipage}};
-\end{scope}
-
-\end{tikzpicture}}
-\caption{\textbf{(a)} A disc of radius $r$ is masked out of the spectrum and a
-trainable convolutional encoder reads the result at full resolution, never
-through the VAE. Its features enter the frozen UNet twice: as zero-initialised
-residuals on each decoder skip tensor ($\oplus$; three resolution levels and the
-mid block are drawn, 12 skip heads and one mid head in the network), and through
-StandAlone attention at
-the 16 cross-attention sites. Stroke weight follows the measured split: at $r{=}0$, SC is
+\includegraphics[width=\textwidth]{figures/pipeline}
+\caption{A disc of radius $r$ is masked out of the spectrum and a trainable
+convolutional encoder reads the result at full resolution, never through the
+VAE, giving a condition $z_c$ of 4 channels at $64{\times}64$. It enters the
+frozen UNet at the 16 cross-attention sites, where only $W_K$, $W_V$ and a
+zero-initialised output gate are trained and $W_Q$ and $W_O$ stay frozen
+(Fig.~\ref{fig:sa}). A second trainable stem, drawn here as part of the same
+condition path, reads the raw condition and adds zero-initialised residuals to
+each of the 12 decoder skip tensors and to the mid block; that path carries
+most of the structure, and the split is measured: at $r{=}0$, SC is
 \pathSkipOnlyZero{} with only the skip path active and \pathAttnOnlyZero{} with
-only attention (Sec.~\ref{sec:where}).
-\textbf{(b)} One StandAlone site. The query comes from the UNet's own latent
-through the frozen $W_Q$; keys and values come from the condition through
-trained $1{\times}1$ projections, unfolded so each position attends over its
-$3{\times}3$ neighbourhood rather than the whole map; a $1{\times}1$ window
-performs at least as well (Sec.~\ref{sec:where}). The result passes the
-frozen output projection and a zero-initialised per-channel gate, then is added
-both into the latent --- so the text query below sees structure --- and to what
-the layer returns.}
+only attention (Sec.~\ref{sec:where}). Training is $\epsilon$-prediction with
+Min-SNR weighting; the loop through the frozen autoencoder is the standard
+latent-diffusion one and none of it is trained.}
 \label{fig:arch}
 \end{figure*}
