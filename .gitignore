@@ -49,3 +49,13 @@ ai_review/
 # the SRMv2 form draft carries author names and affiliations; the anonymous
 # supplementary mirrors this repository, so it stays out of the tree
 papers/srmv2_form_draft.txt
+
+# Author-drawn figure sources. The slide export carries `author: 이제영` in its
+# PDF metadata, and the PNGs are its raster exports; this repository is what the
+# anonymous supplementary mirrors, so none of them may be tracked. The figures
+# the paper uses are the metadata-stripped crops in papers/figures/.
+images/Frequency_Adapataion.pdf
+images/Main.png
+images/Main.PNG
+images/SA-Adapter.PNG
+images/SA-Aapter.PNG
