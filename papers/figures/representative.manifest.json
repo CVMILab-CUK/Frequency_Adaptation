@@ -1,5 +1,6 @@
 {
- "note": "SRMv2 representative image; tiles are the saved E10b generations scored in Table 1",
+ "note": "SRMv2 representative image: the author's pipeline schematic over the dial sweep",
+ "pipeline": "papers/figures/pipeline.pdf (vector, rendered)",
  "tiles": [
   {
    "row": 0,
@@ -33,53 +34,25 @@
    "row": 1,
    "col": 0,
    "label": "reference",
-   "src": "results/E10b/reference/00001.png",
-   "sha256": "bcc02dc0b7c83192"
-  },
-  {
-   "row": 1,
-   "col": 1,
-   "label": "r = 0.05",
-   "src": "results/E10b/gen_r0.05/00001.png",
-   "sha256": "23a450e639ed77a6"
-  },
-  {
-   "row": 1,
-   "col": 2,
-   "label": "r = 0.1",
-   "src": "results/E10b/gen_r0.1/00001.png",
-   "sha256": "cd9a3a9bf0683ba9"
-  },
-  {
-   "row": 1,
-   "col": 3,
-   "label": "r = 0.3",
-   "src": "results/E10b/gen_r0.3/00001.png",
-   "sha256": "c5368340bfb5dfbd"
-  },
-  {
-   "row": 2,
-   "col": 0,
-   "label": "reference",
    "src": "results/E10b/reference/00002.png",
    "sha256": "6d65a8349a142dc3"
   },
   {
-   "row": 2,
+   "row": 1,
    "col": 1,
    "label": "r = 0.05",
    "src": "results/E10b/gen_r0.05/00002.png",
    "sha256": "753ce588778b1eb8"
   },
   {
-   "row": 2,
+   "row": 1,
    "col": 2,
    "label": "r = 0.1",
    "src": "results/E10b/gen_r0.1/00002.png",
    "sha256": "5f6dfda2527f8eb4"
   },
   {
-   "row": 2,
+   "row": 1,
    "col": 3,
    "label": "r = 0.3",
    "src": "results/E10b/gen_r0.3/00002.png",
