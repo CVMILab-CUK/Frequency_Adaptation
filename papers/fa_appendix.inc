@@ -185,8 +185,8 @@ $r$ & vs.\ input & vs.\ filtered & FID & vs.\ input & vs.\ filtered & FID \\
 \end{tabular}
 \caption{\oodN{} general-scene photographs against \oodN{} FFHQ test images, run
 with the same script and the prompt ``a high-quality photo''
-(Sec.~\ref{sec:ood}). ``Vs.\ input'' correlates the grayscale output with the
-grayscale input photograph, ``vs.\ filtered'' with the filtered condition the
+(Sec.~\ref{sec:ood}). ``Vs.\ input'' correlates the greyscale output with the
+greyscale input photograph, ``vs.\ filtered'' with the filtered condition the
 model was given; neither filters the output, so these are not the
 structure-consistency values of Table~\ref{tab:main}. Each FID is against that
 run's own input photographs. The control falls in both; the image quality does
@@ -216,7 +216,7 @@ $r$ & vs.\ original & $\pm$ SEM & vs.\ filtered & vs.\ original & vs.\ filtered 
 \end{tabular}
 \caption{The dial applied to \sdialN{} hand-drawn face sketches (main model,
 sampling seed 2026, prompt ``a high-quality photo of a face''). ``Vs.\ original''
-correlates the grayscale output with the unfiltered drawing; ``vs.\ filtered''
+correlates the greyscale output with the unfiltered drawing; ``vs.\ filtered''
 with the drawing filtered at $r$ that the model was given. Neither filters the
 output, so neither is the structure-consistency instrument of
 Table~\ref{tab:main}. The photograph columns come from the same script on FFHQ

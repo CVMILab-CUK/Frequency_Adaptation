@@ -1,0 +1,89 @@
+{
+ "note": "SRMv2 representative image; tiles are the saved E10b generations scored in Table 1",
+ "tiles": [
+  {
+   "row": 0,
+   "col": 0,
+   "label": "reference",
+   "src": "results/E10b/reference/00000.png",
+   "sha256": "432063f13f70095a"
+  },
+  {
+   "row": 0,
+   "col": 1,
+   "label": "r = 0.05",
+   "src": "results/E10b/gen_r0.05/00000.png",
+   "sha256": "51db3dd14e72e041"
+  },
+  {
+   "row": 0,
+   "col": 2,
+   "label": "r = 0.1",
+   "src": "results/E10b/gen_r0.1/00000.png",
+   "sha256": "dc2bf6ab87349f52"
+  },
+  {
+   "row": 0,
+   "col": 3,
+   "label": "r = 0.3",
+   "src": "results/E10b/gen_r0.3/00000.png",
+   "sha256": "6416cee841643d67"
+  },
+  {
+   "row": 1,
+   "col": 0,
+   "label": "reference",
+   "src": "results/E10b/reference/00001.png",
+   "sha256": "bcc02dc0b7c83192"
+  },
+  {
+   "row": 1,
+   "col": 1,
+   "label": "r = 0.05",
+   "src": "results/E10b/gen_r0.05/00001.png",
+   "sha256": "23a450e639ed77a6"
+  },
+  {
+   "row": 1,
+   "col": 2,
+   "label": "r = 0.1",
+   "src": "results/E10b/gen_r0.1/00001.png",
+   "sha256": "cd9a3a9bf0683ba9"
+  },
+  {
+   "row": 1,
+   "col": 3,
+   "label": "r = 0.3",
+   "src": "results/E10b/gen_r0.3/00001.png",
+   "sha256": "c5368340bfb5dfbd"
+  },
+  {
+   "row": 2,
+   "col": 0,
+   "label": "reference",
+   "src": "results/E10b/reference/00002.png",
+   "sha256": "6d65a8349a142dc3"
+  },
+  {
+   "row": 2,
+   "col": 1,
+   "label": "r = 0.05",
+   "src": "results/E10b/gen_r0.05/00002.png",
+   "sha256": "753ce588778b1eb8"
+  },
+  {
+   "row": 2,
+   "col": 2,
+   "label": "r = 0.1",
+   "src": "results/E10b/gen_r0.1/00002.png",
+   "sha256": "5f6dfda2527f8eb4"
+  },
+  {
+   "row": 2,
+   "col": 3,
+   "label": "r = 0.3",
+   "src": "results/E10b/gen_r0.3/00002.png",
+   "sha256": "1a54efc408e9a645"
+  }
+ ]
+}

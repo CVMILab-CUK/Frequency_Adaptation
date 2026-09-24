@@ -5,7 +5,7 @@ A structure-conditioned diffusion adapter is trained for one operating point.
 How closely its output follows the condition is fixed at training, and
 loosening it later means another checkpoint or a lower adapter strength. We
 move that choice into the condition. A single adapter on Stable Diffusion~1.5
-is trained on grayscale images passed through a radial high-pass filter, with
+is trained on greyscale images passed through a radial high-pass filter, with
 the cutoff $r$ drawn per sample. At test time $r$ becomes a dial, much as
 image-editing tools let users pick a frequency band. On FFHQ-512, raising $r$
 from 0.05 to 0.3 lowers structure consistency (mean of three training seeds)
@@ -40,7 +40,7 @@ Multi-scale editing removes or amplifies a band of the output
 image~\cite{farbman2008edge,paris2011local}; here the band is removed from the
 condition, and the generative prior decides what fills it.
 The condition is the image after a radial high-pass filter with normalised
-cutoff $r$. At $r{=}0$ the model receives the grayscale image and the task is
+cutoff $r$. At $r{=}0$ the model receives the greyscale image and the task is
 colourisation. As $r$ grows the filter removes more of the spectrum, until at
 $r{=}1$ almost nothing is left: measured on \energyN{} FFHQ test images, a
 cutoff of $0.05$ already discards \acRemovedZeroFive\,\% of the spectral
@@ -178,7 +178,7 @@ reproduce.
 
 \section{Method}
 
-\paragraph{Condition.} Given an image $x$, we convert to grayscale, take the
+\paragraph{Condition.} Given an image $x$, we convert to greyscale, take the
 2D FFT, zero every frequency inside a disc of radius $r \cdot \min(H,W)/2$,
 invert, and min--max normalise to $[0,1]$. The normalisation is deliberate: it
 removes the absolute scale of the filter response, so the model has to infer
@@ -235,7 +235,7 @@ bf16, 12 epochs on one H200. The loss is $\epsilon$-prediction with Min-SNR
 weighting~\cite{hang2023efficient}, $\gamma=5$. Text conditioning is dropped
 with probability 0.1 for classifier-free guidance~\cite{ho2022classifier} and
 the structure condition independently with probability
-The condition is grayscale so that the filter reads one channel and a cutoff
+The condition is greyscale so that the filter reads one channel and a cutoff
 means the same thing in every image, leaving colour to the prior;
 Table~\ref{tab:abl} keeps a colour-condition row as the control for that
 choice, and a no-dropout row for the structure-condition dropout of 0.05.
@@ -288,7 +288,7 @@ Tables numbered with an S prefix are in the anonymous supplementary material.
 We evaluate on 500 of the \nTest{} held-out images with a DDIM sampler at 50
 steps, CFG 7.5, seed 2026.
 
-\paragraph{Structure consistency.} SC converts the generated image to grayscale,
+\paragraph{Structure consistency.} SC converts the generated image to greyscale,
 applies the same high-pass filter at the same cutoff the model was
 given, and takes the Pearson correlation against the given condition over the
 flattened pixel vector, per image, averaged over images. Both signals are the
@@ -300,7 +300,7 @@ instrument moves with $r$, a row-to-row difference mixes model behaviour with
 instrument change, so we report a cutoff-independent metric beside it and a
 fixed-instrument reading below.
 
-\paragraph{Edge-F1.} Canny edges (thresholds 100 and 200 on the 8-bit grayscale
+\paragraph{Edge-F1.} Canny edges (thresholds 100 and 200 on the 8-bit greyscale
 image) are taken from the generation and from the reference and matched with a
 2-pixel tolerance, implemented as a $5{\times}5$ dilation of each map before
 intersecting; F1 is computed per image and averaged. It does not depend on $r$,
@@ -369,7 +369,7 @@ standard error over the 500 images), so the sweep is not monotone at its left
 end. Edge-F1 moves the same way, from \edgeMainZero{} to \edgeMainZeroFive{},
 but we have no uncertainty for that change, so it does not separate model
 behaviour from an artefact of the SC instrument.
-We read the rise as the $r{=}0$ condition, the whole grayscale image, carrying
+We read the rise as the $r{=}0$ condition, the whole greyscale image, carrying
 so much of the low-frequency field that it competes with the edges the adapter
 must reproduce; cutting a small disc out leaves the shape easier to follow. We
 did not measure this.
@@ -485,7 +485,7 @@ We read the cost as a train--test mismatch rather than a weaker condition: the
 adapter is only ever trained at scale 1.00, so turning it down puts the UNet in
 a state it never saw, while $r$ was drawn per sample and moving the cutoff stays
 inside the training distribution. Figure~\ref{fig:strength} agrees: at scale
-0.25 both adapters still write the grayscale condition through their scaled
+0.25 both adapters still write the greyscale condition through their scaled
 skip path, too weakly for the model to complete it, and the second row comes
 out grey under either one. We did not measure this.
 At full strength the fixed-$r{=}0.1$ adapter reaches FID \sscFidOne{} against
@@ -515,7 +515,7 @@ Columns 8--9: the randomised-$r$ adapter at full strength at $r{=}0.1$
 Figure~\ref{fig:dial}. At scale 0.75 the fixed-$r$ adapter still follows the
 reference. Lowering the strength of either adapter to 0.50 changes background
 and colour, and in the second row the pose; at 0.25 the pose and framing change
-in both rows and the second row turns grayscale. Moving the cutoff to $r{=}0.3$
+in both rows and the second row turns greyscale. Moving the cutoff to $r{=}0.3$
 keeps the reference layout. All outputs are generated by the model under study.}
 \label{fig:strength}
 \end{figure*}
@@ -588,8 +588,8 @@ photograph--sketch set \texttt{rhfeiyang/photo-sketch-pair-500} on Hugging Face,
 whose dataset card states neither a licence nor an upstream source,
 centre-cropped to $512^2$, and, as an in-domain reference under the identical
 script, on the \oodN{} FFHQ test images, both with the prompt ``a high-quality
-photo''. Each generation is scored in two ways: the grayscale output against
-the grayscale input photograph, and the grayscale output against the filtered
+photo''. Each generation is scored in two ways: the greyscale output against
+the greyscale input photograph, and the greyscale output against the filtered
 condition it was given. Neither filters the output, so neither is the
 structure-consistency instrument of Table~\ref{tab:main}, and the in-domain
 values differ from it (Table~\ref{tab:oodfull}).
@@ -654,7 +654,7 @@ Every scan is stamped with a FERET filename, so they are from the FERET-based
 CUFSF set~\cite{wang2009face,zhang2011coupled} rather than the photographic
 subsets of CUFS. The drawings, which the
 model was never trained on, prompted with ``a high-quality photo of a face'', the
-grayscale output correlates with the input drawing at \sketchFaceSC{} and CLIP score is
+greyscale output correlates with the input drawing at \sketchFaceSC{} and CLIP score is
 \sketchFaceClip{}. FID is not reported: \sketchFaceN{} images is too few for a
 stable estimate, and our evaluator refuses rather than print one. We also ran
 \sketchSceneN{} general-scene drawings, the sketch half of the public
@@ -672,7 +672,7 @@ needs no reference image.
 
 A drawing arrives without a cutoff, but the artist can give it one: filter the
 drawing at $r$ and hand the model the result, the operation every training
-condition went through. On \sdialN{} face drawings, the grayscale output's
+condition went through. On \sdialN{} face drawings, the greyscale output's
 correlation with the original drawing falls from \sdialZero{} at $r{=}0$ to
 \sdialOneZero{} at $r{=}0.1$, \sdialThreeZero{} at $r{=}0.3$ and
 \sdialOneHundred{} at $r{=}1$; $r{=}0.5$ and $r{=}0.7$ lie within a standard
@@ -836,7 +836,7 @@ log-uniform sampler        & \ablLogZero & \ablLogZeroFive & \ablLogThreeZero & 
 one training seed each; the second row is the main model's spread over three
 seeds. The main model uses a $3{\times}3$ window, a zero-initialised gate,
 learned $2{\times}2$ strided downsampling of the condition features at each
-attention site, no stem before the $1{\times}1$ projection, a grayscale condition, condition dropout 0.05, and $r$
+attention site, no stem before the $1{\times}1$ projection, a greyscale condition, condition dropout 0.05, and $r$
 uniform on $[0,1]$. Drawing $r=u^2$ with $u$ uniform concentrates training at
 small $r$; the log-uniform sampler on $[10^{-3},1]$ does so more strongly.}
 \label{tab:abl}
