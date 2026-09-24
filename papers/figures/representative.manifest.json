@@ -1,6 +1,5 @@
 {
- "note": "SRMv2 representative image: the author's pipeline schematic over the dial sweep",
- "pipeline": "papers/figures/pipeline.pdf (vector, rendered)",
+ "note": "SRMv2 representative image, laid out for the 500x200 bounding box",
  "tiles": [
   {
    "row": 0,
@@ -12,20 +11,28 @@
   {
    "row": 0,
    "col": 1,
+   "label": "condition, r = 0.1",
+   "derived_from": "results/E10b/reference/00000.png",
+   "cutoff": 0.1,
+   "by": "datalibs.frequency.high_pass_numpy"
+  },
+  {
+   "row": 0,
+   "col": 2,
    "label": "r = 0.05",
    "src": "results/E10b/gen_r0.05/00000.png",
    "sha256": "51db3dd14e72e041"
   },
   {
    "row": 0,
-   "col": 2,
+   "col": 3,
    "label": "r = 0.1",
    "src": "results/E10b/gen_r0.1/00000.png",
    "sha256": "dc2bf6ab87349f52"
   },
   {
    "row": 0,
-   "col": 3,
+   "col": 4,
    "label": "r = 0.3",
    "src": "results/E10b/gen_r0.3/00000.png",
    "sha256": "6416cee841643d67"
@@ -40,20 +47,28 @@
   {
    "row": 1,
    "col": 1,
+   "label": "condition, r = 0.1",
+   "derived_from": "results/E10b/reference/00002.png",
+   "cutoff": 0.1,
+   "by": "datalibs.frequency.high_pass_numpy"
+  },
+  {
+   "row": 1,
+   "col": 2,
    "label": "r = 0.05",
    "src": "results/E10b/gen_r0.05/00002.png",
    "sha256": "753ce588778b1eb8"
   },
   {
    "row": 1,
-   "col": 2,
+   "col": 3,
    "label": "r = 0.1",
    "src": "results/E10b/gen_r0.1/00002.png",
    "sha256": "5f6dfda2527f8eb4"
   },
   {
    "row": 1,
-   "col": 3,
+   "col": 4,
    "label": "r = 0.3",
    "src": "results/E10b/gen_r0.3/00002.png",
    "sha256": "1a54efc408e9a645"
