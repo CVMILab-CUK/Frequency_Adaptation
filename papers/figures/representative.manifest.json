@@ -1,5 +1,5 @@
 {
- "note": "SRMv2 representative image, laid out for the 500x200 bounding box",
+ "note": "SRMv2 representative image. 3000x1200 meets both the stated minimum (1500x1200) and the 500x200 display box (2.5:1). Tiles are band-limited to 300px before upscaling so a coarse resampler cannot alias them.",
  "tiles": [
   {
    "row": 0,
@@ -11,10 +11,11 @@
   {
    "row": 0,
    "col": 1,
-   "label": "condition, r = 0.1",
+   "label": "condition",
    "derived_from": "results/E10b/reference/00000.png",
    "cutoff": 0.1,
-   "by": "datalibs.frequency.high_pass_numpy"
+   "by": "datalibs.frequency.high_pass_numpy",
+   "note": "the high-pass condition the adapter is given, at r=0.1"
   },
   {
    "row": 0,
@@ -47,10 +48,11 @@
   {
    "row": 1,
    "col": 1,
-   "label": "condition, r = 0.1",
+   "label": "condition",
    "derived_from": "results/E10b/reference/00002.png",
    "cutoff": 0.1,
-   "by": "datalibs.frequency.high_pass_numpy"
+   "by": "datalibs.frequency.high_pass_numpy",
+   "note": "the high-pass condition the adapter is given, at r=0.1"
   },
   {
    "row": 1,
