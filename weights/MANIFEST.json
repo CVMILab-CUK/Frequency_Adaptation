@@ -1,0 +1,70 @@
+{
+ "note": "Adapter weights for the runs the paper cites. float32, as trained and as evaluated; evaluation uses the raw weights, never the EMA copy.",
+ "load": "models/models.py -> load_adapter(); configs in config/generated/<run>.yaml",
+ "adapters": [
+  {
+   "run": "E10b_skip_inject",
+   "file": "E10b_skip_inject.safetensors",
+   "bytes": 26465180,
+   "sha256": "0faa6dab254770ae4c60ee23b894d8e63f8104d5fb54e2b7806ac03ac4753f4c",
+   "config": "config/generated/E10b_skip_inject.yaml",
+   "why": "randomised-r adapter, training seed 2026. Table 1, Figs 2-5, and the base for every scaled strength row."
+  },
+  {
+   "run": "E13_seed2027",
+   "file": "E13_seed2027.safetensors",
+   "bytes": 26465180,
+   "sha256": "ac571ab4e2ee95dfc8a4093382ccdfea3047884c596fba6c9cac8bd7b4c77de2",
+   "config": "config/generated/E13_seed2027.yaml",
+   "why": "the same configuration at training seed 2027; with 2026 and 2028 it gives the three-seed means the abstract quotes."
+  },
+  {
+   "run": "E13_seed2028",
+   "file": "E13_seed2028.safetensors",
+   "bytes": 26465180,
+   "sha256": "91c79cedda2b0c5f346181407eb3bb3940e756a32be32ecabd64c7e94a51d4c6",
+   "config": "config/generated/E13_seed2028.yaml",
+   "why": "training seed 2028, as above."
+  },
+  {
+   "run": "E2_fixed_r0.1",
+   "file": "E2_fixed_r0.1.safetensors",
+   "bytes": 26465180,
+   "sha256": "8f306e521ea5112531c28500765b024e27bfcb63aad7cf563d4e74efdf4e02e7",
+   "config": "config/generated/E2_fixed_r0.1.yaml",
+   "why": "specialist trained at a fixed r=0.1 (Sec. 4.4), and the base for the fixed-r strength rows."
+  },
+  {
+   "run": "E18_skip_only",
+   "file": "E18_skip_only.safetensors",
+   "bytes": 24828360,
+   "sha256": "42eb595ea437f4d302e92892b943e1287770aa4f17d71bbcb2ec16da85973688",
+   "config": "config/generated/E18_skip_only.yaml",
+   "why": "the skip path trained alone (Sec. 5.3)."
+  },
+  {
+   "run": "E2_fixed_r0.3",
+   "file": "E2_fixed_r0.3.safetensors",
+   "bytes": 26465180,
+   "sha256": "5710b7f3065dbb0779d8ff9920a0dbd642322fc186b5ef33772132dd236b16e1",
+   "config": "config/generated/E2_fixed_r0.3.yaml",
+   "why": "specialist at r=0.3 (Table S5)."
+  },
+  {
+   "run": "E2_fixed_r0.5",
+   "file": "E2_fixed_r0.5.safetensors",
+   "bytes": 26465180,
+   "sha256": "5186ee297a291a33f5d96336f82d59c8fb3d91143aca1eab6384ed6b97432604",
+   "config": "config/generated/E2_fixed_r0.5.yaml",
+   "why": "specialist at r=0.5 (Table S5)."
+  },
+  {
+   "run": "E2_fixed_r0.7",
+   "file": "E2_fixed_r0.7.safetensors",
+   "bytes": 26465180,
+   "sha256": "fec75aaa26f6d0f076e0dd3737a5d9d301d310c89e1e270ea4b15ed9c8e8cba8",
+   "config": "config/generated/E2_fixed_r0.7.yaml",
+   "why": "specialist at r=0.7 (Table S5)."
+  }
+ ]
+}
