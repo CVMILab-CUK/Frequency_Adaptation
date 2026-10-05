@@ -60,6 +60,12 @@ def main():
     p.add_argument("--cfg", type=float, default=7.5)
     p.add_argument("--batch", type=int, default=8)
     p.add_argument("--seed", type=int, default=2026)
+    # The pipelines' own default is PNDM, which is what the paper's baseline
+    # numbers were produced with, while our adapter samples with DDIM. Passing
+    # --scheduler ddim re-runs a baseline on our sampler so the comparison
+    # holds one more thing fixed. `default` leaves the checkpoint's own choice
+    # alone, so existing results reproduce byte for byte.
+    p.add_argument("--scheduler", default="default", choices=["default", "ddim"])
     a = p.parse_args()
 
     from diffusers import (StableDiffusionControlNetPipeline, ControlNetModel,
@@ -82,6 +88,10 @@ def main():
         pipe = StableDiffusionAdapterPipeline.from_pretrained(
             cfg.model.model_id, adapter=side, torch_dtype=torch.float16,
             safety_checker=None, requires_safety_checker=False).to(device)
+    if a.scheduler == "ddim":
+        from diffusers import DDIMScheduler
+        pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
+    sched_name = type(pipe.scheduler).__name__
     pipe.set_progress_bar_config(disable=True)
     n_params = sum(q.numel() for q in side.parameters())
     print(f"[base] {a.baseline}: {n_params:,} side-network params ({family})", flush=True)
@@ -114,6 +124,7 @@ def main():
         "family": family, "side_params": int(n_params),
         "controlnet_params": int(n_params), "n_images": n, "steps": a.steps,
         "cfg_scale": a.cfg, "seed": a.seed, "resolution": res,
+        "scheduler": sched_name, "scheduler_flag": a.scheduler,
         "gpu": torch.cuda.get_device_name(0),
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "note": ("baselines run on their native condition"

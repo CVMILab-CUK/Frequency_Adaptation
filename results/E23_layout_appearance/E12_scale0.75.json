@@ -1,0 +1,47 @@
+{
+ "provenance": {
+  "run": "results/E12_scale0.75",
+  "ref": "results/E12_scale0.75/reference",
+  "n_images": 500,
+  "detector": "haarcascade_frontalface_default.xml",
+  "opencv": "4.11.0",
+  "clip": "open_clip ViT-B-32 / openai",
+  "definition": "E23 -- does the face layout really hold while appearance drifts?\n\nThe paper says it in the abstract, the introduction and the conclusion: as the\ncutoff grows the face layout stays put while background, clothing and colour\nleave the reference. Limitations admits the evidence is the samples in Figures 3\nand 5, because neither structure consistency nor Edge-F1 separates the two --\nboth fall together across the same range.\n\nThis script measures the two sides apart, on the generations the paper already\nsaved, so it adds no inference and no training:\n\n  layout, from the geometry of the face\n    face_found     fraction of generations with a detectable frontal face\n    face_iou       IoU of the largest face box, generation against reference\n    face_center    centre displacement, in units of the reference face width\n    face_scale     |log(w_gen / w_ref)|, so 0 is the same size\n\n  appearance, from colour and from what CLIP sees\n    colour_hist    Lab (a,b) histogram intersection, 1.0 is the same palette\n    chroma_shift   L2 distance between mean (a,b)\n    clip_img       CLIP ViT-B/32 image-image cosine (the paper's CLIP model)\n\nThe claim predicts the layout columns stay flat over r in [0.05, 0.3] while the\nappearance columns fall. The detector is the frontal-face cascade that ships\nwith OpenCV: it is coarse, but it needs no download and it is reproducible from\na clean checkout. It finds a face in 39 of the first 40 references, so the\ngeometry columns are read over the images where both sides detect, and\n`face_found` reports how often the generation has a face at all.",
+  "note": "re-scores generations already saved by eval/run_eval.py; no new inference"
+ },
+ "face_found@0.1": {
+  "mean": 0.882,
+  "sem": 0.014441922942480794,
+  "n": 500
+ },
+ "face_iou@0.1": {
+  "mean": 0.8682239464753123,
+  "sem": 0.004972872846129834,
+  "n": 420
+ },
+ "face_center@0.1": {
+  "mean": 0.028809049646208514,
+  "sem": 0.0015547452629272496,
+  "n": 420
+ },
+ "face_scale@0.1": {
+  "mean": 0.0664313656753473,
+  "sem": 0.004657193825755194,
+  "n": 420
+ },
+ "colour_hist@0.1": {
+  "mean": 0.41304390716552736,
+  "sem": 0.006156885768749084,
+  "n": 500
+ },
+ "chroma_shift@0.1": {
+  "mean": 9.834927498668643,
+  "sem": 0.28536512209904946,
+  "n": 500
+ },
+ "clip_img@0.1": {
+  "mean": 0.8210122721195221,
+  "sem": 0.003072807261495388,
+  "n": 500
+ }
+}

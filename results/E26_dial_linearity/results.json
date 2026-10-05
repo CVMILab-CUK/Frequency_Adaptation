@@ -1,0 +1,114 @@
+{
+ "provenance": {
+  "run": "results/E10b",
+  "n_images": 500,
+  "metric": "LPIPS AlexNet (eval/metrics.py's network)",
+  "definition": "E26 -- are equal steps in r equal steps in the picture?\n\nLimitations says this is not measured: \"whether equal steps in $r$ are perceived\nas equal changes ... is not measured here\". A user study is the right instrument\nand is not in reach yet. This is the proxy that is: LPIPS between the\ngenerations at consecutive cutoffs, same image, same seed, so the only thing\nthat differs between the two pictures is r.\n\n  step_lpips[a->b]     perceptual distance between the generations at a and b\n  step_rate[a->b]      that distance divided by (b - a), so a dial that moved\n                       the picture at a constant rate would give a flat column\n  cum_lpips[r]         distance from the r=0 generation, the dial's travel\n\nA flat step_rate would mean r is already a perceptually uniform parameter. A\nfalling one means the early part of the range does most of the work and a user\nwould want a non-linear mapping on the slider. Either answer is publishable;\nwhat the paper cannot keep doing is not answering.\n\nReads only generations that eval/run_eval.py already saved.",
+  "note": "re-scores saved generations; no new inference"
+ },
+ "step_lpips@0.0->0.05": {
+  "mean": 0.10355629026889801,
+  "sem": 0.0016315324183601876,
+  "n": 500
+ },
+ "step_rate@0.0->0.05": {
+  "mean": 2.07112580537796,
+  "sem": 0.03263064836720375,
+  "n": 500
+ },
+ "step_lpips@0.05->0.1": {
+  "mean": 0.0989176407456398,
+  "sem": 0.0013188088864891187,
+  "n": 500
+ },
+ "step_rate@0.05->0.1": {
+  "mean": 1.978352814912796,
+  "sem": 0.026376177729782374,
+  "n": 500
+ },
+ "step_lpips@0.1->0.2": {
+  "mean": 0.14345890283584595,
+  "sem": 0.0016458925093997703,
+  "n": 500
+ },
+ "step_rate@0.1->0.2": {
+  "mean": 1.4345890283584595,
+  "sem": 0.0164589250939977,
+  "n": 500
+ },
+ "step_lpips@0.2->0.3": {
+  "mean": 0.1272379755973816,
+  "sem": 0.0017396316917691835,
+  "n": 500
+ },
+ "step_rate@0.2->0.3": {
+  "mean": 1.2723797559738161,
+  "sem": 0.017396316917691838,
+  "n": 500
+ },
+ "step_lpips@0.3->0.5": {
+  "mean": 0.1333106905221939,
+  "sem": 0.002213592331697251,
+  "n": 500
+ },
+ "step_rate@0.3->0.5": {
+  "mean": 0.6665534526109695,
+  "sem": 0.011067961658486255,
+  "n": 500
+ },
+ "step_lpips@0.5->0.7": {
+  "mean": 0.12592388689517975,
+  "sem": 0.0024734124351862576,
+  "n": 500
+ },
+ "step_rate@0.5->0.7": {
+  "mean": 0.6296194344758989,
+  "sem": 0.01236706217593129,
+  "n": 500
+ },
+ "step_lpips@0.7->1.0": {
+  "mean": 0.30050742626190186,
+  "sem": 0.003943858935031977,
+  "n": 500
+ },
+ "step_rate@0.7->1.0": {
+  "mean": 1.001691420873006,
+  "sem": 0.013146196450106588,
+  "n": 500
+ },
+ "cum_lpips@0.05": {
+  "mean": 0.10355629026889801,
+  "sem": 0.0016315324183601876,
+  "n": 500
+ },
+ "cum_lpips@0.1": {
+  "mean": 0.15992099046707153,
+  "sem": 0.00187892565775344,
+  "n": 500
+ },
+ "cum_lpips@0.2": {
+  "mean": 0.2253209799528122,
+  "sem": 0.0021462339335489157,
+  "n": 500
+ },
+ "cum_lpips@0.3": {
+  "mean": 0.2560112178325653,
+  "sem": 0.0022872587074200595,
+  "n": 500
+ },
+ "cum_lpips@0.5": {
+  "mean": 0.29094135761260986,
+  "sem": 0.002508454256043739,
+  "n": 500
+ },
+ "cum_lpips@0.7": {
+  "mean": 0.3176417052745819,
+  "sem": 0.002678356482438289,
+  "n": 500
+ },
+ "cum_lpips@1.0": {
+  "mean": 0.41404616832733154,
+  "sem": 0.0032939724774148863,
+  "n": 500
+ }
+}

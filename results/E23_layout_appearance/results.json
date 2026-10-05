@@ -1,0 +1,292 @@
+{
+ "provenance": {
+  "run": "results/E10b",
+  "ref": "results/E10b/reference",
+  "n_images": 500,
+  "detector": "haarcascade_frontalface_default.xml",
+  "opencv": "4.11.0",
+  "clip": "open_clip ViT-B-32 / openai",
+  "definition": "E23 -- does the face layout really hold while appearance drifts?\n\nThe paper says it in the abstract, the introduction and the conclusion: as the\ncutoff grows the face layout stays put while background, clothing and colour\nleave the reference. Limitations admits the evidence is the samples in Figures 3\nand 5, because neither structure consistency nor Edge-F1 separates the two --\nboth fall together across the same range.\n\nThis script measures the two sides apart, on the generations the paper already\nsaved, so it adds no inference and no training:\n\n  layout, from the geometry of the face\n    face_found     fraction of generations with a detectable frontal face\n    face_iou       IoU of the largest face box, generation against reference\n    face_center    centre displacement, in units of the reference face width\n    face_scale     |log(w_gen / w_ref)|, so 0 is the same size\n\n  appearance, from colour and from what CLIP sees\n    colour_hist    Lab (a,b) histogram intersection, 1.0 is the same palette\n    chroma_shift   L2 distance between mean (a,b)\n    clip_img       CLIP ViT-B/32 image-image cosine (the paper's CLIP model)\n\nThe claim predicts the layout columns stay flat over r in [0.05, 0.3] while the\nappearance columns fall. The detector is the frontal-face cascade that ships\nwith OpenCV: it is coarse, but it needs no download and it is reproducible from\na clean checkout. It finds a face in 39 of the first 40 references, so the\ngeometry columns are read over the images where both sides detect, and\n`face_found` reports how often the generation has a face at all.",
+  "note": "re-scores generations already saved by eval/run_eval.py; no new inference"
+ },
+ "face_found@0.0": {
+  "mean": 0.928,
+  "sem": 0.011571508095282929,
+  "n": 500
+ },
+ "face_iou@0.0": {
+  "mean": 0.9008763571154664,
+  "sem": 0.004450022680911326,
+  "n": 443
+ },
+ "face_center@0.0": {
+  "mean": 0.021069170138724308,
+  "sem": 0.0021385066503243613,
+  "n": 443
+ },
+ "face_scale@0.0": {
+  "mean": 0.051273487764198204,
+  "sem": 0.003963707801785952,
+  "n": 443
+ },
+ "colour_hist@0.0": {
+  "mean": 0.40809761810302736,
+  "sem": 0.006248728365406371,
+  "n": 500
+ },
+ "chroma_shift@0.0": {
+  "mean": 10.091123185011078,
+  "sem": 0.28949673812697,
+  "n": 500
+ },
+ "clip_img@0.0": {
+  "mean": 0.8761708920001984,
+  "sem": 0.0023551107537755195,
+  "n": 500
+ },
+ "face_found@0.05": {
+  "mean": 0.908,
+  "sem": 0.012938578501027635,
+  "n": 500
+ },
+ "face_iou@0.05": {
+  "mean": 0.8826200215153027,
+  "sem": 0.005297913319731585,
+  "n": 432
+ },
+ "face_center@0.05": {
+  "mean": 0.02302159982219723,
+  "sem": 0.0012288481184199887,
+  "n": 432
+ },
+ "face_scale@0.05": {
+  "mean": 0.06565989930762353,
+  "sem": 0.005862017409536724,
+  "n": 432
+ },
+ "colour_hist@0.05": {
+  "mean": 0.4052396240234375,
+  "sem": 0.006333182364276037,
+  "n": 500
+ },
+ "chroma_shift@0.05": {
+  "mean": 10.00081127374497,
+  "sem": 0.2907628896675308,
+  "n": 500
+ },
+ "clip_img@0.05": {
+  "mean": 0.8634938422441483,
+  "sem": 0.0024351564964304063,
+  "n": 500
+ },
+ "face_found@0.1": {
+  "mean": 0.878,
+  "sem": 0.01465132494504475,
+  "n": 500
+ },
+ "face_iou@0.1": {
+  "mean": 0.8745098497437016,
+  "sem": 0.005925466521157518,
+  "n": 419
+ },
+ "face_center@0.1": {
+  "mean": 0.028228683020840015,
+  "sem": 0.0026673719083039173,
+  "n": 419
+ },
+ "face_scale@0.1": {
+  "mean": 0.07055327226604956,
+  "sem": 0.006895624028746171,
+  "n": 419
+ },
+ "colour_hist@0.1": {
+  "mean": 0.4109445953369141,
+  "sem": 0.006491737434254021,
+  "n": 500
+ },
+ "chroma_shift@0.1": {
+  "mean": 9.931492249005714,
+  "sem": 0.29013692196739427,
+  "n": 500
+ },
+ "clip_img@0.1": {
+  "mean": 0.8494503693580627,
+  "sem": 0.0026678631019345206,
+  "n": 500
+ },
+ "face_found@0.2": {
+  "mean": 0.878,
+  "sem": 0.01465132494504475,
+  "n": 500
+ },
+ "face_iou@0.2": {
+  "mean": 0.8648541029085753,
+  "sem": 0.0061008387553205526,
+  "n": 417
+ },
+ "face_center@0.2": {
+  "mean": 0.029293310226401074,
+  "sem": 0.0026582382733156508,
+  "n": 417
+ },
+ "face_scale@0.2": {
+  "mean": 0.07720806467578847,
+  "sem": 0.007393213286965894,
+  "n": 417
+ },
+ "colour_hist@0.2": {
+  "mean": 0.41214064025878905,
+  "sem": 0.0062880013003243805,
+  "n": 500
+ },
+ "chroma_shift@0.2": {
+  "mean": 9.771761487611537,
+  "sem": 0.28476370669364043,
+  "n": 500
+ },
+ "clip_img@0.2": {
+  "mean": 0.8387652454376221,
+  "sem": 0.0028297009385786767,
+  "n": 500
+ },
+ "face_found@0.3": {
+  "mean": 0.896,
+  "sem": 0.013665338743182763,
+  "n": 500
+ },
+ "face_iou@0.3": {
+  "mean": 0.8700533540150257,
+  "sem": 0.005256021152022902,
+  "n": 423
+ },
+ "face_center@0.3": {
+  "mean": 0.02761443656275575,
+  "sem": 0.002006181289008434,
+  "n": 423
+ },
+ "face_scale@0.3": {
+  "mean": 0.0687377617587083,
+  "sem": 0.0052248992143874295,
+  "n": 423
+ },
+ "colour_hist@0.3": {
+  "mean": 0.4145852127075195,
+  "sem": 0.006187659633281118,
+  "n": 500
+ },
+ "chroma_shift@0.3": {
+  "mean": 9.554605219454563,
+  "sem": 0.2804446613782485,
+  "n": 500
+ },
+ "clip_img@0.3": {
+  "mean": 0.8347595192193985,
+  "sem": 0.0028688296634122633,
+  "n": 500
+ },
+ "face_found@0.5": {
+  "mean": 0.898,
+  "sem": 0.01354839910234685,
+  "n": 500
+ },
+ "face_iou@0.5": {
+  "mean": 0.8702463288317521,
+  "sem": 0.005045630864460696,
+  "n": 424
+ },
+ "face_center@0.5": {
+  "mean": 0.027178754304403092,
+  "sem": 0.0021115226286385967,
+  "n": 424
+ },
+ "face_scale@0.5": {
+  "mean": 0.0665220384155691,
+  "sem": 0.004345736971194232,
+  "n": 424
+ },
+ "colour_hist@0.5": {
+  "mean": 0.4113373947143555,
+  "sem": 0.006279921787542317,
+  "n": 500
+ },
+ "chroma_shift@0.5": {
+  "mean": 9.58128016421344,
+  "sem": 0.28114173422475874,
+  "n": 500
+ },
+ "clip_img@0.5": {
+  "mean": 0.8246885466575623,
+  "sem": 0.0029705239070710295,
+  "n": 500
+ },
+ "face_found@0.7": {
+  "mean": 0.896,
+  "sem": 0.013665338743182763,
+  "n": 500
+ },
+ "face_iou@0.7": {
+  "mean": 0.8702683798432294,
+  "sem": 0.005238679362489523,
+  "n": 426
+ },
+ "face_center@0.7": {
+  "mean": 0.02839316733900624,
+  "sem": 0.0019411209687547036,
+  "n": 426
+ },
+ "face_scale@0.7": {
+  "mean": 0.06624209116798246,
+  "sem": 0.004739099918300714,
+  "n": 426
+ },
+ "colour_hist@0.7": {
+  "mean": 0.4134485626220703,
+  "sem": 0.006352544810917934,
+  "n": 500
+ },
+ "chroma_shift@0.7": {
+  "mean": 9.54022896629436,
+  "sem": 0.2838874857866614,
+  "n": 500
+ },
+ "clip_img@0.7": {
+  "mean": 0.8169473954439164,
+  "sem": 0.0030741089401580793,
+  "n": 500
+ },
+ "face_found@1.0": {
+  "mean": 0.9,
+  "sem": 0.013429844431075358,
+  "n": 500
+ },
+ "face_iou@1.0": {
+  "mean": 0.8486748640274052,
+  "sem": 0.0056882211345052214,
+  "n": 431
+ },
+ "face_center@1.0": {
+  "mean": 0.032874665174139915,
+  "sem": 0.0017845203853158762,
+  "n": 431
+ },
+ "face_scale@1.0": {
+  "mean": 0.08241075986042752,
+  "sem": 0.006216614779340357,
+  "n": 431
+ },
+ "colour_hist@1.0": {
+  "mean": 0.40997908782958986,
+  "sem": 0.0064027968496179755,
+  "n": 500
+ },
+ "chroma_shift@1.0": {
+  "mean": 9.75328135348883,
+  "sem": 0.28204411082701447,
+  "n": 500
+ },
+ "clip_img@1.0": {
+  "mean": 0.7809154142141342,
+  "sem": 0.003579189734775322,
+  "n": 500
+ }
+}
