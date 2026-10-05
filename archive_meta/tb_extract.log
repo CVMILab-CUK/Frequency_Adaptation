@@ -1,0 +1,32 @@
+E10a_capacity128                        426 MB ->    70.2 KB  28 series
+E10b_skip_inject                        417 MB ->    70.1 KB  28 series
+E10c_window7                            419 MB ->    70.7 KB  28 series
+E10d_capacity256                        424 MB ->    70.2 KB  28 series
+E13_seed2027                            419 MB ->    70.2 KB  28 series
+E13_seed2028                            413 MB ->    70.3 KB  28 series
+E14a_k1                                 426 MB ->    70.2 KB  28 series
+E14a_k5                                 421 MB ->    70.2 KB  28 series
+E14b_stem64                             419 MB ->    70.2 KB  28 series
+E14c_down_avg                           421 MB ->    70.2 KB  28 series
+E14e_color                              491 MB ->    70.2 KB  28 series
+E14f_log                                419 MB ->    70.2 KB  28 series
+E14f_sqrt                               418 MB ->    70.3 KB  28 series
+E14g_conddrop0                          418 MB ->    70.3 KB  28 series
+E14h_nogate                             418 MB ->    70.2 KB  28 series
+E15_stem256_skip                        421 MB ->    70.2 KB  28 series
+E18_skip_only                           417 MB ->    70.2 KB  28 series
+E2_fixed_r0.1                           426 MB ->    70.2 KB  28 series
+E2_fixed_r0.1_s2027                     427 MB ->    70.3 KB  28 series
+E2_fixed_r0.3                           423 MB ->    69.9 KB  28 series
+E2_fixed_r0.5                           423 MB ->    70.3 KB  28 series
+E2_fixed_r0.7                           428 MB ->    70.2 KB  28 series
+E3h_zero_init_gate                      416 MB ->    73.5 KB  28 series
+E9a_conv_encoder                        427 MB ->    70.2 KB  28 series
+E9b_source256                           327 MB ->    70.2 KB  28 series
+FA_SD15_r0-1                            886 MB ->   142.1 KB  28 series
+OVERFIT16                                 0 MB ->     4.9 KB  28 series
+OVERFIT16_nosnr                           0 MB ->     4.9 KB  28 series
+SAModel_project                        1518 MB ->   332.2 KB  4 series
+SD_1.5_FFHQ_512                        1647 MB ->   492.0 KB  4 series
+
+33 runs: 14.2 GB -> 2.7 MB
